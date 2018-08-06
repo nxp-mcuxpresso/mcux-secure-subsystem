@@ -117,7 +117,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context, uint32_t commandID
     }
 
     MU_SendMsg(muContext->base, msg, wrIdx);
-    
+
     /* poll for response */
     MU_ReceiveMsg(muContext->base, msg);
     *ret = msg[1];

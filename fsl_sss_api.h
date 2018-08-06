@@ -200,9 +200,8 @@ typedef struct _sss_object
     sss_key_store_t *keyStore; /*! key store holding the data and other properties */
 
     uint32_t objectType; /*! TODO define object types */
-    uint32_t
-        keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data and
-                  other properties. */
+    uint32_t keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data
+                       and other properties. */
 
     /*! Implementation specific part */
     struct
@@ -397,7 +396,8 @@ sss_status_t sss_cipher_update(
  * @param srcData Buffer containing final chunk of input data.
  * @param srcLen Length of final chunk of input data in bytes.
  * @param destData Buffer containing output data.
- * @param[in,out] destLen Length of output data in bytes. Buffer length on entry, reflects actual output size on return.
+ * @param[in,out] destLen Length of output data in bytes. Buffer length on entry, reflects actual output size on
+ * return.
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -414,10 +414,10 @@ sss_status_t sss_cipher_finish(
  * @param destData Buffer containing the output data.
  * @param size Size of source and destination data buffers in bytes.
  * @param[in,out] initialCounter Input counter (updates on return)
- * @param[out] lastEncryptedCounter Output cipher of last counter, for chained CTR calls. NULL can be passed if chained
- * calls are not used.
- * @param[out] szLeft Output number of bytes in left unused in lastEncryptedCounter block. NULL can be passed if chained
- * calls are not used.
+ * @param[out] lastEncryptedCounter Output cipher of last counter, for chained CTR calls. NULL can be passed if
+ * chained calls are not used.
+ * @param[out] szLeft Output number of bytes in left unused in lastEncryptedCounter block. NULL can be passed if
+ * chained calls are not used.
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -437,8 +437,8 @@ sss_status_t sss_cipher_crypt_ctr(sss_symmetric_t *context,
  */
 void sss_symmetric_context_free(sss_symmetric_t *context);
 /*!
- *@}
- */ /* end of sss_crypto_symmetric */
+     *@}
+     */ /* end of sss_crypto_symmetric */
 
 /*!
  * @addtogroup sss_crypto_aead
@@ -470,8 +470,8 @@ sss_status_t sss_aead_context_init(
  * @param destData Buffer containing the output data.
  * @param size Size of input and output data buffer in bytes.
  * @param nonce The operation nonce or IV.
- * @param nonceLen The length of nonce in bytes. For AES-GCM it must be >= 1. For AES-CCM it must be 7, 8, 9, 10, 11,
- * 12, or 13.
+ * @param nonceLen The length of nonce in bytes. For AES-GCM it must be >= 1. For AES-CCM it must be 7, 8, 9, 10,
+ * 11, 12, or 13.
  * @param aad Input additional authentication data AAD
  * @param aadLen Input size in bytes of AAD
  * @param tag Encryption: Output buffer filled with computed tag
@@ -500,8 +500,8 @@ sss_status_t sss_aead_one_go(sss_aead_t *context,
  *
  * @param context Pointer to aead crypto context.
  * @param nonce The operation nonce or IV.
- * @param nonceLen The length of nonce in bytes. For AES-GCM it must be >= 1. For AES-CCM it must be 7, 8, 9, 10, 11,
- * 12, or 13.
+ * @param nonceLen The length of nonce in bytes. For AES-GCM it must be >= 1. For AES-CCM it must be 7, 8, 9, 10,
+ * 11, 12, or 13.
  * @param tagLen Length of the computed or received tag in bytes.
  *               For AES-GCM it must be 4,8,12,13,14,15 or 16.
  *               For AES-CCM it must be 4,6,8,10,12,14 or 16.
@@ -532,7 +532,8 @@ sss_status_t sss_aead_update_aad(sss_aead_t *context, const uint8_t *aadData, si
  * Feeds a new chunk of the data payload.
  * Input data does not have to be a multiple of block size. Subsequent calls to this function are possible.
  * Unless one or more calls of this function have supplied sufficient input data, no output is generated.
- * The integration check is done by @ref sss_aead_finish(). Until then it is not sure if the decrypt data is authentic.
+ * The integration check is done by @ref sss_aead_finish(). Until then it is not sure if the decrypt data is
+ * authentic.
  *
  * @param context Pointer to aead crypto context.
  * @param srcData Buffer containing the input data.
@@ -550,15 +551,16 @@ sss_status_t sss_aead_update(
     sss_aead_t *context, const uint8_t *srcData, size_t srcLen, uint8_t destData, size_t *destLen);
 
 /*! @brief Finalize AEAD.
- * The functions processes data that has not been processed by previous calls to sss_aead_update() as well as srcData.
- * It finalizes the AEAD operations and computes the tag (encryption) or compares the computed tag with the tag supplied
- * in the parameter (decryption).
+ * The functions processes data that has not been processed by previous calls to sss_aead_update() as well as
+ * srcData. It finalizes the AEAD operations and computes the tag (encryption) or compares the computed tag with the
+ * tag supplied in the parameter (decryption).
  *
  * @param context Pointer to aead crypto context.
  * @param srcData Buffer containing final chunk of input data.
  * @param srcLen Length of final chunk of input data in bytes.
  * @param destData Buffer containing output data.
- * @param[in,out] destLen Length of output data in bytes. Buffer length on entry, reflects actual output size on return.
+ * @param[in,out] destLen Length of output data in bytes. Buffer length on entry, reflects actual output size on
+ * return.
  * @param tag Encryption: Output buffer filled with computed tag
  *            Decryption: Input buffer filled with received tag
  * @param tagLen Length of the computed or received tag in bytes.
@@ -584,8 +586,8 @@ sss_status_t sss_aead_finish(sss_aead_t *context,
  */
 void sss_aead_context_free(sss_aead_t *context);
 /*!
- *@}
- */ /* end of sss_crypto_aead */
+     *@}
+     */ /* end of sss_crypto_aead */
 
 /*!
  * @addtogroup sss_crypto_digest
@@ -670,8 +672,8 @@ sss_status_t sss_digest_finish(sss_digest_t *context, uint8_t *digest, size_t *d
 void sss_digest_context_free(sss_digest_t *context);
 
 /*!
- *@}
- */ /* end of sss_crypto_digest */
+     *@}
+     */ /* end of sss_crypto_digest */
 
 /*!
  * @addtogroup sss_crypto_mac
@@ -754,8 +756,8 @@ sss_status_t sss_mac_finish(sss_mac_t *context, uint8_t *mac, size_t *macLen);
  */
 void sss_mac_context_free(sss_mac_t *context);
 /*!
- *@}
- */ /* end of sss_crypto_mac */
+     *@}
+     */ /* end of sss_crypto_mac */
 
 /*!
  * @addtogroup sss_crypto_asymmetric
@@ -800,7 +802,8 @@ sss_status_t sss_asymmetric_encrypt(
     sss_asymmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen);
 
 /*! @brief Asymmetric decryption
- *  The function uses asymmetric algorithm to decrypt data. Private key portion of a key pair is used for decryption.
+ *  The function uses asymmetric algorithm to decrypt data. Private key portion of a key pair is used for
+ * decryption.
  *
  * @param context Pointer to asymmetric context.
  * @param srcData Input buffer
@@ -857,8 +860,8 @@ sss_status_t sss_asymmetric_verify_digest(
  */
 void sss_asymmetric_context_free(sss_asymmetric_t *context);
 /*!
- *@}
- */ /* end of sss_crypto_asymmetric */
+     *@}
+     */ /* end of sss_crypto_asymmetric */
 
 /*!
  * @addtogroup sss_crypto_tunnelling
@@ -894,8 +897,8 @@ sss_status_t sss_tunnel(sss_tunnel_t *context,
 void sss_free_tunnel_context(sss_tunnel_t *context);
 
 /*!
- *@}
- */ /* end of sss_crypto_tunnelling */
+     *@}
+     */ /* end of sss_crypto_tunnelling */
 
 /*!
  * @addtogroup sss_crypto_derive_key
@@ -965,8 +968,8 @@ sss_status_t sss_asymmetric_dh_derive_key(sss_derive_key_t *context,
  */
 void sss_derive_key_context_free(sss_derive_key_t *context);
 /*!
- *@}
- */ /* end of sss_crypto_derive_key */
+     *@}
+     */ /* end of sss_crypto_derive_key */
 
 /*!
  * @addtogroup sss_key_object
@@ -1035,8 +1038,8 @@ sss_status_t sss_key_object_get_access(sss_object_t *keyObject, uint32_t *access
 void sss_key_object_free(sss_object_t *keyObject);
 
 /*!
- *@}
- */ /* end of sss_key_object */
+     *@}
+     */ /* end of sss_key_object */
 
 /*!
  * @addtogroup sss_key_store
@@ -1056,8 +1059,8 @@ sss_status_t sss_key_store_context_init(sss_key_store_t *keyStore, sss_session_t
  *  Key store context structure is updated with actual information.
  *
  * @param[out] keyStore Pointer to key store context. Key store context is updated on function return.
- * @param keyStoreId Implementation specific ID, can be used in case security subsystem manages multiple different key
- * stores.
+ * @param keyStoreId Implementation specific ID, can be used in case security subsystem manages multiple different
+ * key stores.
  */
 sss_status_t sss_key_store_allocate(sss_key_store_t *keyStore, uint32_t keyStoreId);
 
@@ -1102,8 +1105,8 @@ sss_status_t sss_key_store_erase_key(sss_key_store_t *keyStore, sss_object_t *ke
 void sss_key_store_context_free(sss_key_store_t *keyStore);
 
 /*!
- *@}
- */ /* end of sss_key_store */
+     *@}
+     */ /* end of sss_key_store */
 
 /*!
  * @addtogroup sss_session
@@ -1120,8 +1123,8 @@ void sss_key_store_context_free(sss_key_store_t *keyStore);
  * @param   session Session context.
  * @param   subsystem Indicates which security subsystem is selected to be used.
  * @param   additionalApplicationId Additional ID that is supplied to the subsystem, implementation specific.
- * @param   connectionMethod Selects which identity credentials about application are used to determine access control
- * permissions to SSS functionality or SSS data.
+ * @param   connectionMethod Selects which identity credentials about application are used to determine access
+ * control permissions to SSS functionality or SSS data.
  * @param   connectionData Data required by connectionMethod
  * @return  status
  */
@@ -1143,8 +1146,8 @@ sss_status_t sss_open_session(sss_session_t *session,
 void sss_close_session(sss_session_t *session);
 
 /*!
- *@}
- */ /* end of sss_session */
+     *@}
+     */ /* end of sss_session */
 
 #if defined(__cplusplus)
 }

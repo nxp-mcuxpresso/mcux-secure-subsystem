@@ -57,9 +57,8 @@ typedef struct _sss_sscp_session
 
 typedef struct _sss_sscp_key_store
 {
-    sss_sscp_session_t
-        *session; /*! Virtual connection between application (user context) and specific security subsystem
-                and function thereof. */
+    sss_sscp_session_t *session; /*! Virtual connection between application (user context) and specific security
+                               subsystem and function thereof. */
 
     /*! Implementation specific part */
     uint32_t keyStoreId;
@@ -71,9 +70,8 @@ typedef struct _sss_sscp_object
     sss_sscp_key_store_t *keyStore; /*! key store holding the data and other properties */
 
     uint32_t objectType; /*! TODO define object types */
-    uint32_t
-        keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data and
-                  other properties. */
+    uint32_t keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data
+                       and other properties. */
 
     /*! Implementation specific part */
     sscp_operation_t op;
@@ -81,9 +79,8 @@ typedef struct _sss_sscp_object
 
 typedef struct _sss_sscp_symmetric
 {
-    sss_sscp_session_t
-        *session; /*! Virtual connection between application (user context) and specific security subsystem
-                and function thereof. */
+    sss_sscp_session_t *session;  /*! Virtual connection between application (user context) and specific security
+                                subsystem  and function thereof. */
     sss_sscp_object_t *keyObject; /*! Reference to key and it's properties. */
     sss_algorithm_t algorithm;    /*!  */
     sss_mode_t mode;              /*!  */
@@ -98,13 +95,12 @@ typedef struct _sss_sscp_symmetric
 
 typedef struct _sss_sscp_digest
 {
-    sss_sscp_session_t
-        *session;              /*! Virtual connection between application (user context) and specific security subsystem
-                             and function thereof. */
-    sss_algorithm_t algorithm; /*!  */
-    sss_mode_t mode;           /*!  */
-    size_t digestFullLen;      /*! Full digest length per algorithm definition. This field is initialized along with
-                                  algorithm. */
+    sss_sscp_session_t *session; /*! Virtual connection between application (user context) and specific security
+                               subsystem and function thereof. */
+    sss_algorithm_t algorithm;   /*!  */
+    sss_mode_t mode;             /*!  */
+    size_t digestFullLen;        /*! Full digest length per algorithm definition. This field is initialized along with
+                                    algorithm. */
 
     /*! Implementation specific part */
     sscp_operation_t op;

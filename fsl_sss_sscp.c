@@ -31,11 +31,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "fsl_sss_sscp.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include "fsl_sss_api.h"
-#include "fsl_sss_sscp.h"
 #include "sscp/fsl_sscp.h"
 #include "sscp/fsl_sscp_commands.h"
 
