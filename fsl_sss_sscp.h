@@ -77,6 +77,7 @@ typedef struct _sss_sscp_object
     sscp_operation_t op;
 } sss_sscp_object_t;
 
+/*! @brief ::_sss_symmetric with SSCP specific information */
 typedef struct _sss_sscp_symmetric
 {
     sss_sscp_session_t *session;  /*! Virtual connection between application (user context) and specific security

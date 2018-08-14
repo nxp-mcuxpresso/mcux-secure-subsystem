@@ -210,6 +210,7 @@ typedef struct _sss_object
     } context;
 } sss_object_t;
 
+/*! @brief Typedef for the symmetric crypto context */
 typedef struct _sss_symmetric
 {
     sss_session_t *session;    /*! Virtual connection between application (user context) and specific security subsystem

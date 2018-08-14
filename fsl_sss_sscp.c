@@ -268,7 +268,10 @@ sss_status_t sss_sscp_asymmetric_verify_digest(
         SSCP_OP_SET_PARAM(kSSCP_ParamType_Aggregate, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
+    /* linked operation descriptor - implementation specific way of how to transfer context */
     op.params[0].aggregate.op = &context->op;
+    
+    /* common function parameters */
     op.params[1].memref.buffer = digest;
     op.params[1].memref.size = digestLen;
     op.params[2].memref.buffer = signature;

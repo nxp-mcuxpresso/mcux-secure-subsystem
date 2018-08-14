@@ -49,65 +49,149 @@ and MU invoke command.
 
 ## Symmetric cipher
 
-| kSSCP_CMD_SSS_SymmetricCipherOneGo | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_SymmetricCipherOneGo                   |
-| paramTypes                         | 1  | Aggregate, MemrefInput, MemrefInput, MemrefOutput    |
-| word                               | 2  | Pointer to ::sss_sscp_symmetric_t                    |
-| word                               | 3  | Pointer to iv                                        |
-| word                               | 4  | ivLen                                                |
-| word                               | 5  | Pointer to srcData                                   |
-| word                               | 6  | dataLen                                              |
-| word                               | 7  | Pointer to destData                                  |
-| word                               | 8  | Pointer to dataLen                                   |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Symmetric Cipher One Go <th class="markdownTableHeadNone" width="10%"> TX
+<th class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_SymmetricCipherOneGo
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefInput, MemrefInput, MemrefOutput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_symmetric
+<tr><td> word        <td> 3  <td> Pointer to iv
+<tr><td> word        <td> 4  <td> ivLen
+<tr><td> word        <td> 5  <td> Pointer to srcData
+<tr><td> word        <td> 6  <td> dataLen
+<tr><td> word        <td> 7  <td> Pointer to destData
+<tr><td> word        <td> 8  <td> Pointer to dataLen
+</table>
 
 ## Digest
 
-| kSSCP_CMD_SSS_DigestOneGo          | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_DigestOneGo                            |
-| paramTypes                         | 1  | Aggregate, MemrefInput, MemrefOutput                 |
-| word                               | 2  | Pointer to ::sss_sscp_digest_t                       |
-| word                               | 3  | Pointer to message                                   |
-| word                               | 4  | messageLen                                           |
-| word                               | 5  | Pointer to digest                                    |
-| word                               | 6  | Pointer to dataLen                                   |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Digest One Go <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_DigestOneGo
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefInput, MemrefOutput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_digest
+<tr><td> word        <td> 3  <td> Pointer to message
+<tr><td> word        <td> 4  <td> messageLen
+<tr><td> word        <td> 5  <td> Pointer to digest
+<tr><td> word        <td> 6  <td> Pointer to dataLen
+</table>
 
-| kSSCP_CMD_SSS_DigestInit           | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_DigestInit                             |
-| paramTypes                         | 1  | Aggregate                                            |
-| word                               | 2  | Pointer to ::sss_sscp_digest_t                       |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Digest Init <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_DigestInit
+<tr><td> paramTypes  <td> 1  <td> Aggregate
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_digest
+</table>
 
-| kSSCP_CMD_SSS_DigestUpdate         | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_DigestUpdate                           |
-| paramTypes                         | 1  | Aggregate, MemrefInput                               |
-| word                               | 2  | Pointer to ::sss_sscp_digest_t                       |
-| word                               | 3  | Pointer to message                                   |
-| word                               | 4  | messageLen                                           |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Digest Update <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_DigestUpdate
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefInput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_digest
+<tr><td> word        <td> 3  <td> Pointer to message
+<tr><td> word        <td> 4  <td> messageLen
+</table>
 
-| kSSCP_CMD_SSS_DigestFinish         | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_DigestFinish                           |
-| paramTypes                         | 1  | Aggregate, MemrefOutput                              |
-| word                               | 2  | Pointer to ::sss_sscp_digest_t                       |
-| word                               | 3  | Pointer to digest                                    |
-| word                               | 4  | Pointer to dataLen                                   |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Digest Finish <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_DigestFinish
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefOutput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_digest
+<tr><td> word        <td> 3  <td> Pointer to digest
+<tr><td> word        <td> 4  <td> Pointer to dataLen
+</table>
 
 ## Asymmetric
 
-| kSSCP_CMD_SSS_AsymmetricSignDigest | TX | MU TXn register value                                |
-| ---------------------------------- | -- | ---------------------------------------------------- |
-| Command                            | 0  | kSSCP_CMD_SSS_AsymmetricSignDigest                   |
-| paramTypes                         | 1  | Aggregate, MemrefInput, MemrefOutput                 |
-| word                               | 2  | Pointer to ::sss_sscp_asymmetric_t                   |
-| word                               | 3  | Pointer to digest                                    |
-| word                               | 4  | digestLen                                            |
-| word                               | 5  | Pointer to signature                                 |
-| word                               | 6  | Pointer to signatureLen                              |
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Asymmetric Sign Digest <th class="markdownTableHeadNone" width="10%"> TX
+<th class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_AsymmetricSignDigest
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefInput, MemrefOutput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_asymmetric
+<tr><td> word        <td> 3  <td> Pointer to digest
+<tr><td> word        <td> 4  <td> digestLen
+<tr><td> word        <td> 5  <td> Pointer to signature
+<tr><td> word        <td> 6  <td> Pointer to signatureLen
+</table>
 
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Asymmetric Verify Digest <th class="markdownTableHeadNone" width="10%">
+TX  <th class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_AsymmetricVerifyDigest
+<tr><td> paramTypes  <td> 1  <td> Aggregate, MemrefInput, MemrefInput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_asymmetric
+<tr><td> word        <td> 3  <td> Pointer to digest
+<tr><td> word        <td> 4  <td> digestLen
+<tr><td> word        <td> 5  <td> Pointer to signature
+<tr><td> word        <td> 6  <td> signatureLen
+</table>
 
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Asymmetric Derive Key <th class="markdownTableHeadNone" width="10%"> TX
+<th class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_AsymmetricDeriveKey
+<tr><td> paramTypes  <td> 1  <td> Aggregate, Aggregate, Aggregate
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_derive_key
+<tr><td> word        <td> 3  <td> Pointer to ::_sss_sscp_object
+<tr><td> word        <td> 4  <td> Pointer to ::_sss_sscp_object
+</table>
+
+## Key Object
+
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Key Object Allocate Handle <th class="markdownTableHeadNone" width="10%">
+TX  <th class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_KeyObjectAllocateHandle
+<tr><td> paramTypes  <td> 1  <td> Aggregate, ValueInput, ValueInput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_object
+<tr><td> word        <td> 3  <td> keyId
+<tr><td> word        <td> 4  <td> keyType
+<tr><td> word        <td> 5  <td> keyByteLenMax
+<tr><td> word        <td> 6  <td> options
+</table>
+
+## Key Store
+
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Key Store Allocate <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_KeyStoreAllocate
+<tr><td> paramTypes  <td> 1  <td> Aggregate, ValueInput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_key_store
+<tr><td> word        <td> 3  <td> keyStoreId
+<tr><td> word        <td> 4  <td> Zero
+</table>
+
+<table width="60%" class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" width="30%"> Key Store Set Key <th class="markdownTableHeadNone" width="10%"> TX  <th
+class="markdownTableHeadNone" width="60%"> MU TXn register value
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_KeyStoreSetKey
+<tr><td> paramTypes  <td> 1  <td> Aggregate, Aggregate, MemrefInput, ValueInput, MemrefInput
+<tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_key_store
+<tr><td> word        <td> 3  <td> Pointer to ::_sss_sscp_object
+<tr><td> word        <td> 4  <td> Pointer to key buffer
+<tr><td> word        <td> 5  <td> Length of key buffer in bytes
+<tr><td> word        <td> 6  <td> Key Length in bits
+<tr><td> word        <td> 7  <td> Zero
+<tr><td> word        <td> 8  <td> Pointer to options buffer
+<tr><td> word        <td> 9  <td> Length of the options buffer in bytes
+</table>
 
 */
 
