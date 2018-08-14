@@ -81,9 +81,11 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context, uint32_t commandID
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
         {
+            case kSSCP_ParamType_ContextReference:
+                msg[wrIdx++] = (uint32_t)(op->params[i].context.ptr);
+                break;
+
             case kSSCP_ParamType_Aggregate:
-                /* for MU, the aggregate SSCP operation defines one kSSCP_ParamType_MemrefInOut */
-                msg[wrIdx++] = (uint32_t)(op->params[i].aggregate.op->params[0].memref.buffer);
                 break;
 
             case kSSCP_ParamType_MemrefInput:

@@ -88,6 +88,16 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_KeyStoreEraseAll,
 } sscp_command_t;
 
+enum _sscp_context_type
+{
+    kSSCP_ParamContextType_SSS_Symmetric = 1u,
+    kSSCP_ParamContextType_SSS_Digest,
+    kSSCP_ParamContextType_SSS_Asymmetric,
+    kSSCP_ParamContextType_SSS_DeriveKey,
+    kSSCP_ParamContextType_SSS_Object,
+    kSSCP_ParamContextType_SSS_KeyStore,
+};
+
 /*!
  *@}
  */ /* end of sscp */

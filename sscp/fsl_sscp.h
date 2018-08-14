@@ -318,7 +318,7 @@ typedef struct _sscp_value
 } sscp_value_t;
 
 /**
- * @brief SSCP descriptor for an aggregate data type (struct)
+ * @brief SSCP descriptor for an aggregate
  *
  * This data type is used to link additional SSCP operation.
  *
@@ -330,6 +330,20 @@ typedef struct _sscp_aggregate_operation
 } sscp_aggregate_operation_t;
 
 /**
+ * @brief SSCP descriptor for a context struct
+ *
+ * This data type is used pass context struct to SSCP by reference
+ *
+ * @param ptr Pointer to a data structure
+ * @param type 32-bit identifier specifying context struct type
+ */
+typedef struct _sscp_context_operation
+{
+    void *ptr;
+    uint32_t type;
+} sscp_context_reference_t;
+
+/**
  * @brief Data structure representing a function argument.
  *
  * Either the client uses a shared memory reference, or a small raw
@@ -338,12 +352,14 @@ typedef struct _sscp_aggregate_operation
  * @param value Small raw data container
  * @param memref Memory reference
  * @param aggregate Reference to another SSCP descriptor, describing serialization of an aggregate data type.
+ * @param context Pointer to a data struct to be passed to SSCP by reference
  */
 typedef union _sscp_parameter
 {
     sscp_value_t value;
     sscp_memref_t memref;
     sscp_aggregate_operation_t aggregate;
+    sscp_context_reference_t context;
 } sscp_parameter_t;
 
 /**
@@ -364,6 +380,7 @@ struct _sscp_operation
 typedef enum _sscp_param_types
 {
     kSSCP_ParamType_Aggregate = 0x1u,
+    kSSCP_ParamType_ContextReference,
     kSSCP_ParamType_MemrefInput,
     kSSCP_ParamType_MemrefOutput,
     kSSCP_ParamType_MemrefInOut,
