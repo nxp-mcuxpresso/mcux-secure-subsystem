@@ -36,8 +36,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "fsl_sss_api.h"
-#include "sscp/fsl_sscp.h"
-#include "sscp/fsl_sscp_commands.h"
+#include "fsl_sscp.h"
+#include "fsl_sscp_commands.h"
 
 sss_status_t sss_sscp_cipher_one_go(
     sss_sscp_symmetric_t *context, uint8_t *iv, size_t ivLen, const uint8_t *srcData, uint8_t *destData, size_t dataLen)
@@ -62,7 +62,7 @@ sss_status_t sss_sscp_cipher_one_go(
     op.params[3].memref.size = dataLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherOneGo, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -102,7 +102,7 @@ sss_status_t sss_sscp_digest_one_go(
     op.params[2].memref.size = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_DigestOneGo, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (digestLen)
@@ -136,7 +136,7 @@ sss_status_t sss_sscp_digest_init(sss_sscp_digest_t *context)
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_DigestInit, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -162,7 +162,7 @@ sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, const uint8_t *m
     op.params[1].memref.size = messageLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_DigestUpdate, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -198,7 +198,7 @@ sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest,
     op.params[1].memref.size = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_DigestFinish, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestFinish, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (digestLen)
@@ -251,7 +251,7 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
     op.params[2].memref.size = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -289,7 +289,7 @@ sss_status_t sss_sscp_asymmetric_verify_digest(
     op.params[2].memref.size = signatureLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_AsymmetricVerifyDigest, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricVerifyDigest, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -321,7 +321,7 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -348,7 +348,7 @@ sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_
     op.params[1].value.b = 0;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_KeyStoreAllocate, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreAllocate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -378,7 +378,7 @@ sss_status_t sss_sscp_key_object_allocate_handle(
     op.params[2].value.b = (uint32_t)options;
 
     sscp_context_t *sscpCtx = keyObject->keyStore->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_KeyObjectAllocateHandle, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectAllocateHandle, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -416,7 +416,7 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
     op.params[4].memref.size = optionsLen;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status = sscpCtx->sscp_invoke_command(sscpCtx, kSSCP_CMD_SSS_KeyStoreSetKey, &op, &ret);
+    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreSetKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
