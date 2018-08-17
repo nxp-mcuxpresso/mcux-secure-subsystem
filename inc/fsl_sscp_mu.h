@@ -217,7 +217,7 @@ extern "C" {
  */
 typedef struct _sscp_mu_context
 {
-    fn_sscp_invoke_command_t sscp_invoke_command;
+    fn_sscp_invoke_command_t invoke;
 
     /*! Implementation specific part */
     MU_Type *base;

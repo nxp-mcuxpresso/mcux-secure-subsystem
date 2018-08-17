@@ -460,8 +460,8 @@ sss_status_t sss_cipher_crypt_ctr(sss_symmetric_t *context,
  */
 void sss_symmetric_context_free(sss_symmetric_t *context);
 /*!
-     *@}
-     */ /* end of sss_crypto_symmetric */
+ *@}
+ */ /* end of sss_crypto_symmetric */
 
 /*!
  * @addtogroup sss_crypto_aead
@@ -609,8 +609,8 @@ sss_status_t sss_aead_finish(sss_aead_t *context,
  */
 void sss_aead_context_free(sss_aead_t *context);
 /*!
-     *@}
-     */ /* end of sss_crypto_aead */
+ *@}
+ */ /* end of sss_crypto_aead */
 
 /*!
  * @addtogroup sss_crypto_digest
@@ -695,8 +695,8 @@ sss_status_t sss_digest_finish(sss_digest_t *context, uint8_t *digest, size_t *d
 void sss_digest_context_free(sss_digest_t *context);
 
 /*!
-     *@}
-     */ /* end of sss_crypto_digest */
+ *@}
+ */ /* end of sss_crypto_digest */
 
 /*!
  * @addtogroup sss_crypto_mac
@@ -779,8 +779,8 @@ sss_status_t sss_mac_finish(sss_mac_t *context, uint8_t *mac, size_t *macLen);
  */
 void sss_mac_context_free(sss_mac_t *context);
 /*!
-     *@}
-     */ /* end of sss_crypto_mac */
+ *@}
+ */ /* end of sss_crypto_mac */
 
 /*!
  * @addtogroup sss_crypto_asymmetric
@@ -883,8 +883,8 @@ sss_status_t sss_asymmetric_verify_digest(
  */
 void sss_asymmetric_context_free(sss_asymmetric_t *context);
 /*!
-     *@}
-     */ /* end of sss_crypto_asymmetric */
+ *@}
+ */ /* end of sss_crypto_asymmetric */
 
 /*!
  * @addtogroup sss_crypto_tunnelling
@@ -920,8 +920,8 @@ sss_status_t sss_tunnel(sss_tunnel_t *context,
 void sss_free_tunnel_context(sss_tunnel_t *context);
 
 /*!
-     *@}
-     */ /* end of sss_crypto_tunnelling */
+ *@}
+ */ /* end of sss_crypto_tunnelling */
 
 /*!
  * @addtogroup sss_crypto_derive_key
@@ -993,8 +993,8 @@ sss_status_t sss_asymmetric_dh_derive_key(sss_derive_key_t *context,
  */
 void sss_derive_key_context_free(sss_derive_key_t *context);
 /*!
-     *@}
-     */ /* end of sss_crypto_derive_key */
+ *@}
+ */ /* end of sss_crypto_derive_key */
 
 /*!
  * @addtogroup sss_key_object
@@ -1084,8 +1084,8 @@ sss_status_t sss_key_object_get_access(sss_object_t *keyObject, uint32_t *access
 void sss_key_object_free(sss_object_t *keyObject);
 
 /*!
-     *@}
-     */ /* end of sss_key_object */
+ *@}
+ */ /* end of sss_key_object */
 
 /*!
  * @addtogroup sss_key_store
@@ -1154,8 +1154,8 @@ sss_status_t sss_key_store_erase_key(sss_key_store_t *keyStore, sss_object_t *ke
 void sss_key_store_context_free(sss_key_store_t *keyStore);
 
 /*!
-     *@}
-     */ /* end of sss_key_store */
+ *@}
+ */ /* end of sss_key_store */
 
 /*!
  * @addtogroup sss_session
@@ -1195,8 +1195,8 @@ sss_status_t sss_open_session(sss_session_t *session,
 void sss_close_session(sss_session_t *session);
 
 /*!
-     *@}
-     */ /* end of sss_session */
+ *@}
+ */ /* end of sss_session */
 
 #if defined(__cplusplus)
 }

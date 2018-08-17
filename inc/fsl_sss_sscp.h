@@ -73,7 +73,6 @@ typedef struct _sss_sscp_object
     /*! Application specific key identifier. The keyId is kept in the key store along with the key data and other
      * properties. */
     uint32_t keyId;
-
     /*! Implementation specific part */
 } sss_sscp_object_t;
 

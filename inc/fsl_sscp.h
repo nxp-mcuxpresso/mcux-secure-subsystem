@@ -279,7 +279,7 @@ typedef sscp_status_t (*fn_sscp_invoke_command_t)(sscp_context_t *context,
  */
 struct _sscp_context
 {
-    fn_sscp_invoke_command_t sscp_invoke_command;
+    fn_sscp_invoke_command_t invoke;
     // sscp_status_t (*sscp_invoke_command)(sscp_context_t *context, uint32_t commandID, sscp_operation_t *op);
 
     /*! Implementation specific part */
@@ -379,13 +379,14 @@ struct _sscp_operation
 
 typedef enum _sscp_param_types
 {
+    kSSCP_ParamType_None = 0,
     kSSCP_ParamType_Aggregate = 0x1u,
     kSSCP_ParamType_ContextReference,
     kSSCP_ParamType_MemrefInput,
     kSSCP_ParamType_MemrefOutput,
     kSSCP_ParamType_MemrefInOut,
     kSSCP_ParamType_ValueInput,
-    kSSCP_ParamType_None,
+    kSSCP_ParamType_ValueOutput,
 } sscp_param_types_t;
 
 enum _sscp_return_values
