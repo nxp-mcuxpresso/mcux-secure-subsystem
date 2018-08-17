@@ -3,39 +3,36 @@
  * Copyright 2018 NXP
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided
- *  that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted (subject to the limitations in the disclaimer
+ * below) provided that the following conditions are met:
  *
- * o Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
+ * o Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
  *
- * o Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
+ * o Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
  *
  * o Neither the name of the copyright holder nor the names of its
  *   contributors may be used to endorse or promote products derived from this
  *   software without specific prior written permission.
  *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY
+ * THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+ * NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #ifndef _FSL_SSS_H_
 #define _FSL_SSS_H_
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -43,7 +40,9 @@
 #include SSS_CONFIG_FILE
 #endif
 
-#define SSS_API_VERSION (0x00000001) u
+#include "fsl_sss_types.h"
+
+#define SSS_API_VERSION (0x00000001u)
 
 #define SSS_AES_BLOCK_SIZE (16u)
 #define SSS_DES_BLOCK_SIZE (8u)
@@ -60,13 +59,20 @@ typedef enum _sss_status
 
 typedef enum _sss_type
 {
+    kType_SSS_SubSystem_NONE,
     kType_SSS_Software,
+    kType_SSS_mbedTLS,
+    kType_SSS_OpenSSL,
     kType_SSS_SECO,
     kType_SSS_Sentinel200,
     kType_SSS_Sentinel300,
     kType_SSS_Sentinel400,
     kType_SSS_Sentinel500,
     kType_SSS_SecureElement,
+    kType_SSS_SE_A71CH,
+    kType_SSS_SE_SE050,
+    kType_SSS_HW,
+    kType_SSS_SubSystem_LAST
 } sss_type_t;
 
 typedef enum _sss_algorithm
@@ -137,8 +143,17 @@ typedef enum _sss_access_permission
     kAccessPermission_SSS_ChangeAttributes = (1u << 4),
 } sss_access_permission_t;
 
+typedef enum _sss_key_object_mode
+{
+    kKeyObject_Mode_None = 0,
+    kKeyObject_Mode_Persistent,
+    kKeyObject_Mode_Transient,
+} sss_key_object_mode_t;
+
 typedef enum _sss_key_type
 {
+    kSSS_KeyType_NONE,
+    kSSS_KeyType_Certificate,
     kSSS_KeyType_AES,
     kSSS_KeyType_DES,
     kSSS_KeyType_MAC,
@@ -174,7 +189,8 @@ typedef struct _sss_eccgfp_group
 
 typedef struct _sss_session
 {
-    sss_type_t subsystem; /*! Indicates which security subsystem is selected to be used. */
+    /*! Indicates which security subsystem is selected to be used. */
+    sss_type_t subsystem;
 
     /*! Implementation specific part */
     struct
@@ -185,9 +201,9 @@ typedef struct _sss_session
 
 typedef struct _sss_key_store
 {
-    sss_session_t *session; /*! Virtual connection between application (user context) and specific security subsystem
-                               and function thereof. */
-
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_session_t *session;
     /*! Implementation specific part */
     struct
     {
@@ -197,11 +213,13 @@ typedef struct _sss_key_store
 
 typedef struct _sss_object
 {
-    sss_key_store_t *keyStore; /*! key store holding the data and other properties */
-
-    uint32_t objectType; /*! TODO define object types */
-    uint32_t keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data
-                       and other properties. */
+    /*! key store holding the data and other properties */
+    sss_key_store_t *keyStore;
+    /*! TODO define object types */
+    uint32_t objectType;
+    /*! Application specific key identifier. The keyId is kept in the key  store
+     * along with the key data and other properties. */
+    uint32_t keyId;
 
     /*! Implementation specific part */
     struct
@@ -213,9 +231,10 @@ typedef struct _sss_object
 /*! @brief Typedef for the symmetric crypto context */
 typedef struct _sss_symmetric
 {
-    sss_session_t *session;    /*! Virtual connection between application (user context) and specific security subsystem
-                                  and function thereof. */
-    sss_object_t *keyObject;   /*! Reference to key and it's properties. */
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_session_t *session;
+    sss_object_t *keyObject;   /*!< Reference to key and it's properties. */
     sss_algorithm_t algorithm; /*!  */
     sss_mode_t mode;           /*!  */
 
@@ -228,8 +247,9 @@ typedef struct _sss_symmetric
 
 typedef struct _sss_aead
 {
-    sss_session_t *session;    /*! Virtual connection between application (user context) and specific security subsystem
-                                  and function thereof. */
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_session_t *session;
     sss_object_t *keyObject;   /*! Reference to key and it's properties. */
     sss_algorithm_t algorithm; /*!  */
     sss_mode_t mode;           /*!  */
@@ -243,13 +263,13 @@ typedef struct _sss_aead
 
 typedef struct _sss_digest
 {
-    sss_session_t *session;    /*! Virtual connection between application (user context) and specific security subsystem
-                                  and function thereof. */
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_session_t *session;
     sss_algorithm_t algorithm; /*!  */
     sss_mode_t mode;           /*!  */
-    size_t digestFullLen;      /*! Full digest length per algorithm definition. This field is initialized along with
-                                  algorithm. */
-
+    /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
+    size_t digestFullLen;
     /*! Implementation specific part */
     struct
     {
@@ -259,7 +279,9 @@ typedef struct _sss_digest
 
 typedef struct _sss_mac
 {
-    sss_session_t *session;    /*! Virtual connection between application and trusted function. */
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_session_t *session;
     sss_object_t *keyObject;   /*! Reference to key and it's properties. */
     sss_algorithm_t algorithm; /*!  */
     sss_mode_t mode;           /*!  */
@@ -943,6 +965,8 @@ sss_status_t sss_derive_key_context_init(sss_derive_key_t *context,
 sss_status_t sss_derive_key(sss_derive_key_t *context,
                             const uint8_t *saltData,
                             size_t saltLen,
+                            const uint8_t *info,
+                            size_t infoLen,
                             sss_object_t *derivedKeyObject);
 
 /*! @brief Asymmetric key derivation Diffie-Helmann
@@ -991,17 +1015,38 @@ void sss_derive_key_context_free(sss_derive_key_t *context);
  */
 sss_status_t sss_key_object_init(sss_object_t *keyObject, sss_key_store_t *keyStore);
 
-/*! @brief create new, options: transient/persistent */
+/**  @brief create new key
+ *
+ * @param[in,out] keyObject The object
+ *        If required, update implementation defined values
+ *        inside the keyObject
+ * @param keyId External Key ID.  Later on this may be used by
+ *        @ref sss_key_object_get_handle
+ * @param keyType See @ref sss_key_type_t
+ * @param keyByteLenMax Maximum storage this type of key may need.
+ *        For systems that have their own internal allocation table
+ *        this would help
+ * @param options 0 = Persistant Key (Default) or Transient Key.
+ *        FIXME: Check valid values of options
+ * @return Status of object allocation.
+ */
 sss_status_t sss_key_object_allocate_handle(
     sss_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);
 
-/*! @brief get handle to existing */
+/*! @brief get handle to existing
+ *
+ * See @ref sss_key_object_allocate_handle.
+ *
+ * Ideally keyObject should be same for sss_key_object_allocate_handle and
+ * sss_key_object_get_handle
+ * */
 sss_status_t sss_key_object_get_handle(sss_object_t *keyObject, uint32_t keyId);
 
 /*! @brief Assign user to a key object.
- *  @param user Assign User id for a key object. The user is kept in the key store along with the key data and other
- * properties.
- *  @param options Transient or persistent update. Allows for transient update of persistent attributes.
+ * @param user Assign User id for a key object. The user is kept in the key
+ *		  store along with the key data and other properties.
+ * @param options Transient or persistent update. Allows for transient update
+ * of persistent attributes.
  */
 sss_status_t sss_key_object_set_user(sss_object_t *keyObject, uint32_t user, uint32_t options);
 
@@ -1088,7 +1133,10 @@ sss_status_t sss_key_store_generate_key(sss_key_store_t *keyStore,
                                         void *options);
 
 /*! @brief This function exports plain key[] from key store (if constraints and user id allows reading) */
-sss_status_t sss_key_store_get_key(sss_key_store_t *keyStore, sss_object_t *keyObject, uint8_t *key, size_t keyBitLen);
+sss_status_t sss_key_store_get_key(sss_key_store_t *keyStore,
+                                   sss_object_t *keyObject,
+                                   uint8_t *key,
+                                   size_t *pKeyBitLen);
 
 /*! @brief This function outputs referenced plain key[] to destination security subsystem - e.g.to secret key bus or
  * CryptoLib context */

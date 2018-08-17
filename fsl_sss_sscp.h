@@ -37,57 +37,57 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "fsl_sscp.h"
 #include "fsl_sss_api.h"
-#include "sscp/fsl_sscp.h"
 
 #if !defined(SSS_SSCP_CONFIG_FILE)
-#include "sscp/fsl_sss_sscp_config.h"
+#include "fsl_sss_sscp_config.h"
 #else
 #include SSS_SSCP_CONFIG_FILE
 #endif
 
 typedef struct _sss_sscp_session
 {
-    sss_type_t subsystem; /*! Indicates which security subsystem is selected to be used. */
+    /*! Indicates which security subsystem is selected to be used. */
+    sss_type_t subsystem;
 
     /*! Implementation specific part */
-    sscp_operation_t op;
     sscp_context_t *sscp;
 } sss_sscp_session_t;
 
 typedef struct _sss_sscp_key_store
 {
-    sss_sscp_session_t *session; /*! Virtual connection between application (user context) and specific security
-                               subsystem and function thereof. */
-
+    /*! Virtual connection between application (user context) and specific
+     * security subsystem and function thereof. */
+    sss_sscp_session_t *session;
     /*! Implementation specific part */
     uint32_t keyStoreId;
-    sscp_operation_t op;
 } sss_sscp_key_store_t;
 
 typedef struct _sss_sscp_object
 {
-    sss_sscp_key_store_t *keyStore; /*! key store holding the data and other properties */
+    /*! key store holding the data and other properties */
+    sss_sscp_key_store_t *keyStore;
 
     uint32_t objectType; /*! TODO define object types */
-    uint32_t keyId; /*! Application specific key identifier. The keyId is kept in the key store along with the key data
-                       and other properties. */
+    /*! Application specific key identifier. The keyId is kept in the key store along with the key data and other
+     * properties. */
+    uint32_t keyId;
 
     /*! Implementation specific part */
-    sscp_operation_t op;
 } sss_sscp_object_t;
 
 /*! @brief ::_sss_symmetric with SSCP specific information */
 typedef struct _sss_sscp_symmetric
 {
-    sss_sscp_session_t *session;  /*! Virtual connection between application (user context) and specific security
-                                subsystem  and function thereof. */
+    /*! Virtual connection between application (user context) and
+                specific security subsystem  and function thereof. */
+    sss_sscp_session_t *session;
     sss_sscp_object_t *keyObject; /*! Reference to key and it's properties. */
     sss_algorithm_t algorithm;    /*!  */
     sss_mode_t mode;              /*!  */
 
     /*! Implementation specific part */
-    sscp_operation_t op;
     struct
     {
         uint8_t data[SSS_SSCP_SYMMETRIC_CONTEXT_SIZE];
@@ -96,15 +96,14 @@ typedef struct _sss_sscp_symmetric
 
 typedef struct _sss_sscp_digest
 {
-    sss_sscp_session_t *session; /*! Virtual connection between application (user context) and specific security
-                               subsystem and function thereof. */
-    sss_algorithm_t algorithm;   /*!  */
-    sss_mode_t mode;             /*!  */
-    size_t digestFullLen;        /*! Full digest length per algorithm definition. This field is initialized along with
-                                    algorithm. */
+    /*! Virtual connection between application (user context) and specific security subsystem and function thereof. */
+    sss_sscp_session_t *session;
+    sss_algorithm_t algorithm; /*!  */
+    sss_mode_t mode;           /*!  */
+    /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
+    size_t digestFullLen;
 
     /*! Implementation specific part */
-    sscp_operation_t op;
     struct
     {
         uint8_t data[SSS_SSCP_DIGEST_CONTEXT_SIZE];
@@ -120,7 +119,6 @@ typedef struct _sss_sscp_asymmetric
     size_t signatureFullLen;
 
     /*! Implementation specific part */
-    sscp_operation_t op;
 } sss_sscp_asymmetric_t;
 
 typedef struct _sss_sscp_derive_key
@@ -131,7 +129,6 @@ typedef struct _sss_sscp_derive_key
     sss_mode_t mode;           /*!  */
 
     /*! Implementation specific part */
-    sscp_operation_t op;
 } sss_sscp_derive_key_t;
 
 /*******************************************************************************
