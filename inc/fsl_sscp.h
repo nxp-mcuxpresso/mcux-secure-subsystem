@@ -44,19 +44,24 @@
     # SSCP protocol description
 
     SSCP is very simple remote procedure call protocol.
-    The function parameters are described by one or multiple SSCP operation descriptor(s).
-    One parameter descriptor describes up to 7 function parameters as buffers, values or aggregates.
+    Function parameters are described by one or multiple SSCP operation descriptor(s).
+    One parameter descriptor describes up to 7 function parameters as contexts, buffers, values or aggregates.
     Multiple parameter descriptors can be linked by the aggregate parameter type (kSSCP_ParamType_Aggregate).
 
-    Function arguments are described as a buffer (address and size), a value (a tuple of two words) or an aggregate.
+    Function arguments are described as a buffer (address and size), a value (a tuple of two words),
+    a context (pointer and type id) or an aggregate.
     If the parameter is the aggregate (kSSCP_ParamType_Aggregate type), then it will contain a pointer to another
-    sscp_operation_t. This linked operation describes how to transfer the aggregate data type, such as struct.
+    sscp_operation_t. This allows to link additional sscp_operation_t.
 
-    This allows for remote calling with a copy of all arguments (including buffer contents),
+    The protocol allows for remote calling by a copy of all arguments (including buffer contents),
     that is, to remote call to a sub-system having no physical access to Host CPU memory.
     If a sub-system has access to Host CPU memory, the SSCP transport implementation can decide to transfer
     only the buffer descriptor (pointer and size) without physically transmitting the buffer content,
     as the buffer content can be accessed by the sub-system when the remote function executes.
+    The same holds for the context descriptor (pointer and type id). The actual SSCP implementation
+    can transfer only pointer to a sub-system, if the sub-system has the memory, where the context data
+    structure is located, and if it has an application level knowledge of the context data structure
+    layout (either based on the command id or the context type id).
 
     Byte length (for void* and uintptr_t) and endianess is inherited from the host CPU.
 
@@ -65,15 +70,17 @@
     A remote function is invoked by transmitting a command id (unique identifier to specify a remote function),
     followed by SSCP operation descriptors ::sscp_operation_t. There is always one descriptor and optionally
     it can link another descriptor, if the number of ::sscp_operation_t params is not sufficient
-    to described all function parameters. In the example below, the most left side params[0] is an aggregate
+    to described all function parameters. In the example below, the last params[n-1] on the left side is an aggregate
     that links secondary descriptor.
 
     @code
     command
     paramTypes
-    params[0]    ------------ paramTypes
-    ...                       params[0]
-    params[n-1]               ...
+    params[0]
+    ...
+    params[n-1] ------------- paramTypes
+                              params[0]
+                              ...
                               params[n-1]
     @endcode
 
@@ -82,20 +89,27 @@
     These operation descriptors serve as an input to ::sscp_invoke_command() function.
     The serialization to the communication system is implementation specific.
     For example, implementations may decide to transfer only pointers and values (without payloads),
-    because security sub-system has access to memory, so it can grab payloads on its own during function
+    because security sub-system has access to memory, so it can read and write payloads on its own during function
     execution. Other implementations may need to serialize everything to a communication bus.
 
+    This implementation specific data transfer is implemented by an invoke() function.
+    During implementation specific initialization of the SSCP transfer, sscp_<Implementation>_init() function,
+    a pointer to implementation specific invoke() function is stored in the sscp_<Implementation>_context_t.
+
     @code
-      sscp_init()
-      sscp_invoke_command()
+      sscp_mu_init(ctx, invoke = sscp_mu_invoke_command)
       ...
-      sscp_invoke_command()
-      sscp_deinit()
+      ctx->invoke()
+      ...
+      ctx->invoke()
+      ...
+      sscp_deinit(ctx)
     @endcode
 
     # Example for SSCP protocol implementation with S3MU
 
-    The ::sscp_invoke_command() implementation for the S3MU (Sentinel) builds up the serial message as follows:
+    The ::sscp_invoke_command() implementation for the S3MU (Sentinel), ::sscp_mu_invoke_command(),
+    builds up the serial message as follows:
 
       word 0 | word 1    | word 2      | word 3      | ... | word (n*2 + 1)
       -------|-----------|-------------|-------------|-----|---------------
@@ -123,11 +137,11 @@
 
       sscp_operation_t op = (0);
       sscp_status_t status = kStatus_SSCP_Fail;
-
+      uint32_t ret = 0;
 
       if (context->mode == Encrypt)
       {
-          op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_Aggregate,
+          op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference,
                                             kSSCP_ParamType_MemrefInput,
                                             kSSCP_ParamType_MemrefOutput,
                                             kSSCP_ParamType_MemrefInput,
@@ -137,7 +151,7 @@
       }
       else
       {
-          op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_Aggregate,
+          op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference,
                                             kSSCP_ParamType_MemrefInput,
                                             kSSCP_ParamType_MemrefOutput,
                                             kSSCP_ParamType_MemrefInput,
@@ -148,7 +162,8 @@
 
       ... context is an aggregate data type ...
       ... implementation specific sscp_operation_t to serialize the context data ...
-      op.params[0].aggregate.op = &context->op;
+      op.params[0].context.ptr = context;
+      op.params[0].context.type = kSSCP_ParamContextType_SSS_Aead;
 
       ... function parameters ...
       op.params[1].memref.buffer = srcData;
@@ -167,13 +182,13 @@
       op.params[5].memref.size = tagLen;
 
       ... Serialize to the link ...
-      status = sscp_invoke_command(context->sscpSession, cmd, &op);
+      status = context->session->sscp->invoke(context->sscpSession, cmd, &op, &ret);
       if (status != kStatus_SSCP_Success)
       {
           return kStatus_SSS_Fail;
       }
 
-      return kStatus_SSS_Success;
+      return (sss_status_t)ret;
 
     @endcode
 
@@ -190,21 +205,24 @@
 
       sscp_operation_t op = {0};
       sscp_status_t status = kStatus_SSCP_Fail;
+      uint32_t ret = 0;
 
-      op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_Aggregate,
+      op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference,
                                         kSSCP_ParamType_ValueInput,
-                                        kSSCP_ParamType_Aggregate,
+                                        kSSCP_ParamType_ContextReference,
                                         kSSCP_ParamType_MemrefOutput,
                                         kSSCP_ParamType_None,
                                         kSSCP_ParamType_None,
                                         kSSCP_ParamType_None);
 
-      op.params[0].aggregate.op = &sessionTEEC->op;
+      op.params[0].context.ptr = sessionTEEC;
+      op.params[0].context.type = kSSCP_ParamContextType_TEEC_Session;
 
       op.params[1].value.a = commandID;
       op.params[1].value.b = 0;
 
-      op.params[2].aggregate.op = &operation->op;
+      op.params[2].context.ptr = operation;
+      op.params[2].context.type = kSSCP_ParamContextType_TEEC_Operation;
 
       op.params[3].memref.buffer = returnOrigin;
       op.params[3].memref.size = sizeof(*returnOrigin);
@@ -256,7 +274,7 @@ typedef struct _sscp_operation sscp_operation_t;
  *
  * @param context Initialized SSCP context
  * @param commandID Command - an id of a remote secure function to be invoked
- * @param op Description of function arguments as a sequence of buffers and values
+ * @param op Description of function arguments as a sequence of buffers, values, context references and aggregates
  * @param ret Return code of the remote secure function (application layer return value)
  *
  * @returns Status of the operation
@@ -273,8 +291,10 @@ typedef sscp_status_t (*fn_sscp_invoke_command_t)(sscp_context_t *context,
  * struct _sscp_context - SSCP context struct
  *
  * This data type is used to keep context of the SSCP link.
- * It is completely implementation specific.
+ * It has one mandatory member - pointer to invoke() function.
+ * Otherwise it is completely implementation specific.
  *
+ * @param invoke Pointer to implementation specific invoke() function
  * @param context Container for the implementation specific data.
  */
 struct _sscp_context
@@ -306,7 +326,7 @@ typedef struct _sscp_memref
 /**
  * struct _sscp_value - Small raw data
  *
- * This data type is used to describe a function argument as a value.
+ * This data type is used to describe a function argument as a tuple of two 32-bit values.
  *
  * @param a First 32-bit data value.
  * @param b Second 32-bit data value.
@@ -351,7 +371,7 @@ typedef struct _sscp_context_operation
  *
  * @param value Small raw data container
  * @param memref Memory reference
- * @param aggregate Reference to another SSCP descriptor, describing serialization of an aggregate data type.
+ * @param aggregate Reference to another SSCP descriptor
  * @param context Pointer to a data struct to be passed to SSCP by reference
  */
 typedef union _sscp_parameter
@@ -364,7 +384,7 @@ typedef union _sscp_parameter
 
 /**
  * @brief Data structure describing function arguments.
- * Function argument are described as a sequence of buffers and values.
+ * Function argument are described as a sequence of buffers, values, context references and aggregates.
  * It serves as an input to ::sscp_invoke_command(), an implementation specific serialization function.
  *
  * @param   paramTypes  Type of data passed.
@@ -377,18 +397,27 @@ struct _sscp_operation
     sscp_parameter_t params[SSCP_OPERATION_PARAM_COUNT];
 };
 
+/**
+ * @brief Enum with SSCP operation parameters.
+ */
 typedef enum _sscp_param_types
 {
-    kSSCP_ParamType_None = 0,
-    kSSCP_ParamType_Aggregate = 0x1u,
-    kSSCP_ParamType_ContextReference,
-    kSSCP_ParamType_MemrefInput,
-    kSSCP_ParamType_MemrefOutput,
-    kSSCP_ParamType_MemrefInOut,
-    kSSCP_ParamType_ValueInput,
-    kSSCP_ParamType_ValueOutput,
+    kSSCP_ParamType_None = 0,         /*! Parameter not in use */
+    kSSCP_ParamType_Aggregate = 0x1u, /*! Link to another ::sscp_operation_t */
+    kSSCP_ParamType_ContextReference, /*! Reference to a context structure - pointer and type */
+    kSSCP_ParamType_MemrefInput,      /*! Reference to a memory buffer - input to remote function or service */
+    kSSCP_ParamType_MemrefOutput,     /*! Reference to a memory buffer - output by remote function or service.
+                                          Implementations shall update the size member of the ::sscp_memref_t
+                                          with the actual number of bytes written. */
+    kSSCP_ParamType_MemrefInOut, /*! Reference to a memory buffer - input to and ouput from remote function or service
+                                    */
+    kSSCP_ParamType_ValueInput,  /*! Tuple of two 32-bit integers  - input to remote function or service */
+    kSSCP_ParamType_ValueOutput, /*! Tuple of two 32-bit integers - output by remote function or service */
 } sscp_param_types_t;
 
+/**
+ * @brief Enum with return values from SSCP functions
+ */
 enum _sscp_return_values
 {
     kStatus_SSCP_Success = 0x10203040u,

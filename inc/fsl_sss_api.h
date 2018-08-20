@@ -955,6 +955,8 @@ sss_status_t sss_derive_key_context_init(sss_derive_key_t *context,
  * @param context Pointer to derive key context.
  * @param saltData Input data buffer, typically with some random data.
  * @param saltLen Length of saltData buffer in bytes.
+ * @param info Input data buffer, typically with some fixed info.
+ * @param infoLen Length of info buffer in bytes.
  * @param[in,out] derivedKeyObject Reference to a derived key
  *
  * @returns Status of the operation
@@ -1118,7 +1120,17 @@ sss_status_t sss_key_store_save(sss_key_store_t *keyStore);
  */
 sss_status_t sss_key_store_load(sss_key_store_t *keyStore);
 
-/*! @brief This function moves key[] from memory to the destination key store. */
+/*! @brief This function moves key[] from memory to the destination key store.
+ *  The function moves key[] from memory to the destination key store.
+ *
+ * @param keyStore Key store context
+ * @param keyObject Reference to a key and it's properties
+ * @param data Input data buffer with the plain key
+ * @param dataLen Length of the Input data buffer in bytes
+ * @param keyBitLen Crypto algorithm key bit length
+ * @param options Pointer to implementation specific options
+ * @param optionsLen Length of the options in bytes
+ */
 sss_status_t sss_key_store_set_key(sss_key_store_t *keyStore,
                                    sss_object_t *keyObject,
                                    const uint8_t *key,
