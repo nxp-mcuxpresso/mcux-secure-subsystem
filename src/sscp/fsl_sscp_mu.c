@@ -5,19 +5,24 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include <stdint.h>
+#include <stdio.h>
+
 #include "fsl_sscp_mu.h"
-// #include "fsl_sscp_mu.h"
+#include "msgunit_host_hal.h"
+
 #define MU_Init (void)
 #define MU_Deinit (void)
 
 uint32_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[16])
 {
-    return 0;
+    mu_receive_data_h(msg, 16);
+    return 16;
 }
 
 void MU_SendMsg(MU_Type *base, uint32_t msg[16], uint32_t wordNum)
 {
-    return;
+    mu_send_data_h(msg, (size_t)wordNum);
 }
 
 sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
@@ -39,14 +44,14 @@ void sscp_mu_deinit(sscp_context_t *context)
     MU_Deinit(muContext->base);
 }
 
-sscp_status_t sscp_mu_invoke_command(sscp_context_t *context, uint32_t commandID, sscp_operation_t *op, uint32_t *ret)
+sscp_status_t sscp_mu_invoke_command(sscp_context_t *context, sscp_command_t commandID, sscp_operation_t *op, uint32_t *ret)
 {
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
     /* parse the operation to create message */
     uint32_t msg[16] = {0};
 
-    msg[0] = commandID;
+    msg[0] = (uint32_t)commandID;
     msg[1] = op->paramTypes;
     int wrIdx = 2;
 

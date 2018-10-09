@@ -4,8 +4,8 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_H_
-#define _FSL_SSS_H_
+#ifndef _FSL_SSS_API_H_
+#define _FSL_SSS_API_H_
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -13,7 +13,8 @@
 #include SSS_CONFIG_FILE
 #endif
 
-#include "fsl_sss_types.h"
+#include <stdint.h>
+#include <stddef.h>
 
 #define SSS_API_VERSION (0x00000001u)
 
@@ -1187,4 +1188,4 @@ void sss_close_session(sss_session_t *session);
 }
 #endif
 
-#endif /* _FSL_SSS_H_ */
+#endif /* _FSL_SSS_API_H_ */
