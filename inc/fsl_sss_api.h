@@ -145,6 +145,17 @@ typedef enum _sss_key_type
     kSSS_KeyType_ECT_Pair,
 } sss_key_type_t;
 
+typedef enum _sss_ecc_curve_type
+{
+    kSSS_EccCurve_NONE,
+    kSSS_EccCurve_NISTP224,
+    kSSS_EccCurve_NISTP256,
+    kSSS_EccCurve_NISTP384,
+    kSSS_EccCurve_NISTP521,
+    kSSS_EccCurve_CUSTOM,
+
+} sss_ecc_curve_type_t;
+
 typedef struct _sss_ecc_point
 {
     uint8_t *X;
@@ -153,6 +164,7 @@ typedef struct _sss_ecc_point
 
 typedef struct _sss_eccgfp_group
 {
+    sss_ecc_curve_type_t curveType;
     uint8_t *p;
     uint8_t *a;
     uint8_t *b;
@@ -194,6 +206,8 @@ typedef struct _sss_object
     /*! Application specific key identifier. The keyId is kept in the key  store
      * along with the key data and other properties. */
     uint32_t keyId;
+    /*! Used only for ECC key types, to specify the elliptic curve related to the key. */
+    sss_eccgfp_group_t *eccgfpGroup; 
 
     /*! Implementation specific part */
     struct

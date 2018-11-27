@@ -51,6 +51,8 @@ typedef struct _sss_sscp_object
     /*! Application specific key identifier. The keyId is kept in the key store along with the key data and other
      * properties. */
     uint32_t keyId;
+    /*! Used only for ECC key types, to specify the elliptic curve related to the key. */
+    sss_eccgfp_group_t *eccgfpGroup; 
     /*! Implementation specific part */
     struct
     {
@@ -323,6 +325,8 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
 /******************************KEYOBJECT***************************************/
 
 sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
+
+sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
 
 sss_status_t sss_sscp_key_object_allocate_handle(
     sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);

@@ -23,7 +23,7 @@ sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
 {
     session->subsystem = subsystem;
     session->sscp = sscpctx;
-    return kStatus_SSCP_Success;
+    return kStatus_SSS_Success;
 }
 
 void sss_sscp_close_session(sss_sscp_session_t *session){}
@@ -39,7 +39,7 @@ sss_status_t sss_sscp_symmetric_context_init(sss_sscp_symmetric_t *context,
     context->keyObject = keyObject;
     context->algorithm = algorithm;
     context->mode = mode;
-    return kStatus_SSCP_Success;    
+    return kStatus_SSS_Success;    
 }
 
 sss_status_t sss_sscp_cipher_one_go(
@@ -255,8 +255,24 @@ sss_status_t sss_sscp_digest_context_init(sss_sscp_digest_t *context,
     context->algorithm = algorithm;
     context->mode = mode;
     context->session = session;
-    context->digestFullLen = 32;
-    return kStatus_SSCP_Success;
+    switch(algorithm) {
+        case kAlgorithm_SSS_SHA1:
+            context->digestFullLen = 20;
+            break;
+        case kAlgorithm_SSS_SHA224:
+            context->digestFullLen = 28;
+        case kAlgorithm_SSS_SHA256:
+            context->digestFullLen = 32;
+            break;
+        case kAlgorithm_SSS_SHA384:
+            context->digestFullLen = 48;
+        case kAlgorithm_SSS_SHA512:
+            context->digestFullLen = 64;
+            break;
+        default:
+            return kStatus_SSS_Fail;
+    }
+    return kStatus_SSS_Success;
 }
 
 sss_status_t sss_sscp_digest_one_go(
@@ -561,8 +577,8 @@ sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
     context->keyObject = keyObject;
     context->mode = mode;
     context->algorithm = algorithm;
-    context->signatureFullLen = 72;
-    return kStatus_SSCP_Success;
+    //context->signatureFullLen = 72;
+    return kStatus_SSS_Success;
 }
 
 sss_status_t sss_sscp_asymmetric_encrypt(
@@ -986,4 +1002,11 @@ sss_status_t sss_sscp_key_object_allocate_handle(
     }
 
     return (sss_status_t)ret;
+}
+
+sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group) {
+    if(keyObject->objectType != kSSS_KeyType_ECC_Private && keyObject->objectType != kSSS_KeyType_ECC_Public && keyObject->objectType != kSSS_KeyType_ECC_Pair)
+        return kStatus_SSS_Fail;
+    keyObject->eccgfpGroup = group;
+    return kStatus_SSS_Success;
 }
