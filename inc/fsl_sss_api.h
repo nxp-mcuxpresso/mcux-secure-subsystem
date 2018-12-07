@@ -24,10 +24,10 @@
 
 typedef enum _sss_status
 {
-    kStatus_SSS_Success = (int)0x5a5a5a5a,
-    kStatus_SSS_Fail = (int)0xc3c30000,
-    kStatus_SSS_InvalidArgument = (int)0xc3c30001,
-    kStatus_SSS_ResourceBusy = (int)0xc3c30002,
+    kStatus_SSS_Success = 0x5a5a5a5a,
+    kStatus_SSS_Fail = 0x3c3c0000,
+    kStatus_SSS_InvalidArgument = 0x3c3c0001,
+    kStatus_SSS_ResourceBusy = 0x3c3c0002,
 } sss_status_t;
 
 typedef enum _sss_type
