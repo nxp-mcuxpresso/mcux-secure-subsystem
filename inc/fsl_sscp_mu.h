@@ -4,11 +4,9 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #ifndef _FSL_SSCP_MU_H_
 #define _FSL_SSCP_MU_H_
 
-//#include "fsl_mu.h"
 #include "fsl_sscp.h"
 typedef uint32_t MU_Type;
 

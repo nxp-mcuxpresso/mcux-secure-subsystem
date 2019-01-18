@@ -16,7 +16,9 @@
 #include "fsl_sss_api.h"
 
 typedef struct {
-    int32_t fg;
+  sss_session_t *session;
+  uint32_t clockFrequency;
+  
 } sss_mgmt_t;
 
 /*******************************************************************************
@@ -73,6 +75,20 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_set_property(sss_mgmt_t *context, uint32_t propertyId, const uint8_t *srcData, size_t dataLen);
+
+/*! @brief Read fuse
+ *  The function provides read fuse shadow register read service
+ *
+ * @param context Pointer to mgmt crypto context.
+ * @param shadowRegisterId Id of the shadow register to read
+ * @param destData Destination address of the read value
+ *
+ * @returns Status of the operation
+ * @retval kStatus_SSS_Success The operation has completed successfully.
+ * @retval kStatus_SSS_Fail The operation has failed.
+ * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
+ */
+sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t shadowRegisterId, uint32_t *destData);
 
 /*! @brief Read fuse
  *  The function provides read fuse service

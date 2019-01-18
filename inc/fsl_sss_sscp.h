@@ -4,7 +4,6 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 #ifndef _FSL_SSS_SSCP_H_
 #define _FSL_SSS_SSCP_H_
 
@@ -285,7 +284,7 @@ sss_status_t sss_sscp_derive_key_context_init(sss_sscp_derive_key_t *context,
 sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
                             const uint8_t *saltData,
                             size_t saltLen,
-                            sss_object_t *derivedKeyObject);
+                            sss_sscp_object_t *derivedKeyObject);
 
 
 sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
@@ -330,6 +329,8 @@ sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, 
 
 sss_status_t sss_sscp_key_object_allocate_handle(
     sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);
+
+sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
 
 
 

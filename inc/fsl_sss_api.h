@@ -23,6 +23,7 @@
 #define SSS_DES_KEY_SIZE (8u)
 #define SSS_DES_IV_SIZE (8u)
 
+#if !defined(SSS_STATUS_ENUM_ALT)
 typedef enum _sss_status
 {
     kStatus_SSS_Success = (int)0x5a5a5a5a,
@@ -30,7 +31,9 @@ typedef enum _sss_status
     kStatus_SSS_InvalidArgument = (int)0xc3c30001,
     kStatus_SSS_ResourceBusy = (int)0xc3c30002,
 } sss_status_t;
+#endif
 
+#if !defined(SSS_TYPE_ENUM_ALT)
 typedef enum _sss_type
 {
     kType_SSS_SubSystem_NONE,
@@ -48,7 +51,9 @@ typedef enum _sss_type
     kType_SSS_HW,
     kType_SSS_SubSystem_LAST
 } sss_type_t;
+#endif
 
+#if !defined(SSS_ALGORITHM_ENUM_ALT)
 typedef enum _sss_algorithm
 {
     /* AES */
@@ -96,7 +101,9 @@ typedef enum _sss_algorithm
     kAlgorithm_SSS_ECDSA_SHA384,
     kAlgorithm_SSS_ECDSA_SHA512,
 } sss_algorithm_t;
+#endif
 
+#if !defined(SSS_MODE_ENUM_ALT)
 typedef enum _sss_mode
 {
     kMode_SSS_Encrypt,
@@ -107,7 +114,9 @@ typedef enum _sss_mode
     kMode_SSS_Digest,
     kMode_SSS_Mac,
 } sss_mode_t;
+#endif
 
+#if !defined(SSS_ACCESS_PERMISSION_ENUM_ALT)
 typedef enum _sss_access_permission
 {
     kAccessPermission_SSS_Read = (1u << 0),
@@ -116,14 +125,9 @@ typedef enum _sss_access_permission
     kAccessPermission_SSS_Delete = (1u << 3),
     kAccessPermission_SSS_ChangeAttributes = (1u << 4),
 } sss_access_permission_t;
+#endif
 
-typedef enum _sss_key_object_mode
-{
-    kKeyObject_Mode_None = 0,
-    kKeyObject_Mode_Persistent,
-    kKeyObject_Mode_Transient,
-} sss_key_object_mode_t;
-
+#if !defined(SSS_KEY_TYPE_ENUM_ALT)
 typedef enum _sss_key_type
 {
     kSSS_KeyType_NONE,
@@ -144,17 +148,27 @@ typedef enum _sss_key_type
     kSSS_KeyType_ECM_Pair,
     kSSS_KeyType_ECT_Pair,
 } sss_key_type_t;
+#endif
 
-typedef enum _sss_ecc_curve_type
+#if !defined(SSS_KEY_OBJECT_MODE_ENUM_ALT)
+typedef enum _sss_key_object_mode
+{
+    kKeyObject_Mode_None = 0,
+    kKeyObject_Mode_Persistent,
+    kKeyObject_Mode_Transient,
+} sss_key_object_mode_t;
+#endif
+
+#if !defined(SSS_ELIPTIC_CURVE_TYPE_ENUM_ALT)
+typedef enum _sss_eliptic_curve_type
 {
     kSSS_EccCurve_NONE,
-    kSSS_EccCurve_NISTP224,
     kSSS_EccCurve_NISTP256,
     kSSS_EccCurve_NISTP384,
     kSSS_EccCurve_NISTP521,
     kSSS_EccCurve_CUSTOM,
-
-} sss_ecc_curve_type_t;
+} sss_eliptic_curve_type_t;
+#endif
 
 typedef struct _sss_ecc_point
 {
@@ -164,7 +178,7 @@ typedef struct _sss_ecc_point
 
 typedef struct _sss_eccgfp_group
 {
-    sss_ecc_curve_type_t curveType;
+    sss_eliptic_curve_type_t curveType;
     uint8_t *p;
     uint8_t *a;
     uint8_t *b;
