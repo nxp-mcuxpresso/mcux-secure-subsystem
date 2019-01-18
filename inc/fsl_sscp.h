@@ -257,7 +257,7 @@ typedef struct _sscp_operation sscp_operation_t;
  * @retval kStatus_SSCP_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 typedef sscp_status_t (*fn_sscp_invoke_command_t)(sscp_context_t *context,
-                                                  uint32_t commandID,
+                                                  sscp_command_t commandID,
                                                   sscp_operation_t *op,
                                                   uint32_t *ret);
 
@@ -387,6 +387,8 @@ typedef enum _sscp_param_types
                                     */
     kSSCP_ParamType_ValueInput,  /*! Tuple of two 32-bit integers  - input to remote function or service */
     kSSCP_ParamType_ValueOutput, /*! Tuple of two 32-bit integers - output by remote function or service */
+    kSSCP_ParamType_SingleValueInput,  /*! One 32-bit integers  - input to remote function or service */
+    kSSCP_ParamType_SingleValueOutput, /*! One 32-bit integers - output by remote function or service */
 } sscp_param_types_t;
 
 /**
