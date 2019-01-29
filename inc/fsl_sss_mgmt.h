@@ -15,10 +15,11 @@
 
 #include "fsl_sss_api.h"
 
-typedef struct {
-  sss_session_t *session;
-  uint32_t clockFrequency;
-  
+typedef struct
+{
+    sss_session_t *session;
+    uint32_t clockFrequency;
+    uint32_t ctx;
 } sss_mgmt_t;
 
 /*******************************************************************************
@@ -131,13 +132,14 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_program(sss_mgmt_t *context, uint32_t fuseId, uint32_t srcData, void *options, size_t *optionsLen);
+sss_status_t sss_mgmt_fuse_program(
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, void *options, size_t *optionsLen);
 
 /*! @brief Advance lifecycle
  *  The function provides advance lifecycle service
  *
  * @param context Pointer to mgmt crypto context.
-  *
+ *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -152,7 +154,7 @@ sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context);
  * @param context Pointer to mgmt crypto context.
  * @param srcData Address of the source data buffer
  * @param dataLen Length of the source data buffer in bytes
-  *
+ *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -181,8 +183,9 @@ sss_status_t sss_mgmt_export_secret(sss_mgmt_t *context, uint8_t *destData, size
  *
  * @param context Pointer to mgmt crypto context.
  * @param destData Address of the destination data buffer
- * @param dataLen Input length of the destination data buffer in bytes, output actual number of bytes written to destData
-  *
+ * @param dataLen Input length of the destination data buffer in bytes, output actual number of bytes written to
+ * destData
+ *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -198,7 +201,7 @@ sss_status_t sss_mgmt_attest(sss_mgmt_t *context, uint8_t *destData, size_t *dat
  * @param context Pointer to mgmt crypto context.
  * @param srcData Address of the source data buffer
  * @param dataLen Length of the source data buffer in bytes
-  *
+ *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -207,9 +210,9 @@ sss_status_t sss_mgmt_attest(sss_mgmt_t *context, uint8_t *destData, size_t *dat
 sss_status_t sss_mgmt_blob_load_secret(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen);
 
 /*! @brief Export data in a cryptographical blob
- *  The function exports previously loaded data by @ref sss_mgmt_blob_load_secret from security sub-system 
+ *  The function exports previously loaded data by @ref sss_mgmt_blob_load_secret from security sub-system
  *  as a cryptographical blob. Such a blob shall be stored in a non-volatile memory
- *  for later use by @ref sss_mgmt_blob_import_secret  
+ *  for later use by @ref sss_mgmt_blob_import_secret
  *
  * @param context Pointer to mgmt crypto context.
  * @param destData Address of the destination data buffer
@@ -228,7 +231,7 @@ sss_status_t sss_mgmt_blob_export_secret(sss_mgmt_t *context, uint8_t *destData,
  * @param context Pointer to mgmt crypto context.
  * @param srcData Address of the source data buffer
  * @param dataLen Length of the source data buffer in bytes
-  *
+ *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
@@ -237,7 +240,7 @@ sss_status_t sss_mgmt_blob_export_secret(sss_mgmt_t *context, uint8_t *destData,
 sss_status_t sss_mgmt_blob_import_secret(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen);
 
 /*! @brief Read software version counter
- *  The function provides read software version service  
+ *  The function provides read software version service
  *
  * @param context Pointer to mgmt crypto context.
  * @param version Array of 32-bit version words
@@ -248,10 +251,13 @@ sss_status_t sss_mgmt_blob_import_secret(sss_mgmt_t *context, const uint8_t *src
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_get_software_version(sss_mgmt_t *context, uint32_t *version, size_t versionWordCount, uint32_t options);
+sss_status_t sss_mgmt_get_software_version(sss_mgmt_t *context,
+                                           uint32_t *version,
+                                           size_t versionWordCount,
+                                           uint32_t options);
 
 /*! @brief Update software version counter
- *  The function provides write software version service  
+ *  The function provides write software version service
  *
  * @param context Pointer to mgmt crypto context.
  * @param version Array of 32-bit version words
@@ -262,12 +268,15 @@ sss_status_t sss_mgmt_get_software_version(sss_mgmt_t *context, uint32_t *versio
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context, uint32_t *version, size_t versionWordCount, uint32_t options);
+sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
+                                           uint32_t *version,
+                                           size_t versionWordCount,
+                                           uint32_t options);
 
 /*! @brief Move the security sub-system to field return state
  *  The function sends a request for field return
  *
- * @param context Pointer to mgmt crypto context. 
+ * @param context Pointer to mgmt crypto context.
  *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
@@ -278,7 +287,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context);
 
 /*! @brief Configure host access permissions
  *
- * @param context Pointer to mgmt crypto context. 
+ * @param context Pointer to mgmt crypto context.
  * @param srcData Address of the input data buffer
  * @param dataLen Lenght of the input data buffer in bytes
  *
@@ -292,7 +301,7 @@ sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint
 /*! @brief Enable runtime integrity checks
  *  The function sends a request to enable runtime integrity checks within security sub-system
  *
- * @param context Pointer to mgmt crypto context. 
+ * @param context Pointer to mgmt crypto context.
  *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.

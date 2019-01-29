@@ -15,58 +15,142 @@
 #include "fsl_sscp_commands.h"
 
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
-                              sss_type_t subsystem,
-                              sscp_context_t *sscpctx,
-                              uint32_t connectionMethod,
-                              const void *connectionData)
+                                   sss_type_t subsystem,
+                                   sscp_context_t *sscpctx,
+                                   uint32_t connectionMethod,
+                                   const void *connectionData)
 {
+    SSCP_BUILD_ASSURE(sizeof(sss_session_t) >= sizeof(sss_sscp_session_t), _sss_sscp_session_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
     session->subsystem = subsystem;
-    session->sscp = sscpctx;
-    return kStatus_SSS_Success;
+    session->sscp      = sscpctx;
+
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_ContextReference,
+                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].value.a = (uint32_t)subsystem;
+
+    op.params[1].context.ptr  = session;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.params[2].value.a = (uint32_t)connectionMethod;
+    op.params[2].value.b = (uint32_t)connectionData;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = session;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    status = sscpctx->invoke(sscpctx, kSSCP_CMD_SSS_OpenSession, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
 }
 
-void sss_sscp_close_session(sss_sscp_session_t *session){
-  memset(session, 0, sizeof(sss_sscp_session_t));
-}
+void sss_sscp_close_session(sss_sscp_session_t *session)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
 
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_CloseSession, &op, &ret);
+    /*if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;*/
+}
 
 /*******************************SYMETRIC***************************************/
 sss_status_t sss_sscp_symmetric_context_init(sss_sscp_symmetric_t *context,
-                                        sss_sscp_session_t *session,
-                                        sss_sscp_object_t *keyObject,
-                                        sss_algorithm_t algorithm,
-                                        sss_mode_t mode){
-    context->session = session;
+                                             sss_sscp_session_t *session,
+                                             sss_sscp_object_t *keyObject,
+                                             sss_algorithm_t algorithm,
+                                             sss_mode_t mode)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_symmetric_t) >= sizeof(sss_sscp_symmetric_t), _sss_sscp_symmetric_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    context->session   = session;
     context->keyObject = keyObject;
     context->algorithm = algorithm;
-    context->mode = mode;
-    return kStatus_SSS_Success;    
+    context->mode      = mode;
+
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.params[1].context.ptr  = keyObject;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[2].value.a = (uint32_t)algorithm;
+    op.params[2].value.b = (uint32_t)mode;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = context;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricContextInit, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
 }
 
 sss_status_t sss_sscp_cipher_one_go(
     sss_sscp_symmetric_t *context, uint8_t *iv, size_t ivLen, const uint8_t *srcData, uint8_t *destData, size_t dataLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_symmetric_t) >= sizeof(sss_sscp_symmetric_t), _sss_sscp_symmetric_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefInputNoSize, kSSCP_ParamType_MemrefInOut,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
 
     op.params[1].memref.buffer = iv;
-    op.params[1].memref.size = ivLen;
+    op.params[1].memref.size   = ivLen;
     op.params[2].memref.buffer = (void *)(uintptr_t)srcData;
-    op.params[2].memref.size = dataLen;
-    op.params[3].memref.buffer = destData;
-    op.params[3].memref.size = dataLen;
+    op.params[2].memref.size   = dataLen;
+    op.params[3].memref.buffer = (void *)(uintptr_t)destData;
+    op.params[3].memref.size   = dataLen;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherOneGo, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -77,21 +161,21 @@ sss_status_t sss_sscp_cipher_one_go(
 
 sss_status_t sss_sscp_cipher_init(sss_sscp_symmetric_t *context, uint8_t *iv, size_t ivLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
+    op.params[0].context.ptr   = context;
+    op.params[0].context.type  = kSSCP_ParamContextType_SSS_Symmetric;
     op.params[1].memref.buffer = iv;
-    op.params[1].memref.size = ivLen;
+    op.params[1].memref.size   = ivLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherInit, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -103,25 +187,25 @@ sss_status_t sss_sscp_cipher_init(sss_sscp_symmetric_t *context, uint8_t *iv, si
 sss_status_t sss_sscp_cipher_update(
     sss_sscp_symmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
-    
+    uint32_t ret         = 0;
+
     size_t len = (destLen != NULL) ? *destLen : srcLen;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
-    op.params[1].memref.buffer = (void*)srcData;
-    op.params[1].memref.size = srcLen;
+    op.params[0].context.ptr   = context;
+    op.params[0].context.type  = kSSCP_ParamContextType_SSS_Symmetric;
+    op.params[1].memref.buffer = (void *)srcData;
+    op.params[1].memref.size   = srcLen;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherUpdate, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (destLen)
@@ -143,25 +227,25 @@ sss_status_t sss_sscp_cipher_update(
 sss_status_t sss_sscp_cipher_finish(
     sss_sscp_symmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
-    
+    uint32_t ret         = 0;
+
     size_t len = (destLen != NULL) ? *destLen : srcLen;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
-    op.params[1].memref.buffer = (void*)srcData;
-    op.params[1].memref.size = srcLen;
+    op.params[0].context.ptr   = context;
+    op.params[0].context.type  = kSSCP_ParamContextType_SSS_Symmetric;
+    op.params[1].memref.buffer = (void *)srcData;
+    op.params[1].memref.size   = srcLen;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherFinish, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCipherFinish, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (destLen)
@@ -189,9 +273,9 @@ sss_status_t sss_sscp_cipher_crypt_ctr(sss_sscp_symmetric_t *context,
                                        size_t *szLeft)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_symmetric_t) >= sizeof(sss_sscp_symmetric_t), _sss_sscp_symmetric_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* this func specific for AES CTR */
     /* don't consider DES at the moment for the CTR mode */
@@ -204,22 +288,22 @@ sss_status_t sss_sscp_cipher_crypt_ctr(sss_sscp_symmetric_t *context,
                                       kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefInOut,
                                       kSSCP_ParamType_MemrefInOut, kSSCP_ParamType_MemrefInOut, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)srcData;
-    op.params[1].memref.size = size;
+    op.params[1].memref.size   = size;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = size;
+    op.params[2].memref.size   = size;
     op.params[3].memref.buffer = initialCounter;
-    op.params[3].memref.size = SSS_AES_BLOCK_SIZE;
+    op.params[3].memref.size   = SSS_AES_BLOCK_SIZE;
     op.params[4].memref.buffer = lastEncryptedCounter;
-    op.params[4].memref.size = SSS_AES_BLOCK_SIZE;
+    op.params[4].memref.size   = SSS_AES_BLOCK_SIZE;
     op.params[5].memref.buffer = szLeft;
-    op.params[5].memref.size = sizeof(*szLeft);
+    op.params[5].memref.size   = sizeof(*szLeft);
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCryptCtr, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_SymmetricCryptCtr, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -227,15 +311,42 @@ sss_status_t sss_sscp_cipher_crypt_ctr(sss_sscp_symmetric_t *context,
 
     return (sss_status_t)ret;
 }
+void sss_sscp_symmetric_context_free(sss_sscp_symmetric_t *context)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Symmetric;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    /*if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;*/
+}
 /**********************************AEAD****************************************/
 
-sss_status_t sss_sscp_aead_context_init(
-    sss_sscp_aead_t *context, sss_sscp_session_t *session, sss_sscp_object_t *keyObject, sss_algorithm_t algorithm, sss_mode_t mode)
+sss_status_t sss_sscp_aead_context_init(sss_sscp_aead_t *context,
+                                        sss_sscp_session_t *session,
+                                        sss_sscp_object_t *keyObject,
+                                        sss_algorithm_t algorithm,
+                                        sss_mode_t mode)
 {
-    context->session = session;
+    context->session   = session;
     context->keyObject = keyObject;
     context->algorithm = algorithm;
-    context->mode = mode;
+    context->mode      = mode;
     return kStatus_SSS_Success;
 }
 
@@ -251,9 +362,9 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
                                   size_t *tagLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_aead_t) >= sizeof(sss_sscp_aead_t), _sss_sscp_aead_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* set paramTypes for the tag[] buffer according to mode
      * for encrypt (and authenticate) mode, the tag[] is output, written by invoked function,
@@ -274,29 +385,30 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
                               kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None);
     }
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Aead;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)srcData;
-    op.params[1].memref.size = size;
+    op.params[1].memref.size   = size;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = size;
+    op.params[2].memref.size   = size;
     op.params[3].memref.buffer = nonce;
-    op.params[3].memref.size = nonceLen;
+    op.params[3].memref.size   = nonceLen;
     op.params[4].memref.buffer = (void *)(uintptr_t)aad;
-    op.params[4].memref.size = aadLen;
+    op.params[4].memref.size   = aadLen;
     op.params[5].memref.buffer = tag;
-    op.params[5].memref.size = *tagLen;
+    op.params[5].memref.size   = *tagLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AeadOneGo, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AeadOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-      if (context->mode == kMode_SSS_Encrypt) {
-        /* tagLen returns number of bytes written to tag */
-        *tagLen = 0;
-      }
-      return kStatus_SSS_Fail;
+        if (context->mode == kMode_SSS_Encrypt)
+        {
+            /* tagLen returns number of bytes written to tag */
+            *tagLen = 0;
+        }
+        return kStatus_SSS_Fail;
     }
 
     if (context->mode == kMode_SSS_Encrypt)
@@ -311,46 +423,52 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
 sss_status_t sss_sscp_aead_init(
     sss_sscp_aead_t *context, uint8_t *nonce, size_t nonceLen, size_t tagLen, size_t aadLen, size_t payloadLen)
 {
-  return kStatus_SSS_Fail;
+    return kStatus_SSS_Fail;
 }
 
 sss_status_t sss_sscp_aead_update_aad(sss_sscp_aead_t *context, const uint8_t *aadData, size_t aadDataLen)
 {
-  return kStatus_SSS_Fail;
+    return kStatus_SSS_Fail;
 }
-
 
 sss_status_t sss_sscp_aead_update(
     sss_sscp_aead_t *context, const uint8_t *srcData, size_t srcLen, uint8_t destData, size_t *destLen)
 {
-  return kStatus_SSS_Fail;
+    return kStatus_SSS_Fail;
 }
 
 sss_status_t sss_sscp_aead_finish(sss_sscp_aead_t *context,
-                             const uint8_t *srcData,
-                             size_t srcLen,
-                             uint8_t destData,
-                             size_t *destLen,
-                             uint8_t *tag,
-                             size_t *tagLen)
+                                  const uint8_t *srcData,
+                                  size_t srcLen,
+                                  uint8_t destData,
+                                  size_t *destLen,
+                                  uint8_t *tag,
+                                  size_t *tagLen)
 {
-  return kStatus_SSS_Fail;
+    return kStatus_SSS_Fail;
 }
 
 void sss_sscp_aead_context_free(sss_sscp_aead_t *context)
 {
-  memset(context, 0, sizeof(sss_sscp_aead_t));
+    memset(context, 0, sizeof(sss_sscp_aead_t));
 }
 
 /********************************DIGEST****************************************/
 sss_status_t sss_sscp_digest_context_init(sss_sscp_digest_t *context,
-                                     sss_sscp_session_t *session,
-                                     sss_algorithm_t algorithm,
-                                     sss_mode_t mode){
+                                          sss_sscp_session_t *session,
+                                          sss_algorithm_t algorithm,
+                                          sss_mode_t mode)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_digest_t) >= sizeof(sss_sscp_digest_t), _sss_sscp_digest_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
     context->algorithm = algorithm;
-    context->mode = mode;
-    context->session = session;
-    switch(algorithm) {
+    context->mode      = mode;
+    context->session   = session;
+    switch (algorithm)
+    {
         case kAlgorithm_SSS_SHA1:
             context->digestFullLen = 20;
             break;
@@ -367,16 +485,38 @@ sss_status_t sss_sscp_digest_context_init(sss_sscp_digest_t *context,
         default:
             return kStatus_SSS_Fail;
     }
-    return kStatus_SSS_Success;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.params[1].value.a = (uint32_t)algorithm;
+    op.params[1].value.b = (uint32_t)mode;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = context;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestContextInit, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
 }
 
 sss_status_t sss_sscp_digest_one_go(
     sss_sscp_digest_t *context, const uint8_t *message, size_t messageLen, uint8_t *digest, size_t *digestLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_digest_t) >= sizeof(sss_sscp_digest_t), _sss_sscp_digest_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to digestLen, it is assumed that digest[] buffer is big enough to hold full
      * digest */
@@ -389,33 +529,26 @@ sss_status_t sss_sscp_digest_one_go(
     }
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)message;
-    op.params[1].memref.size = messageLen;
-    op.params[2].memref.buffer = digest;
-    op.params[2].memref.size = len;
+    op.params[1].memref.size   = messageLen;
+    op.params[2].memref.buffer = (void *)(uintptr_t)digest;
+    op.params[2].memref.size   = len;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1;
+    op.result[0].value.a = (uint32_t)digestLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestOneGo, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        if (digestLen)
-        {
-            *digestLen = 0;
-        }
         return kStatus_SSS_Fail;
-    }
-
-    /* update the size member of kSSCP_ParamType_MemrefOutput param with the actual byte length written to output buffer
-     */
-    if (digestLen)
-    {
-        *digestLen = op.params[2].memref.size;
     }
 
     return (sss_status_t)ret;
@@ -423,19 +556,19 @@ sss_status_t sss_sscp_digest_one_go(
 
 sss_status_t sss_sscp_digest_init(sss_sscp_digest_t *context)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestInit, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -446,22 +579,22 @@ sss_status_t sss_sscp_digest_init(sss_sscp_digest_t *context)
 
 sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, const uint8_t *message, size_t messageLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)message;
-    op.params[1].memref.size = messageLen;
+    op.params[1].memref.size   = messageLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestUpdate, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -472,9 +605,9 @@ sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, const uint8_t *m
 
 sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest, size_t *digestLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to digestLen, it is assumed that digest[] buffer is big enough to hold full
      * digest */
@@ -490,14 +623,14 @@ sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest,
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
 
     op.params[1].memref.buffer = digest;
-    op.params[1].memref.size = len;
+    op.params[1].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestFinish, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestFinish, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (digestLen)
@@ -520,16 +653,39 @@ sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest,
 
 void sss_sscp_digest_context_free(sss_sscp_digest_t *context)
 {
-    memset(context, 0 , sizeof(sss_sscp_digest_t));
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    /*if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;*/
 }
 
 /***********************************MAC****************************************/
-sss_status_t sss_sscp_mac_context_init(
-    sss_sscp_mac_t *context, sss_sscp_session_t *session, sss_sscp_object_t *keyObject, sss_algorithm_t algorithm, sss_mode_t mode)
+sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
+                                       sss_sscp_session_t *session,
+                                       sss_sscp_object_t *keyObject,
+                                       sss_algorithm_t algorithm,
+                                       sss_mode_t mode)
 {
     context->algorithm = algorithm;
-    context->mode = mode;
-    context->session = session;
+    context->mode      = mode;
+    context->session   = session;
     context->keyObject = keyObject;
     return kStatus_SSS_Success;
 }
@@ -538,9 +694,9 @@ sss_status_t sss_sscp_mac_one_go(
     sss_sscp_mac_t *context, const uint8_t *message, size_t messageLen, uint8_t *mac, size_t *macLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_mac_t) >= sizeof(sss_sscp_mac_t), _sss_sscp_mac_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to macLen, it is assumed that mac[] buffer is big enough to hold full
      * mac */
@@ -556,16 +712,16 @@ sss_status_t sss_sscp_mac_one_go(
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)message;
-    op.params[1].memref.size = messageLen;
+    op.params[1].memref.size   = messageLen;
     op.params[2].memref.buffer = mac;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacOneGo, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (macLen)
@@ -587,19 +743,19 @@ sss_status_t sss_sscp_mac_one_go(
 
 sss_status_t sss_sscp_mac_init(sss_sscp_mac_t *context)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacInit, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -610,22 +766,22 @@ sss_status_t sss_sscp_mac_init(sss_sscp_mac_t *context)
 
 sss_status_t sss_sscp_mac_update(sss_sscp_mac_t *context, const uint8_t *message, size_t messageLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)message;
-    op.params[1].memref.size = messageLen;
+    op.params[1].memref.size   = messageLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacUpdate, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -636,9 +792,9 @@ sss_status_t sss_sscp_mac_update(sss_sscp_mac_t *context, const uint8_t *message
 
 sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *macLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to macLen, it is assumed that mac[] buffer is big enough to hold full
      * mac */
@@ -654,14 +810,14 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
 
     op.params[1].memref.buffer = mac;
-    op.params[1].memref.size = len;
+    op.params[1].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacFinish, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacFinish, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         if (macLen)
@@ -684,21 +840,52 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
 
 void sss_sscp_mac_context_free(sss_sscp_mac_t *context)
 {
-    memset(context, 0 , sizeof(sss_sscp_mac_t));
+    memset(context, 0, sizeof(sss_sscp_mac_t));
 }
 
 /*******************************ASYMETRIC**************************************/
 sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
-                                         sss_sscp_session_t *session,
-                                         sss_sscp_object_t *keyObject,
-                                         sss_algorithm_t algorithm,
-                                         sss_mode_t mode)
+                                              sss_sscp_session_t *session,
+                                              sss_sscp_object_t *keyObject,
+                                              sss_algorithm_t algorithm,
+                                              sss_mode_t mode)
 {
-    context->session = session;
+    SSCP_BUILD_ASSURE(sizeof(sss_digest_t) >= sizeof(sss_sscp_digest_t), _sss_sscp_digest_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    context->session   = session;
     context->keyObject = keyObject;
-    context->mode = mode;
+    context->mode      = mode;
     context->algorithm = algorithm;
-    //context->signatureFullLen = 72;
+
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.params[1].context.ptr  = keyObject;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[2].value.a = (uint32_t)algorithm;
+    op.params[2].value.b = (uint32_t)mode;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = context;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymetricContextInit, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+
     return kStatus_SSS_Success;
 }
 
@@ -706,9 +893,9 @@ sss_status_t sss_sscp_asymmetric_encrypt(
     sss_sscp_asymmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_asymmetric_t) >= sizeof(sss_sscp_asymmetric_t), _sss_sscp_asymmetric_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to signatureLen, it is assumed that signature[] buffer is big enough to hold
      * full
@@ -725,16 +912,16 @@ sss_status_t sss_sscp_asymmetric_encrypt(
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
 
-    op.params[1].memref.buffer = (void*)srcData;
-    op.params[1].memref.size = srcLen;
+    op.params[1].memref.buffer = (void *)srcData;
+    op.params[1].memref.size   = srcLen;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricEncrypt, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricEncrypt, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -755,9 +942,9 @@ sss_status_t sss_sscp_asymmetric_decrypt(
     sss_sscp_asymmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_asymmetric_t) >= sizeof(sss_sscp_asymmetric_t), _sss_sscp_asymmetric_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to signatureLen, it is assumed that signature[] buffer is big enough to hold
      * full
@@ -774,16 +961,16 @@ sss_status_t sss_sscp_asymmetric_decrypt(
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
 
-    op.params[1].memref.buffer = (void*)srcData;
-    op.params[1].memref.size = srcLen;
+    op.params[1].memref.buffer = (void *)srcData;
+    op.params[1].memref.size   = srcLen;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDecrypt, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDecrypt, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -804,9 +991,9 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
     sss_sscp_asymmetric_t *context, uint8_t *digest, size_t digestLen, uint8_t *signature, size_t *signatureLen)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_asymmetric_t) >= sizeof(sss_sscp_asymmetric_t), _sss_sscp_asymmetric_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     /* if the caller gives NULL pointer to signatureLen, it is assumed that signature[] buffer is big enough to hold
      * full
@@ -823,16 +1010,16 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
 
     op.params[1].memref.buffer = digest;
-    op.params[1].memref.size = digestLen;
+    op.params[1].memref.size   = digestLen;
     op.params[2].memref.buffer = signature;
-    op.params[2].memref.size = len;
+    op.params[2].memref.size   = len;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -852,25 +1039,28 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
 sss_status_t sss_sscp_asymmetric_verify_digest(
     sss_sscp_asymmetric_t *context, uint8_t *digest, size_t digestLen, uint8_t *signature, size_t signatureLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
 
     /* common function parameters */
     op.params[1].memref.buffer = digest;
-    op.params[1].memref.size = digestLen;
+    op.params[1].memref.size   = digestLen;
     op.params[2].memref.buffer = signature;
-    op.params[2].memref.size = signatureLen;
+    op.params[2].memref.size   = signatureLen;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricVerifyDigest, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricVerifyDigest, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -878,6 +1068,32 @@ sss_status_t sss_sscp_asymmetric_verify_digest(
 
     return (sss_status_t)ret;
 }
+
+void sss_sscp_asymmetric_context_free(sss_sscp_asymmetric_t *context)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    /*if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;*/
+}
+
 /********************************TUNNEL****************************************/
 sss_status_t sss_sscp_tunnel(sss_sscp_tunnel_t *context,
                              uint8_t *data,
@@ -887,26 +1103,26 @@ sss_status_t sss_sscp_tunnel(sss_sscp_tunnel_t *context,
                              uint32_t tunnelType)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_tunnel_t) >= sizeof(sss_sscp_tunnel_t), _sss_sscp_tunnel_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInput,
+                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputTuple,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Tunnel;
 
     op.params[1].memref.buffer = data;
-    op.params[1].memref.size = dataLen;
-    op.params[2].context.ptr = keyObjects;
-    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
-    op.params[3].value.a = keyObjectCount;
-    op.params[3].value.b = tunnelType;
+    op.params[1].memref.size   = dataLen;
+    op.params[2].context.ptr   = keyObjects;
+    op.params[2].context.type  = kSSCP_ParamContextType_SSS_Object;
+    op.params[3].value.a       = keyObjectCount;
+    op.params[3].value.b       = tunnelType;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_Tunnel, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_Tunnel, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -917,42 +1133,42 @@ sss_status_t sss_sscp_tunnel(sss_sscp_tunnel_t *context,
 
 /*******************************DERIVEKEY**************************************/
 sss_status_t sss_sscp_derive_key_context_init(sss_sscp_derive_key_t *context,
-                                         sss_sscp_session_t *session,
-                                         sss_sscp_object_t *keyObject,
-                                         sss_algorithm_t algorithm,
-                                         sss_mode_t mode)
+                                              sss_sscp_session_t *session,
+                                              sss_sscp_object_t *keyObject,
+                                              sss_algorithm_t algorithm,
+                                              sss_mode_t mode)
 {
     context->algorithm = algorithm;
-    context->mode = mode;
-    context->session = session;
+    context->mode      = mode;
+    context->session   = session;
     context->keyObject = keyObject;
     return kStatus_SSS_Success;
 }
 
 sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
-                            const uint8_t *saltData,
-                            size_t saltLen,
-                            sss_sscp_object_t *derivedKeyObject)
+                                 const uint8_t *saltData,
+                                 size_t saltLen,
+                                 sss_sscp_object_t *derivedKeyObject)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
                                       kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_DeriveKey;
 
-    op.params[1].memref.buffer = (void*)saltData;
-    op.params[1].memref.size = saltLen;
+    op.params[1].memref.buffer = (void *)saltData;
+    op.params[1].memref.size   = saltLen;
 
-    op.params[2].context.ptr = derivedKeyObject;
+    op.params[2].context.ptr  = derivedKeyObject;
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -966,25 +1182,25 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
                                                sss_sscp_object_t *derivedKeyObject)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_derive_key_t) >= sizeof(sss_sscp_derive_key_t), _sss_sscp_derive_key_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
                                       kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = context;
+    op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_DeriveKey;
 
-    op.params[1].context.ptr = otherPartyKeyObject;
+    op.params[1].context.ptr  = otherPartyKeyObject;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
 
-    op.params[2].context.ptr = derivedKeyObject;
+    op.params[2].context.ptr  = derivedKeyObject;
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -995,39 +1211,69 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
 
 void sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context)
 {
-    memset(context, 0 , sizeof(sss_sscp_derive_key_t));
+    memset(context, 0, sizeof(sss_sscp_derive_key_t));
 }
 
 /*******************************KEYSTORE***************************************/
 sss_status_t sss_sscp_key_store_context_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session)
 {
-    keyStore->session = session;
-    return kStatus_SSS_Success;
-}
-
-sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId)
-{
     SSCP_BUILD_ASSURE(sizeof(sss_key_store_t) >= sizeof(sss_sscp_key_store_t), _sss_sscp_key_store_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
+
+    keyStore->session    = session;
+    keyStore->keyStoreId = 0;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_SingleValueInput, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = keyStore;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
 
-    op.params[1].value.a = keyStoreId;
+    op.params[1].value.b = keyStore->keyStoreId;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = keyStore;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_KeyStoreCtx;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreAllocate, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreContextInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
     }
 
+    return (sss_status_t)ret;
+}
+
+sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_key_store_t) >= sizeof(sss_sscp_key_store_t), _sss_sscp_key_store_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = keyStore;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStoreCtx;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = keyStore;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
+
+    sscp_context_t *sscpCtx = keyStore->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreAllocate, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
     return (sss_status_t)ret;
 }
 
@@ -1038,30 +1284,40 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         void *options,
                                         size_t optionsLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
+    uint32_t opt;
+    if (options != NULL && optionsLen == 1)
+    {
+        opt = *((uint32_t *)options);
+    }
+    else
+    {
+        opt = 0;
+    }
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
-                                      kSSCP_ParamType_MemrefInput, kSSCP_ParamType_SingleValueInput,
-                                      kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefInputNoSize, kSSCP_ParamType_ValueInputTuple,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = keyStore;
+    op.params[0].context.ptr  = keyStore;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
 
-    op.params[1].context.ptr = keyObject;
+    op.params[1].context.ptr  = keyObject;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
 
     op.params[2].memref.buffer = (void *)(uintptr_t)key;
-    op.params[2].memref.size = (keyBitLen + 7u) / 8u;
-    
+    op.params[2].memref.size   = (keyBitLen + 7u) / 8u;
+
     op.params[3].value.a = keyBitLen;
-    
-    op.params[4].memref.buffer = options;
-    op.params[4].memref.size = optionsLen;
+    op.params[3].value.b = opt;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreSetKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreSetKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -1071,33 +1327,36 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
 }
 
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
-                                   sss_sscp_object_t *keyObject,
-                                   uint8_t *key,
-                                   size_t *pKeyBitLen)
+                                        sss_sscp_object_t *keyObject,
+                                        uint8_t *key,
+                                        size_t *pKeyBitLen)
 {
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
-                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_SingleValueInput,
+                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_ValueInputSingle,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     size_t bitLen = (pKeyBitLen != NULL) ? *pKeyBitLen : 0;
-    
-    op.params[0].context.ptr = keyStore;
+
+    op.params[0].context.ptr  = keyStore;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
 
-    op.params[1].context.ptr = keyObject;
+    op.params[1].context.ptr  = keyObject;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
 
     op.params[2].memref.buffer = (void *)(uintptr_t)key;
-    op.params[2].memref.size = (bitLen + 7u) / 8u;
-    
+    op.params[2].memref.size   = (bitLen + 7u) / 8u;
+
     op.params[3].value.a = bitLen;
 
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreGetKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreGetKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -1105,39 +1364,107 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
 
     if (pKeyBitLen)
         *pKeyBitLen = op.params[3].memref.size;
-    
+
     return (sss_status_t)ret;
 }
 
+void sss_sscp_key_store_context_free(sss_sscp_key_store_t *keyStore)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = keyStore;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStoreCtx;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = keyStore->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    /*if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;*/
+}
+
 /******************************KEYOBJECT***************************************/
-sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore) {
-    keyObject->keyStore = keyStore;
+sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_object_t) >= sizeof(sss_sscp_object_t), _sss_sscp_key_object_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    keyObject->keyStore   = keyStore;
     keyObject->objectType = 0; /* object type: key */
+
     return kStatus_SSS_Success;
+}
+
+sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_object_t) >= sizeof(sss_sscp_object_t), _sss_sscp_key_object_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    keyObject->keyStore   = keyStore;
+    keyObject->objectType = 0; /* object type: key */
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = keyStore;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = keyObject;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    sscp_context_t *sscpCtx = keyStore->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectContextInit, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
 }
 
 sss_status_t sss_sscp_key_object_allocate_handle(
     sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options)
 {
     SSCP_BUILD_ASSURE(sizeof(sss_object_t) >= sizeof(sss_sscp_object_t), _sss_sscp_object_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
-    op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInput, kSSCP_ParamType_ValueInput,
-                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputTuple,
+                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = keyObject;
+    op.params[0].context.ptr  = keyObject;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Object;
 
     op.params[1].value.a = keyId;
     op.params[1].value.b = (uint32_t)keyType;
+
     op.params[2].value.a = keyByteLenMax;
-    op.params[2].value.b = (uint32_t)options;
+    op.params[2].value.b = options;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = keyObject->keyStore->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectAllocateHandle, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectAllocateHandle, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -1146,23 +1473,26 @@ sss_status_t sss_sscp_key_object_allocate_handle(
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId) {
+sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId)
+{
     SSCP_BUILD_ASSURE(sizeof(sss_object_t) >= sizeof(sss_sscp_object_t), _sss_sscp_object_size);
-    sscp_operation_t op = {0};
+    sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret = 0;
+    uint32_t ret         = 0;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_SingleValueInput, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    op.params[0].context.ptr = keyObject;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Object;
+    op.params[0].value.a = keyId;
 
-    op.params[1].value.a = keyId;
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1;
+    op.result[0].context.ptr  = keyObject;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Object;
 
     sscp_context_t *sscpCtx = keyObject->keyStore->session->sscp;
-    status = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectGetHandle, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectGetHandle, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -1170,10 +1500,8 @@ sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32
     return (sss_status_t)ret;
 }
 
-
-sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group) {
-    /*if(keyObject->objectType != kSSS_KeyType_ECC_Private && keyObject->objectType != kSSS_KeyType_ECC_Public && keyObject->objectType != kSSS_KeyType_ECC_Pair)
-        return kStatus_SSS_Fail;*/
+sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group)
+{
     keyObject->eccgfpGroup = group;
     return kStatus_SSS_Success;
 }

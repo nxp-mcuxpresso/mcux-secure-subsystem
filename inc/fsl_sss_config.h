@@ -98,23 +98,23 @@ typedef enum _sss_algorithm
 #define SSS_KEY_TYPE_ENUM_ALT
 typedef enum _sss_key_type
 {
-    kSSS_KeyType_NONE,
-    kSSS_KeyType_Certificate,
-    kSSS_KeyType_AES,
-    kSSS_KeyType_DES,
-    kSSS_KeyType_MAC,
-    kSSS_KeyType_RSA_Public,
-    kSSS_KeyType_ECC_Public, /*! Weierstrass form elliptic curve public key  */
-    kSSS_KeyType_ECM_Public, /*! Montgomery form elliptic curve public key  */
-    kSSS_KeyType_ECT_Public, /*! twisted Edwards form elliptic curve public key  */
-    kSSS_KeyType_RSA_Private,
-    kSSS_KeyType_ECC_Private,
-    kSSS_KeyType_ECM_Private,
-    kSSS_KeyType_ECT_Private,
-    kSSS_KeyType_RSA_Pair,
-    kSSS_KeyType_ECC_Pair,
-    kSSS_KeyType_ECM_Pair,
-    kSSS_KeyType_ECT_Pair,
+    kSSS_KeyType_NONE = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_KeyType_Certificate = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_KeyType_AES = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_KeyType_DES = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_KeyType_MAC = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_KeyType_RSA_Public  = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECC_Public = SAB_KEY_TYPE_ASYMMETRIC, /*! Weierstrass form elliptic curve public key  */
+    kSSS_KeyType_ECM_Public = SAB_KEY_TYPE_ASYMMETRIC, /*! Montgomery form elliptic curve public key  */
+    kSSS_KeyType_ECT_Public = SAB_KEY_TYPE_ASYMMETRIC, /*! twisted Edwards form elliptic curve public key  */
+    kSSS_KeyType_RSA_Private = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECC_Private = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECM_Private = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECT_Private = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_RSA_Pair = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECC_Pair = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECM_Pair = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_KeyType_ECT_Pair = SAB_KEY_TYPE_ASYMMETRIC,
 } sss_key_type_t;
 
 #endif /* _FSL_SSS_CONFIG_H_ */

@@ -26,6 +26,7 @@ typedef struct _sss_sscp_session
 
     /*! Implementation specific part */
     sscp_context_t *sscp;
+    uint32_t ctx;
 } sss_sscp_session_t;
 
 typedef struct _sss_sscp_key_store
@@ -39,6 +40,8 @@ typedef struct _sss_sscp_key_store
     {
         uint8_t data[SSS_SSCP_KEY_STORE_CONTEXT_SIZE];
     } context;
+    uint32_t keyStoreCtx;
+    uint32_t ctx;
 } sss_sscp_key_store_t;
 
 typedef struct _sss_sscp_object
@@ -57,6 +60,7 @@ typedef struct _sss_sscp_object
     {
         uint8_t data[SSS_SSCP_KEY_OBJECT_CONTEXT_SIZE];
     } context;
+    uint32_t ctx;
 } sss_sscp_object_t;
 
 /*! @brief ::_sss_symmetric with SSCP specific information */
@@ -74,6 +78,7 @@ typedef struct _sss_sscp_symmetric
     {
         uint8_t data[SSS_SSCP_SYMMETRIC_CONTEXT_SIZE];
     } context;
+    uint32_t ctx;
 } sss_sscp_symmetric_t;
 
 typedef struct _sss_sscp_aead
@@ -102,6 +107,7 @@ typedef struct _sss_sscp_digest
     {
         uint8_t data[SSS_SSCP_DIGEST_CONTEXT_SIZE];
     } context;
+    uint32_t ctx;
 } sss_sscp_digest_t;
 
 typedef struct _sss_sscp_mac
@@ -130,6 +136,7 @@ typedef struct _sss_sscp_asymmetric
     size_t signatureFullLen;
 
     /*! Implementation specific part */
+    uint32_t ctx;
 } sss_sscp_asymmetric_t;
 
 typedef struct _sss_sscp_tunnel
@@ -321,7 +328,9 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                    sss_sscp_object_t *keyObject,
                                    uint8_t *key,
                                    size_t *pKeyBitLen);
+void sss_sscp_key_store_context_free(sss_sscp_key_store_t *keyStore);
 /******************************KEYOBJECT***************************************/
+sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore); 
 
 sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
@@ -331,10 +340,6 @@ sss_status_t sss_sscp_key_object_allocate_handle(
     sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
-
-
-
-
 
 
 #if defined(__cplusplus)
