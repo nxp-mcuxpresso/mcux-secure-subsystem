@@ -65,7 +65,7 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_KeyStoreOpenKey,
     kSSCP_CMD_SSS_KeyStoreFreezeKey,
     kSSCP_CMD_SSS_KeyStoreEraseKey,
-    kSSCP_CMD_SSS_KeyStoreEraseAll,    
+    kSSCP_CMD_SSS_KeyStoreEraseAll,
     kSSCP_CMD_SSS_MGMT_FuseRead,
     kSSCP_CMD_SSS_MGMT_FuseShadowRegisterRead,
     kSSCP_CMD_SSS_MGMT_FuseProgram,
@@ -124,7 +124,8 @@ typedef enum _sscp_command
 
 enum _sscp_context_type
 {
-    kSSCP_ParamContextType_SSS_Symmetric = 1u,
+    kSSCP_ParamContextType_SSS_Session = 1u,
+    kSSCP_ParamContextType_SSS_Symmetric,
     kSSCP_ParamContextType_SSS_Aead,
     kSSCP_ParamContextType_SSS_Digest,
     kSSCP_ParamContextType_SSS_Mac,
@@ -133,6 +134,7 @@ enum _sscp_context_type
     kSSCP_ParamContextType_SSS_DeriveKey,
     kSSCP_ParamContextType_SSS_Object,
     kSSCP_ParamContextType_SSS_KeyStore,
+    kSSCP_ParamContextType_SSS_KeyStoreCtx,
     kSSCP_ParamContextType_SSS_Mgmt,
 };
 
