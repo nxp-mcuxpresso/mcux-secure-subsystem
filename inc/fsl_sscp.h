@@ -33,7 +33,7 @@
     only the buffer descriptor (pointer and size) without physically transmitting the buffer content,
     as the buffer content can be accessed by the sub-system when the remote function executes.
     The same holds for the context descriptor (pointer and type id). The actual SSCP implementation
-    can transfer only pointer to a sub-system, if the sub-system has the memory, where the context data
+    can transfer only pointer to a sub-system, if the sub-system has access to the memory, where the context data
     structure is located, and if it has an application level knowledge of the context data structure
     layout (either based on the command id or the context type id).
 

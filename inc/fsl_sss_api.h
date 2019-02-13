@@ -13,8 +13,7 @@
 #include SSS_CONFIG_FILE
 #endif
 
-#include <stdint.h>
-#include <stddef.h>
+#include "fsl_sss_types.h"
 
 #define SSS_API_VERSION (0x00000001u)
 
@@ -127,6 +126,7 @@ typedef enum _sss_access_permission
 } sss_access_permission_t;
 #endif
 
+
 #if !defined(SSS_KEY_TYPE_ENUM_ALT)
 typedef enum _sss_key_type
 {
@@ -220,8 +220,7 @@ typedef struct _sss_object
     /*! Application specific key identifier. The keyId is kept in the key  store
      * along with the key data and other properties. */
     uint32_t keyId;
-    /*! Used only for ECC key types, to specify the elliptic curve related to the key. */
-    sss_eccgfp_group_t *eccgfpGroup; 
+    
 
     /*! Implementation specific part */
     struct
@@ -889,7 +888,7 @@ void sss_asymmetric_context_free(sss_asymmetric_t *context);
  */ /* end of sss_crypto_asymmetric */
 
 /*!
- * @addtogroup sss_crypto_tunnelling
+ * @addtogroup sss_tunnelling
  * @{
  */
 
@@ -897,8 +896,9 @@ void sss_asymmetric_context_free(sss_asymmetric_t *context);
  *
  * @param[out] context Pointer to tunnel context. Tunnel context is updated on function return.
  * @param session Pointer to session this tunnelling service belongs to.
+ * @param tunnelType Implementation specific id of the service.
  */
-sss_status_t sss_init_tunnel_context(sss_tunnel_t *context, sss_session_t *session);
+sss_status_t sss_tunnel_context_init(sss_tunnel_t *context, sss_session_t *session, uint32_t tunnelType);
 
 /*! @brief Tunnelling service.
  *
@@ -906,24 +906,22 @@ sss_status_t sss_init_tunnel_context(sss_tunnel_t *context, sss_session_t *sessi
  * @param data Pointer to data to be send to subsystem.
  * @param dataLen Length of the data in bytes.
  * @param keyObjects Objects references used by the service.
- * @param keyObjectCount Number of key references at @ref keyObjects.
- * @param tunnelType Implementation specific id of the service.
+ * @param keyObjectCount Number of key references at @ref keyObjects. 
  */
 sss_status_t sss_tunnel(sss_tunnel_t *context,
                         uint8_t *data,
                         size_t dataLen,
                         sss_object_t *keyObjects,
-                        uint32_t keyObjectCount,
-                        uint32_t tunnelType);
+                        uint32_t keyObjectCount);
 
 /*! @brief Destructor for the tunnelling service context.
  *
  * @param[out] context Pointer to tunnel context. */
-void sss_free_tunnel_context(sss_tunnel_t *context);
+void sss_tunnel_context_free(sss_tunnel_t *context);
 
 /*!
  *@}
- */ /* end of sss_crypto_tunnelling */
+ */ /* end of sss_tunnelling */
 
 /*!
  * @addtogroup sss_crypto_derive_key
@@ -1127,8 +1125,7 @@ sss_status_t sss_key_store_load(sss_key_store_t *keyStore);
  *
  * @param keyStore Key store context
  * @param keyObject Reference to a key and it's properties
- * @param data Input data buffer with the plain key
- * @param dataLen Length of the Input data buffer in bytes
+ * @param key Input data buffer with the plain key
  * @param keyBitLen Crypto algorithm key bit length
  * @param options Pointer to implementation specific options
  * @param optionsLen Length of the options in bytes
