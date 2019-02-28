@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2019 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -98,6 +98,15 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         msg[wrIdx++] = (uint32_t)((sss_mgmt_t *)op->params[i].context.ptr)->ctx;
+                        break;
+                    case kSSCP_ParamContextType_SSS_Rng:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_rng_t *)op->params[i].context.ptr)->ctx;
+                        break;
+                    case kSSCP_ParamContextType_SSS_Mac:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_mac_t *)op->params[i].context.ptr)->ctx;
+                        break;
+                    case kSSCP_ParamContextType_SSS_Tunnel:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_tunnel_t *)op->params[i].context.ptr)->ctx;
                         break;
                     default:
                         break;
@@ -199,6 +208,15 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         ((sss_mgmt_t *)op->result[k].context.ptr)->ctx = msg[i];
+                        break;
+                    case kSSCP_ParamContextType_SSS_Rng:
+                        ((sss_sscp_rng_t *)op->result[k].context.ptr)->ctx = msg[i];
+                        break;
+                    case kSSCP_ParamContextType_SSS_Mac:
+                        ((sss_sscp_mac_t *)op->result[k].context.ptr)->ctx = msg[i];
+                        break;
+                    case kSSCP_ParamContextType_SSS_Tunnel:
+                        ((sss_sscp_tunnel_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
                     default:
                         break;

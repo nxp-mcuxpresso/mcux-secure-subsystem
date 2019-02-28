@@ -136,6 +136,7 @@ enum _sscp_context_type
     kSSCP_ParamContextType_SSS_KeyStore,
     kSSCP_ParamContextType_SSS_KeyStoreCtx,
     kSSCP_ParamContextType_SSS_Mgmt,
+    kSSCP_ParamContextType_SSS_Rng,
 };
 
 /*!

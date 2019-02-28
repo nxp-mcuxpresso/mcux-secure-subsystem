@@ -26,10 +26,10 @@
 #if !defined(SSS_STATUS_ENUM_ALT)
 typedef enum _sss_status
 {
-    kStatus_SSS_Success = (int)0x5a5a5a5a,
-    kStatus_SSS_Fail = (int)0xc3c30000,
+    kStatus_SSS_Success         = (int)0x5a5a5a5a,
+    kStatus_SSS_Fail            = (int)0xc3c30000,
     kStatus_SSS_InvalidArgument = (int)0xc3c30001,
-    kStatus_SSS_ResourceBusy = (int)0xc3c30002,
+    kStatus_SSS_ResourceBusy    = (int)0xc3c30002,
 } sss_status_t;
 #endif
 
@@ -119,10 +119,10 @@ typedef enum _sss_mode
 #if !defined(SSS_ACCESS_PERMISSION_ENUM_ALT)
 typedef enum _sss_access_permission
 {
-    kAccessPermission_SSS_Read = (1u << 0),
-    kAccessPermission_SSS_Write = (1u << 1),
-    kAccessPermission_SSS_Use = (1u << 2),
-    kAccessPermission_SSS_Delete = (1u << 3),
+    kAccessPermission_SSS_Read             = (1u << 0),
+    kAccessPermission_SSS_Write            = (1u << 1),
+    kAccessPermission_SSS_Use              = (1u << 2),
+    kAccessPermission_SSS_Delete           = (1u << 3),
     kAccessPermission_SSS_ChangeAttributes = (1u << 4),
 } sss_access_permission_t;
 #endif
@@ -221,7 +221,7 @@ typedef struct _sss_object
      * along with the key data and other properties. */
     uint32_t keyId;
     /*! Used only for ECC key types, to specify the elliptic curve related to the key. */
-    sss_eccgfp_group_t *eccgfpGroup; 
+    sss_eccgfp_group_t *eccgfpGroup;
 
     /*! Implementation specific part */
     struct

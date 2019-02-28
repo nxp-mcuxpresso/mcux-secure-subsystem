@@ -46,8 +46,8 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
 
     size_t len = (dataLen != NULL) ? *dataLen : 0;
 
-    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputTuple,
-                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None, kSSCP_ParamType_None,
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
+                                      kSSCP_ParamType_MemrefInOut, kSSCP_ParamType_None, kSSCP_ParamType_None,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
@@ -57,6 +57,9 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
     op.params[1].value.b       = 0;
     op.params[2].memref.buffer = destData;
     op.params[2].memref.size   = len;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_PropertyGet, &op, &ret);
@@ -69,13 +72,7 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
         return kStatus_SSS_Fail;
     }
 
-    /* the size member of kSSCP_ParamType_MemrefOutput param is updated with the actual byte length written to output
-     * buffer
-     */
-    if (dataLen)
-    {
-        *dataLen = op.params[2].memref.size;
-    }
+    *dataLen = len;
     return (sss_status_t)ret;
 }
 
@@ -95,6 +92,9 @@ sss_status_t sss_mgmt_set_property(sss_mgmt_t *context, uint32_t propertyId, con
     op.params[1].value.a       = propertyId;
     op.params[2].memref.buffer = (void *)srcData;
     op.params[2].memref.size   = dataLen;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_PropertySet, &op, &ret);
@@ -166,7 +166,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
     uint32_t ret         = 0;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
@@ -218,7 +218,7 @@ sss_status_t sss_mgmt_fuse_program(
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context)
+sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
@@ -542,6 +542,28 @@ sss_status_t sss_mgmt_integrity_check_enable(sss_mgmt_t *context)
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_IntegrityCheckEnable, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+
+sss_status_t sss_mgmt_ping(sss_mgmt_t *context)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_Ping, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
