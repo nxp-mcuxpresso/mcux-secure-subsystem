@@ -103,7 +103,8 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData);
+sss_status_t sss_mgmt_fuse_read(
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen);
 
 /*! @brief Get lifecycle
  *  The function provides read lifecycle service
@@ -283,7 +284,7 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context);
+sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context, const uint8_t *request, size_t requestSize);
 
 /*! @brief Configure host access permissions
  *

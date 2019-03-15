@@ -14,6 +14,8 @@
 #include "fsl_sscp.h"
 #include "fsl_sscp_commands.h"
 
+#define HMAC_MAX_LEN (32u)
+
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
                                    sss_type_t subsystem,
                                    sscp_context_t *sscpctx,
@@ -688,17 +690,18 @@ sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
-    context->algorithm = algorithm;
-    context->mode      = mode;
-    context->session   = session;
-    context->keyObject = keyObject;
+    context->algorithm  = algorithm;
+    context->mode       = mode;
+    context->session    = session;
+    context->keyObject  = keyObject;
+    context->macFullLen = HMAC_MAX_LEN;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
                                       kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = session;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
 
     op.params[1].context.ptr  = keyObject;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
@@ -749,6 +752,10 @@ sss_status_t sss_sscp_mac_one_go(
     op.params[1].memref.size   = messageLen;
     op.params[2].memref.buffer = mac;
     op.params[2].memref.size   = len;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1;
+    op.result[0].value.a = (uint32_t)macLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacOneGo, &op, &ret);

@@ -58,17 +58,14 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
     op.params[2].memref.buffer = destData;
     op.params[2].memref.size   = len;
 
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0;
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1;
+    op.result[0].value.a = (uint32_t)dataLen;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_PropertyGet, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        if (dataLen)
-        {
-            *dataLen = 0;
-        }
         return kStatus_SSS_Fail;
     }
 
@@ -131,21 +128,27 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData)
+sss_status_t sss_mgmt_fuse_read(
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
+    size_t len           = (optionsLen != NULL) ? *optionsLen : 0;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_None, kSSCP_ParamType_None,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_MemrefInput,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].value.a       = fuseId;
+    op.params[1].value.a = fuseId;
+
     op.params[2].memref.buffer = destData;
+
+    op.params[3].memref.buffer = options;
+    op.params[3].memref.size   = len;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0;
@@ -172,8 +175,9 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = lifecycleData;
-    op.params[1].memref.size   = sizeof(uint32_t);
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1;
+    op.result[0].value.a = (uint32_t)lifecycleData;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_LifeCycleGet, &op, &ret);
@@ -204,7 +208,7 @@ sss_status_t sss_mgmt_fuse_program(
     op.params[2].memref.buffer = srcData;
 
     op.params[3].memref.buffer = options;
-    op.params[3].memref.size   = 0;
+    op.params[3].memref.size   = len;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0;
@@ -224,12 +228,19 @@ sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context, uint32_t *lifecycle
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
+    uint32_t data = (lifecycleData != NULL) ? *lifecycleData : 0x0;
+
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
+
+    op.params[1].value.a = data;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_AdvanceLifecycle, &op, &ret);
@@ -429,17 +440,20 @@ sss_status_t sss_mgmt_get_software_version(sss_mgmt_t *context,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
-    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput,
-                                      kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None, kSSCP_ParamType_None,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInOut, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
     op.params[1].memref.buffer = (void *)version;
-    op.params[1].memref.size   = versionWordCount * sizeof(uint32_t);
+    op.params[1].memref.size   = versionWordCount;
 
     op.params[2].value.a = options;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_SoftwareVersionGet, &op, &ret);
@@ -480,18 +494,24 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context)
+sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context, const uint8_t *request, size_t requestSize)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
+
+    op.params[1].memref.buffer = (void *)request;
+    op.params[1].memref.size   = requestSize;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_ReturnFaSet, &op, &ret);
@@ -517,6 +537,9 @@ sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint
 
     op.params[1].memref.buffer = (void *)srcData;
     op.params[1].memref.size   = dataLen;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_HostAccessPermissionSet, &op, &ret);

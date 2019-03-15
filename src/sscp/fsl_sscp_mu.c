@@ -165,6 +165,8 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     {
         return kStatus_SSCP_Fail;
     }
+
+    /* poll for response */
     if (MU_ReceiveMsg(muContext->base, msg, MU_RR_COUNT) != kStatus_SSCP_Success)
     {
         return kStatus_SSCP_Fail;
@@ -230,13 +232,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         }
     }
 
-    if (muReplyHeader->check_bits == SENTINEL_SUCCESS)
+    if (muReplyHeader->tag_sts == SENTINEL_SUCCESS)
     {
         *ret = kStatus_SSS_Success;
-    }
-    else if (muReplyHeader->check_bits == SENTINEL_FAIL)
-    {
-        *ret = kStatus_SSS_Fail;
     }
     else
     {

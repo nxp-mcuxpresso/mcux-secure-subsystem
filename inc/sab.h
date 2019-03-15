@@ -1044,4 +1044,9 @@ typedef struct {
 #define NBOOT_FW_UPD_KEK (0x80000004U)
 #define NBOOT_DTRK       (0x80000005U)
 */
+
+/* get/set properties defines */
+#define SAB_MGMT_PROPERTY_ID_DICE_CDI (0x10)
+#define SAB_MGMT_PROPERTY_ID_IMAGE_HASH (0x20)
+
 #endif /* sab_h__ */
