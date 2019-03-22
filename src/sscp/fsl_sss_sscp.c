@@ -942,8 +942,6 @@ sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
         return kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
-
-    return kStatus_SSS_Success;
 }
 
 sss_status_t sss_sscp_asymmetric_encrypt(
@@ -1170,8 +1168,8 @@ sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_s
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
 
     op.params[1].value.a = tunnelType;
-
-                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInput,
+    
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
     op.resultCount            = 1;
     op.result[0].context.ptr  = context;
     op.result[0].context.type = kSSCP_ParamContextType_SSS_Tunnel;
