@@ -891,16 +891,17 @@ typedef struct {
 #define SAB_KEY_OBJECT_SET_ACCESS_REQ ((sab_command_t)0x44)
 #define SAB_KEY_OBJECT_SET_PURPOSE_REQ ((sab_command_t)0x45)
 #define SAB_KEY_OBJECT_SET_USER_REQ ((sab_command_t)0x46)
-#define SAB_KEY_STORE_ALLOCATE_REQ ((sab_command_t)0x47)
-#define SAB_KEY_STORE_CONTEXT_INIT_REQ ((sab_command_t)0x48)
-#define SAB_KEY_STORE_SAVE_REQ ((sab_command_t)0x49)
-#define SAB_KEY_STORE_LOAD_REQ ((sab_command_t)0x4a)
-#define SAB_KEY_STORE_SET_KEY_REQ ((sab_command_t)0x4b)
-#define SAB_KEY_STORE_GENERATE_KEY_REQ ((sab_command_t)0x4c)
-#define SAB_KEY_STORE_GET_KEY_REQ ((sab_command_t)0x4d)
-#define SAB_KEY_STORE_OPEN_KEY_REQ ((sab_command_t)0x4e)
-#define SAB_KEY_STORE_FREEZE_KEY_REQ ((sab_command_t)0x4f)
-#define SAB_KEY_STORE_ERASE_KEY_REQ ((sab_command_t)0x50)
+#define SAB_KEY_OBJECT_FREE_REQ ((sab_command_t)0x47)
+#define SAB_KEY_STORE_ALLOCATE_REQ ((sab_command_t)0x48)
+#define SAB_KEY_STORE_CONTEXT_INIT_REQ ((sab_command_t)0x49)
+#define SAB_KEY_STORE_SAVE_REQ ((sab_command_t)0x4a)
+#define SAB_KEY_STORE_LOAD_REQ ((sab_command_t)0x4b)
+#define SAB_KEY_STORE_SET_KEY_REQ ((sab_command_t)0x4c)
+#define SAB_KEY_STORE_GENERATE_KEY_REQ ((sab_command_t)0x4d)
+#define SAB_KEY_STORE_GET_KEY_REQ ((sab_command_t)0x4e)
+#define SAB_KEY_STORE_OPEN_KEY_REQ ((sab_command_t)0x4f)
+#define SAB_KEY_STORE_FREEZE_KEY_REQ ((sab_command_t)0x50)
+#define SAB_KEY_STORE_ERASE_KEY_REQ ((sab_command_t)0x51)
 #define SAB_MGMT_ADVANCE_LIFECYCLE_REQ ((sab_command_t)0x60)
 #define SAB_MGMT_ATTEST_REQ ((sab_command_t)0x61)
 #define SAB_MGMT_BLOB_EXPORT_SECRET_REQ ((sab_command_t)0x62)
@@ -920,8 +921,9 @@ typedef struct {
 #define SAB_MGMT_SET_HOST_ACCESS_PERMISSION_REQ ((sab_command_t)0x70)
 #define SAB_MGMT_SET_PROPERTY_REQ ((sab_command_t)0x71)
 #define SAB_MGMT_SET_RETURN_FA_REQ ((sab_command_t)0x72)
-
-#define SAB_MGMT_FUSE_SHADOW_REGISTER_READ_REQ ((sab_command_t)0x73)
+#define SAB_MGMT_GET_RANDOM_REQ ((sab_command_t)0x73)
+#define SAB_MGMT_CLEAR_ALL_KEYS_REQ ((sab_command_t)0x74)
+#define SAB_MGMT_MBIST_PREPARE_REQ ((sab_command_t)0x75)
 
 /*
  * SAB algorithm definition
@@ -1042,4 +1044,9 @@ typedef struct {
 #define NBOOT_FW_UPD_KEK (0x80000004U)
 #define NBOOT_DTRK       (0x80000005U)
 */
+
+/* get/set properties defines */
+#define SAB_MGMT_PROPERTY_ID_DICE_CDI (0x10)
+#define SAB_MGMT_PROPERTY_ID_IMAGE_HASH (0x20)
+
 #endif /* sab_h__ */

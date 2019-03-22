@@ -14,10 +14,11 @@
 #endif
 
 #include "fsl_sss_api.h"
+#include "fsl_sss_sscp.h"
 
 typedef struct
 {
-    sss_session_t *session;
+    sss_sscp_session_t *session;
     uint32_t clockFrequency;
     uint32_t ctx;
 } sss_mgmt_t;
@@ -45,7 +46,7 @@ extern "C" {
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_context_init(sss_mgmt_t *context, sss_session_t *session);
+sss_status_t sss_mgmt_context_init(sss_mgmt_t *context, sss_sscp_session_t *session);
 
 /*! @brief Get property
  *  The function provides get property service
@@ -103,7 +104,8 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData);
+sss_status_t sss_mgmt_fuse_read(
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen);
 
 /*! @brief Get lifecycle
  *  The function provides read lifecycle service
@@ -145,7 +147,7 @@ sss_status_t sss_mgmt_fuse_program(
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context);
+sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData);
 
 /*! @brief Import non-key sensitive data
  *  The function loads non-key sensitive data in plain to security sub-system
@@ -283,7 +285,12 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context);
+sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
+                                    const uint8_t *request,
+                                    size_t requestSize,
+                                    void *options,
+                                    size_t *optionsLen,
+                                    uint32_t *status);
 
 /*! @brief Configure host access permissions
  *
@@ -310,12 +317,28 @@ sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint
  */
 sss_status_t sss_mgmt_integrity_check_enable(sss_mgmt_t *context);
 
+/*! @brief Attestation
+ *  The function provides attestation service.
+ *  This service provides a measurement of the security sub-system firmware, version and lifecycle.
+ *
+ * @param context Pointer to mgmt crypto context.
+ * @param destData Address of the destination data buffer
+ * @param dataLen Input length of the destination data buffer in bytes, output actual number of bytes written to
+ * destData
+ *
+ * @returns Status of the operation
+ * @retval kStatus_SSS_Success The operation has completed successfully.
+ * @retval kStatus_SSS_Fail The operation has failed.
+ * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
+ */
+sss_status_t sss_mgmt_ping(sss_mgmt_t *context);
+
 /*! @brief Mgmt context release.
  *  The function frees Mgmt context.
  *
  * @param context Pointer to Mgmt crypto context.
  */
-void sss_mgmt_context_free(sss_mgmt_t *context);
+sss_status_t sss_mgmt_context_free(sss_mgmt_t *context);
 /*!
  *@}
  */ /* end of sss_management */

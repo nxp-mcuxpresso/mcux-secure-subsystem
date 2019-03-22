@@ -13,7 +13,8 @@
 #include SSS_CONFIG_FILE
 #endif
 
-#include "fsl_sss_types.h"
+#include <stdint.h>
+#include <stddef.h>
 
 #define SSS_API_VERSION (0x00000001u)
 
@@ -118,14 +119,13 @@ typedef enum _sss_mode
 #if !defined(SSS_ACCESS_PERMISSION_ENUM_ALT)
 typedef enum _sss_access_permission
 {
-    kAccessPermission_SSS_Read = (1u << 0),
-    kAccessPermission_SSS_Write = (1u << 1),
-    kAccessPermission_SSS_Use = (1u << 2),
-    kAccessPermission_SSS_Delete = (1u << 3),
+    kAccessPermission_SSS_Read             = (1u << 0),
+    kAccessPermission_SSS_Write            = (1u << 1),
+    kAccessPermission_SSS_Use              = (1u << 2),
+    kAccessPermission_SSS_Delete           = (1u << 3),
     kAccessPermission_SSS_ChangeAttributes = (1u << 4),
 } sss_access_permission_t;
 #endif
-
 
 #if !defined(SSS_KEY_TYPE_ENUM_ALT)
 typedef enum _sss_key_type
@@ -220,7 +220,8 @@ typedef struct _sss_object
     /*! Application specific key identifier. The keyId is kept in the key  store
      * along with the key data and other properties. */
     uint32_t keyId;
-    
+    /*! Used only for ECC key types, to specify the elliptic curve related to the key. */
+    sss_eccgfp_group_t *eccgfpGroup;
 
     /*! Implementation specific part */
     struct
