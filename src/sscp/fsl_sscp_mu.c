@@ -66,7 +66,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
     uint32_t msg[MU_TR_COUNT] = {0};
-    int wrIdx                 = 1;
+    uint32_t wrIdx            = 1;
     bool done                 = false;
     for (int i = 0; !done && (i < SSCP_OPERATION_PARAM_COUNT); i++)
     {

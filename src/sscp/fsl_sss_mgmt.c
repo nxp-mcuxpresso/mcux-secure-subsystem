@@ -8,15 +8,13 @@
 #include "fsl_sscp_commands.h"
 #include "fsl_sss_sscp.h"
 
-sss_status_t sss_mgmt_context_init(sss_mgmt_t *context, sss_session_t *session)
+sss_status_t sss_mgmt_context_init(sss_mgmt_t *context, sss_sscp_session_t *session)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
     context->session = session;
-    return kStatus_SSS_Success;
-    /*skiping sending of command to S3, not supported yet*/
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
@@ -68,8 +66,6 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
     {
         return kStatus_SSS_Fail;
     }
-
-    *dataLen = len;
     return (sss_status_t)ret;
 }
 
@@ -494,14 +490,21 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context, const uint8_t *request, size_t requestSize)
+sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
+                                    const uint8_t *request,
+                                    size_t requestSize,
+                                    void *options,
+                                    size_t *optionsLen,
+                                    uint32_t *resultState)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0;
 
+    size_t len = (optionsLen != NULL) ? *optionsLen : 0;
+
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
@@ -510,8 +513,12 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context, const uint8_t *request,
     op.params[1].memref.buffer = (void *)request;
     op.params[1].memref.size   = requestSize;
 
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0;
+    op.params[2].memref.buffer = options;
+    op.params[2].memref.size   = len;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 0;
+    op.result[0].value.a = (uint32_t)resultState;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_ReturnFaSet, &op, &ret);
@@ -594,6 +601,27 @@ sss_status_t sss_mgmt_ping(sss_mgmt_t *context)
     return (sss_status_t)ret;
 }
 
-void sss_mgmt_context_free(sss_mgmt_t *context)
+sss_status_t sss_mgmt_context_free(sss_mgmt_t *context)
 {
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
 }
