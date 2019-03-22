@@ -30,3 +30,4 @@ int mu_receive_data_h(uint32_t *data, size_t max_size);
 #endif
 
 #endif /* MSGUNIT_HOST_HAL_H */
+
