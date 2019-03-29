@@ -1161,7 +1161,7 @@ sss_status_t sss_key_store_freeze_key(sss_key_store_t *keyStore, sss_object_t *k
 sss_status_t sss_key_store_erase_key(sss_key_store_t *keyStore, sss_object_t *keyObject);
 
 /*! @brief All keys discarted in specified key store. */
-sss_status_t sss_key_store_erase_all(sss_key_store_t *keyStore)
+sss_status_t sss_key_store_erase_all(sss_key_store_t *keyStore);
 
 /*! @brief Destructor for the key store context. */
 void sss_key_store_context_free(sss_key_store_t *keyStore);
