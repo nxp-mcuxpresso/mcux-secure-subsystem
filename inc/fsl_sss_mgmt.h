@@ -290,7 +290,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
                                     size_t requestSize,
                                     void *options,
                                     size_t *optionsLen,
-                                    uint32_t *status);
+                                    uint32_t *resultState);
 
 /*! @brief Configure host access permissions
  *

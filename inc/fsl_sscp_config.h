@@ -76,7 +76,6 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_MGMT_SecretBlobExport       = SAB_MGMT_BLOB_EXPORT_SECRET_REQ,
     kSSCP_CMD_SSS_MGMT_SecretBlobImport       = SAB_MGMT_BLOB_IMPORT_SECRET_REQ,
     kSSCP_CMD_SSS_MGMT_SoftwareVersionGet     = SAB_MGMT_GET_SOFTWARE_VERSION_REQ,
-    kSSCP_CMD_SSS_MGMT_SoftwareVersionSet,
     kSSCP_CMD_SSS_MGMT_ReturnFaSet             = SAB_MGMT_SET_RETURN_FA_REQ,
     kSSCP_CMD_SSS_MGMT_HostAccessPermissionSet = SAB_MGMT_SET_HOST_ACCESS_PERMISSION_REQ,
     kSSCP_CMD_SSS_MGMT_IntegrityCheckEnable    = SAB_MGMT_INTEGRITY_CHECK_ENABLE_REQ,

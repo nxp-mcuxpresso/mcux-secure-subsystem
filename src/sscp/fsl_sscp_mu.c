@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <stdint.h>
-#include <stdio.h>
 
 #include "fsl_sscp_mu.h"
 #include "fsl_sss_sscp.h"
@@ -16,27 +15,29 @@
 #define SENTINEL_SUCCESS ((uint8_t)0x3C)
 #define SENTINEL_FAIL ((uint8_t)0xC3)
 
-void MU_Init()
+void MU_Init(void)
 {
     k4mu_init();
 }
 
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
-    if (k4mu_get_response(msg, wordNum) != MU_SUCCESS_RESULT)
+    sscp_status_t ret = kStatus_SSCP_Fail;
+    if (k4mu_get_response(msg, wordNum) == MU_SUCCESS_RESULT)
     {
-        return kStatus_SSCP_Fail;
+      ret = kStatus_SSCP_Success;
     }
-    return kStatus_SSCP_Success;
+    return ret;
 }
 
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
-    if (k4mu_send_message(msg, wordNum) != MU_SUCCESS_RESULT)
+    sscp_status_t ret = kStatus_SSCP_Fail;
+    if (k4mu_send_message(msg, wordNum) == MU_SUCCESS_RESULT)
     {
-        return kStatus_SSCP_Fail;
+        ret = kStatus_SSCP_Success;
     }
-    return kStatus_SSCP_Success;
+    return ret;
 }
 
 sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
@@ -53,9 +54,9 @@ sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
 
 void sscp_mu_deinit(sscp_context_t *context)
 {
-    sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
+    /*sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
-    MU_Deinit(muContext->base);
+    MU_Deinit(muContext->base);*/
 }
 
 sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
@@ -66,9 +67,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
     uint32_t msg[MU_TR_COUNT] = {0};
-    uint32_t wrIdx            = 1;
+    uint32_t wrIdx            = 1u;
     bool done                 = false;
-    for (int i = 0; !done && (i < SSCP_OPERATION_PARAM_COUNT); i++)
+    for (uint32_t i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
         {
@@ -158,7 +159,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     muMsgHeader.check_bits = STATIC_CHECK_BITS;
     muMsgHeader.tag_sts    = MESSAGING_TAG_COMMAND;
     muMsgHeader.command    = commandID;
-    muMsgHeader.size       = wrIdx - MU_MSG_HEADER_SIZE;
+    muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
     msg[0]                 = (uint32_t)(*((uint32_t *)(&muMsgHeader)));
 
     if (MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
@@ -180,8 +181,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     {
         return kStatus_SSCP_Fail;
     }
-    for (int i = 1, k = 0; i <= op->resultCount; i++, k++)
+    for (uint32_t i = 1u; i <= op->resultCount; i++)
     {
+      uint32_t k = i - 1u;
         switch (SSCP_OP_GET_PARAM(k, op->resultTypes))
         {
             case kSSCP_ParamType_ContextReference:

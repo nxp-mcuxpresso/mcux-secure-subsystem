@@ -44,16 +44,15 @@ typedef uint8_t sab_command_t;
 typedef uint8_t sab_ranking_t;
 typedef uint8_t sab_rating_t;
 
-// sab_status_t ranking
+/*sab_status_t ranking*/
 
 #define SAB_SUCCESS ((sab_ranking_t)0x3C)
 #define SAB_FAILURE ((sab_ranking_t)0xC3)
 
-// sab_status_t rating
-#define SAB_BLOCKING_CONTEXT ((sab_rating_t)0x10)  // Tried to retrieve a non-blocking status on a blocking session
-#define SAB_NO_PENDING_STATUS ((sab_rating_t)0x11) // In case of non blocking call
+#define SAB_BLOCKING_CONTEXT ((sab_rating_t)0x10) 
+#define SAB_NO_PENDING_STATUS ((sab_rating_t)0x11)
 #define SAB_INVALID_ARGUMENT ((sab_rating_t)0x12)
-#define SAB_RESOURCE_BUSY ((sab_rating_t)0x13) // Blocking call only
+#define SAB_RESOURCE_BUSY ((sab_rating_t)0x13)
 #define SAB_UNKNOWN_SESSION ((sab_rating_t)0x14)
 #define SAB_UNKNOWN_CONTEXT ((sab_rating_t)0x15)
 #define SAB_UNKNOWN_COMMAND ((sab_rating_t)0x16)
@@ -61,17 +60,15 @@ typedef uint8_t sab_rating_t;
 
 typedef struct
 {
-    sab_ranking_t ranking; // Success / failure
-    sab_rating_t rating;   // Error code or status indication
-    uint8_t size;          // Nb of words including the status word in the command indication
-    sab_command_t command; // Identify the original command
+    sab_ranking_t ranking; /* Success / failure*/
+    sab_rating_t rating;   /* Error code or status indication*/
+    uint8_t size;          /* Nb of words including the status word in the command indication*/
+    sab_command_t command; /* Identify the original command*/
 } sab_status_t;
 
-typedef uint32_t sab_object_t; // TBD
-// typedef uint32_t sab_derive_key_t; // TBD
-typedef uint32_t sab_key_store_t; // TBD
+typedef uint32_t sab_object_t;
+typedef uint32_t sab_key_store_t; 
 
-// sab_session;
 
 typedef uint32_t session_cfg_t;
 
@@ -83,11 +80,6 @@ typedef uint32_t session_cfg_t;
 #define SAP_SESSION_DID_MSK ((1 << SAP_SESSION_DID_NB_BITS) - 1)
 #define SAP_SESSION_DID_POS 2
 
-#define SAP_GEN_SESSION_FLAG(prio, did)                                       \
-    (session_cfg_t)(((prio & SAP_SESSION_PRIO_MSK) << SAP_SESSION_PRIO_POS) | \
-                    ((did & SAP_SESSION_DID_MSK) << SAP_SESSION_DID_POS))
-
-#define SAP_GET_SESSION_FLAG_PRIO(flag) ((flag >> SAP_SESSION_PRIO_POS) & SAP_SESSION_PRIO_MSK)
 
 #define SAP_SESSION_CFG_SIZE 1
 
@@ -973,7 +965,7 @@ typedef struct {
 #define SAB_ALGO_ECDSA_SHA384 ((sab_algorithm_t)0x21)
 #define SAB_ALGO_ECDSA_SHA512 ((sab_algorithm_t)0x22)
 
-// SAB mode definitions. Default is blocking calls
+/*SAB mode definitions. Default is blocking calls*/
 
 #define SAB_NON_BLOCKING_FLAG (1U << 7)
 
@@ -985,7 +977,7 @@ typedef struct {
 #define SAB_MODE_DIGEST ((sab_mode_t)0x05)
 #define SAB_MODE_MAC ((sab_mode_t)0x06)
 
-// SAB mode non blocking definitions
+/*SAB mode non blocking definitions*/
 #define SAB_MODE_ENCRYPT_NB ((sab_mode_t)(SAB_NON_BLOCKING_FLAG | SAB_MODE_ENCRYPT))
 #define SAB_MODE_DECRYPT_NB ((sab_mode_t)(SAB_NON_BLOCKING_FLAG | SAB_MODE_DECRYPT))
 #define SAB_MODE_SIGN_NB ((sab_mode_t)(SAB_NON_BLOCKING_FLAG | SAB_MODE_SIGN))
@@ -994,7 +986,7 @@ typedef struct {
 #define SAB_MODE_DIGEST_NB ((sab_mode_t)(SAB_NON_BLOCKING_FLAG | SAB_MODE_DIGEST))
 #define SAB_MODE_MAC_NB ((sab_mode_t)(SAB_NON_BLOCKING_FLAG | SAB_MODE_MAC))
 
-// SAB Security Enclave Type definitions
+/*SAB Security Enclave Type definitions*/
 #define SAB_SE_TYPE_Software ((sab_se_type_t)0x00)
 #define SAB_SE_TYPE_SECO ((sab_se_type_t)0x01)
 #define SAB_SE_TYPE_S200 ((sab_se_type_t)0x02)

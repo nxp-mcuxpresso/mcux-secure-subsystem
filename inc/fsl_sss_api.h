@@ -162,11 +162,11 @@ typedef enum _sss_key_object_mode
 #if !defined(SSS_ELIPTIC_CURVE_TYPE_ENUM_ALT)
 typedef enum _sss_eliptic_curve_type
 {
-    kSSS_EccCurve_NONE,
-    kSSS_EccCurve_NISTP256,
-    kSSS_EccCurve_NISTP384,
-    kSSS_EccCurve_NISTP521,
-    kSSS_EccCurve_CUSTOM,
+    kSSS_EccCurve_NONE = 0x0u,
+    kSSS_EccCurve_NISTP256 = 0x1u,
+    kSSS_EccCurve_NISTP384 = 0x2u,
+    kSSS_EccCurve_NISTP521 = 0x3u,
+    kSSS_EccCurve_CUSTOM = 0x4u,
 } sss_eliptic_curve_type_t;
 #endif
 
@@ -1160,7 +1160,8 @@ sss_status_t sss_key_store_freeze_key(sss_key_store_t *keyStore, sss_object_t *k
 /*! @brief The referenced plain key[] is discarded. */
 sss_status_t sss_key_store_erase_key(sss_key_store_t *keyStore, sss_object_t *keyObject);
 
-// sss_status_t sss_key_store_clear_all(sss_key_store_t *keyStore);
+/*! @brief All keys discarted in specified key store. */
+sss_status_t sss_key_store_erase_all(sss_key_store_t *keyStore)
 
 /*! @brief Destructor for the key store context. */
 void sss_key_store_context_free(sss_key_store_t *keyStore);

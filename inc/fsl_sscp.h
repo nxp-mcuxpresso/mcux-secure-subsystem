@@ -210,8 +210,8 @@
  */
 
 /*! @brief Maximum number of parameters to be supported in one sscp_operation_t */
-#define SSCP_OPERATION_PARAM_COUNT (7)
-#define SSCP_OPERATION_RESULTS_COUNT (2)
+#define SSCP_OPERATION_PARAM_COUNT (7u)
+#define SSCP_OPERATION_RESULTS_COUNT (2u)
 
 /*! @brief Default SSCP context is a pointer to memory. */
 #ifndef SSCP_MAX_CONTEXT_SIZE
@@ -220,21 +220,27 @@
 
 /*! @brief Set parameter types for the SSCP operation. Each param type is encoded into 4-bits bit field. */
 #define SSCP_OP_SET_PARAM(p0, p1, p2, p3, p4, p5, p6)                                                   \
-    (((uint32_t)p0 & 0xFu) << 0) | (((uint32_t)p1 & 0xFu) << 4) | (((uint32_t)p2 & 0xFu) << 8) |        \
-        (((uint32_t)p3 & 0xFu) << 12) | (((uint32_t)p4 & 0xFu) << 16) | (((uint32_t)p5 & 0xFu) << 20) | \
-        (((uint32_t)p6 & 0xFu) << 24);
+    (((uint32_t)(p0) & 0xFu) << 0) | (((uint32_t)(p1) & 0xFu) << 4) | (((uint32_t)(p2) & 0xFu) << 8) |        \
+        (((uint32_t)(p3) & 0xFu) << 12) | (((uint32_t)(p4) & 0xFu) << 16) | (((uint32_t)(p5) & 0xFu) << 20) | \
+        (((uint32_t)(p6) & 0xFu) << 24)
 
 /*! @brief Set parameter types for the SSCP operation. Each param type is encoded into 4-bits bit field. */
-#define SSCP_OP_SET_RESULT(p0) (((uint32_t)p0 & 0xFu) << 0);
+#define SSCP_OP_SET_RESULT(p0) (((uint32_t)(p0) & 0xFu) << 0)
 
 /*! @brief Decode i-th parameter as 4-bit unsigned integer. */
-#define SSCP_OP_GET_PARAM(i, paramTypes) ((uint32_t)((((uint32_t)paramTypes) >> i * 4) & 0xFu))
+#define SSCP_OP_GET_PARAM(i, paramTypes) ((((uint32_t)(paramTypes)) >> (i) * 4u) & 0xFu)
 
 /*! @brief Compile time sizeof() check */
-#define SSCP_BUILD_ASSURE(condition, msg) extern int msg[1 - 2 * (!(condition))] __attribute__((unused))
+#define SSCP_BUILD_ASSURE(condition, msg) extern int (msg)[1 - 2 * (!(condition))] __attribute__((unused))
 
-/*! @brief Data type for SSCP function return values */
-typedef uint32_t sscp_status_t;
+/**
+ * @brief Enum with return values from SSCP functions
+ */
+typedef enum
+{
+    kStatus_SSCP_Success = 0x10203040u,
+    kStatus_SSCP_Fail    = 0x40302010u,
+} sscp_status_t;
 
 typedef struct _sscp_context sscp_context_t;
 
@@ -278,7 +284,7 @@ typedef sscp_status_t (*fn_sscp_invoke_command_t)(sscp_context_t *context,
 struct _sscp_context
 {
     fn_sscp_invoke_command_t invoke;
-    // sscp_status_t (*sscp_invoke_command)(sscp_context_t *context, uint32_t commandID, sscp_operation_t *op);
+    /*sscp_status_t (*sscp_invoke_command)(sscp_context_t *context, uint32_t commandID, sscp_operation_t *op);*/
 
     /*! Implementation specific part */
     struct
@@ -352,7 +358,7 @@ typedef struct _sscp_context_operation
  * @param aggregate Reference to another SSCP descriptor
  * @param context Pointer to a data struct to be passed to SSCP by reference
  */
-typedef union _sscp_parameter
+typedef union
 {
     sscp_value_t value;
     sscp_memref_t memref;
@@ -383,8 +389,8 @@ struct _sscp_operation
  */
 typedef enum _sscp_param_types
 {
-    kSSCP_ParamType_None      = 0,      /*! Parameter not in use */
-    kSSCP_ParamType_Aggregate = 0x1u,   /*! Link to another ::sscp_operation_t */
+    kSSCP_ParamType_None,      /*! Parameter not in use */
+    kSSCP_ParamType_Aggregate,   /*! Link to another ::sscp_operation_t */
     kSSCP_ParamType_ContextReference,   /*! Reference to a context structure - pointer and type */
     kSSCP_ParamType_MemrefInputNoSize,  /*! Reference to a memory buffer - input to remote function or service, no size
                                            specified */
@@ -402,14 +408,6 @@ typedef enum _sscp_param_types
     kSSCP_ParamType_ValueOutputSingle, /*! One 32-bit integers - output by remote function or service */
 } sscp_param_types_t;
 
-/**
- * @brief Enum with return values from SSCP functions
- */
-enum _sscp_return_values
-{
-    kStatus_SSCP_Success = 0x10203040u,
-    kStatus_SSCP_Fail    = 0x40302010u,
-};
 
 /*******************************************************************************
  * API
