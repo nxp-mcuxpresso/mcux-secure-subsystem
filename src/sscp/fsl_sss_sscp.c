@@ -344,11 +344,42 @@ sss_status_t sss_sscp_aead_context_init(sss_sscp_aead_t *context,
                                         sss_algorithm_t algorithm,
                                         sss_mode_t mode)
 {
+    SSCP_BUILD_ASSURE(sizeof(sss_aead_t) >= sizeof(sss_sscp_aead_t), _sss_sscp_aead_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
     context->session   = session;
     context->keyObject = keyObject;
     context->algorithm = algorithm;
     context->mode      = mode;
-    return kStatus_SSS_Success;
+
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+
+    op.params[1].context.ptr  = keyObject;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[2].value.a = (uint32_t)algorithm;
+    op.params[2].value.b = (uint32_t)mode;
+
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
+    op.resultCount            = 1u;
+    op.result[0].context.ptr  = context;
+    op.result[0].context.type = kSSCP_ParamContextType_SSS_Aead;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AeadContextInit, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
 }
 
 sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
@@ -374,50 +405,41 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
     if (context->mode == kMode_SSS_Encrypt)
     {
         op.paramTypes =
-            SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                              kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
-                              kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None);
+            SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInputNoSize,
+                              kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
+                              kSSCP_ParamType_MemrefOutput);
     }
     else
     {
         op.paramTypes =
-            SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                              kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
-                              kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None);
+            SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInputNoSize,
+                              kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
+                              kSSCP_ParamType_MemrefInput);
     }
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Aead;
 
     op.params[1].memref.buffer = (void *)(uintptr_t)srcData;
-    op.params[1].memref.size   = size;
+//    op.params[1].memref.size   = size;
     op.params[2].memref.buffer = destData;
-    op.params[2].memref.size   = size;
-    op.params[3].memref.buffer = nonce;
-    op.params[3].memref.size   = nonceLen;
-    op.params[4].memref.buffer = (void *)(uintptr_t)aad;
-    op.params[4].memref.size   = aadLen;
-    op.params[5].memref.buffer = tag;
-    op.params[5].memref.size   = *tagLen;
-
+//    op.params[2].memref.size   = size;
+    op.params[3].value.a       = size;
+    op.params[4].memref.buffer = nonce;
+    op.params[4].memref.size   = nonceLen;
+    op.params[5].memref.buffer = (void *)(uintptr_t)aad;
+    op.params[5].memref.size   = aadLen;
+    op.params[6].memref.buffer = tag;
+    op.params[6].memref.size   = *tagLen;
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = (uint32_t)tagLen;
     sscp_context_t *sscpCtx = context->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AeadOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        if (context->mode == kMode_SSS_Encrypt)
-        {
-            /* tagLen returns number of bytes written to tag */
-            *tagLen = 0u;
-        }
         return kStatus_SSS_Fail;
     }
-
-    if (context->mode == kMode_SSS_Encrypt)
-    {
-        /* tagLen returns number of bytes written to tag */
-        *tagLen = op.params[5].memref.size;
-    }
-
     return (sss_status_t)ret;
 }
 

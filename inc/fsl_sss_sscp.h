@@ -91,6 +91,11 @@ typedef struct _sss_sscp_aead
     sss_mode_t mode;              /*!  */
 
     /*! Implementation specific part */
+        struct
+    {
+        uint8_t data[SSS_SSCP_AEAD_CONTEXT_SIZE];
+    } context;
+    uint32_t ctx;
 } sss_sscp_aead_t;
 
 typedef struct _sss_sscp_digest

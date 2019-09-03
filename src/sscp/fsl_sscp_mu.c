@@ -82,6 +82,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     case kSSCP_ParamContextType_SSS_Symmetric:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_symmetric_t *)(op->params[i].context.ptr))->ctx;
                         break;
+                    case kSSCP_ParamContextType_SSS_Aead:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_aead_t *)(op->params[i].context.ptr))->ctx;
+                        break;
                     case kSSCP_ParamContextType_SSS_Digest:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_digest_t *)op->params[i].context.ptr)->ctx;
                         break;
@@ -130,7 +133,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 
             case kSSCP_ParamType_MemrefOutput:
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.buffer);
-                msg[wrIdx++] = (uint32_t) & (op->params[i].memref.size);
+                msg[wrIdx++] = (uint32_t)(op->params[i].memref.size);
                 break;
 
             case kSSCP_ParamType_ValueInputTuple:
@@ -194,6 +197,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Symmetric:
                         ((sss_sscp_symmetric_t *)(op->result[k].context.ptr))->ctx = msg[i];
+                        break;                        
+                    case kSSCP_ParamContextType_SSS_Aead:
+                        ((sss_sscp_aead_t *)(op->result[k].context.ptr))->ctx = msg[i];
                         break;
                     case kSSCP_ParamContextType_SSS_Digest:
                         ((sss_sscp_digest_t *)op->result[k].context.ptr)->ctx = msg[i];

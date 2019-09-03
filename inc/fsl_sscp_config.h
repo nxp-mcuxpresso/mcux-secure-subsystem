@@ -22,6 +22,7 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_SymmetricCipherUpdate       = SAB_CIPHER_UPDATE_REQ,
     kSSCP_CMD_SSS_SymmetricCipherFinish       = SAB_CIPHER_FINISH_REQ,
     kSSCP_CMD_SSS_SymmetricCryptCtr           = SAB_CIPHER_CRYPT_CTR_REQ,
+    kSSCP_CMD_SSS_AeadContextInit             = SAB_AEAD_CONTEXT_INIT_REQ,
     kSSCP_CMD_SSS_AeadOneGo                   = SAB_AEAD_ONE_GO_REQ,
     kSSCP_CMD_SSS_AeadInit                    = SAB_AEAD_INIT_REQ,
     kSSCP_CMD_SSS_AeadUpdateAead              = SAB_AEAD_UPDATE_AAD_REQ,
