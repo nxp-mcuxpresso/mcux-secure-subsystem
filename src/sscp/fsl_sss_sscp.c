@@ -13,8 +13,6 @@
 #include "fsl_sscp.h"
 #include "fsl_sscp_commands.h"
 
-#define HMAC_MAX_LEN (32u)
-
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
                                    sss_type_t subsystem,
                                    sscp_context_t *sscpctx,
@@ -443,6 +441,31 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
     return (sss_status_t)ret;
 }
 
+sss_status_t sss_sscp_aead_context_free(sss_sscp_aead_t *context)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Aead;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+
 sss_status_t sss_sscp_aead_init(
     sss_sscp_aead_t *context, uint8_t *nonce, size_t nonceLen, size_t tagLen, size_t aadLen, size_t payloadLen)
 {
@@ -469,11 +492,6 @@ sss_status_t sss_sscp_aead_finish(sss_sscp_aead_t *context,
                                   size_t *tagLen)
 {
     return kStatus_SSS_Fail;
-}
-
-void sss_sscp_aead_context_free(sss_sscp_aead_t *context)
-{
-    memset(context, 0, sizeof(sss_sscp_aead_t));
 }
 
 /********************************DIGEST****************************************/
@@ -717,8 +735,7 @@ sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
     context->mode       = mode;
     context->session    = session;
     context->keyObject  = keyObject;
-    context->macFullLen = HMAC_MAX_LEN;
-
+    
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
                                       kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
@@ -754,16 +771,6 @@ sss_status_t sss_sscp_mac_one_go(
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    /* if the caller gives NULL pointer to macLen, it is assumed that mac[] buffer is big enough to hold full
-     * mac */
-    size_t len = (macLen != NULL) ? *macLen : context->macFullLen;
-
-    /* if the *macLen cannot hold full mac (per algorithm spec) return error */
-    if (len < context->macFullLen)
-    {
-        return kStatus_SSS_Fail;
-    }
-
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInOut,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
@@ -774,7 +781,7 @@ sss_status_t sss_sscp_mac_one_go(
     op.params[1].memref.buffer = (void *)(uintptr_t)message;
     op.params[1].memref.size   = messageLen;
     op.params[2].memref.buffer = mac;
-    op.params[2].memref.size   = len;
+    op.params[2].memref.size   = *macLen;
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
@@ -856,16 +863,6 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    /* if the caller gives NULL pointer to macLen, it is assumed that mac[] buffer is big enough to hold full
-     * mac */
-    size_t len = (macLen != NULL) ? *macLen : context->macFullLen;
-
-    /* if the *macLen cannot hold full mac (per algorithm spec) return error */
-    if (len < context->macFullLen)
-    {
-        return kStatus_SSS_Fail;
-    }
-
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
@@ -874,7 +871,7 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
 
     op.params[1].memref.buffer = mac;
-    op.params[1].memref.size   = len;
+    op.params[1].memref.size   = *macLen;
 
     sscp_context_t *sscpCtx = context->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacFinish, &op, &ret);
@@ -1763,4 +1760,29 @@ sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, 
 {
     keyObject->eccgfpGroup = group;
     return kStatus_SSS_Success;
+}
+
+sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = keyObject;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = keyObject->keyStore->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyObjectContextFree, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
 }

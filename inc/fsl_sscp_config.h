@@ -50,6 +50,7 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_KeyObjectContextInit        = SAB_KEY_OBJECT_INIT_REQ,
     kSSCP_CMD_SSS_KeyObjectAllocateHandle     = SAB_KEY_OBJECT_ALLOCATE_HANDLE_REQ,
     kSSCP_CMD_SSS_KeyObjectGetHandle          = SAB_KEY_OBJECT_GET_HANDLE_REQ,
+    kSSCP_CMD_SSS_KeyObjectContextFree        = SAB_KEY_OBJECT_FREE_REQ,
     kSSCP_CMD_SSS_KeyStoreContextInit         = SAB_KEY_STORE_CONTEXT_INIT_REQ,
     kSSCP_CMD_SSS_KeyStoreAllocate            = SAB_KEY_STORE_ALLOCATE_REQ,
     kSSCP_CMD_SSS_KeyStoreSave                = SAB_KEY_STORE_SAVE_REQ,

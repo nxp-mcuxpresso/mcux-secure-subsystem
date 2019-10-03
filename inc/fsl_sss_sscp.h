@@ -125,7 +125,6 @@ typedef struct _sss_sscp_mac
     sss_mode_t mode;              /*!  */
 
     /*! Implementation specific part */
-    uint32_t macFullLen;
     uint32_t ctx;
     struct
     {
@@ -255,7 +254,7 @@ sss_status_t sss_sscp_aead_finish(sss_sscp_aead_t *context,
                                   uint8_t *tag,
                                   size_t *tagLen);
 
-void sss_sscp_aead_context_free(sss_sscp_aead_t *context);
+sss_status_t sss_sscp_aead_context_free(sss_sscp_aead_t *context);
 
 /********************************DIGEST****************************************/
 
@@ -363,6 +362,7 @@ sss_status_t sss_sscp_key_object_allocate_handle(
     sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
+sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);
 /*******************************TUNNEL*****************************************/
 sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_session_t *session, uint32_t tunnelType);
 
