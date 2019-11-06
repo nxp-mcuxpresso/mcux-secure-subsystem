@@ -50,6 +50,7 @@ typedef struct _sss_sscp_object
     sss_sscp_key_store_t *keyStore;
 
     uint32_t objectType; /*! TODO define object types */
+    uint32_t objectKeyCipher;
     /*! Application specific key identifier. The keyId is kept in the key store along with the key data and other
      * properties. */
     uint32_t keyId;
@@ -161,6 +162,7 @@ typedef struct _sss_sscp_derive_key
     sss_mode_t mode;           /*!  */
 
     /*! Implementation specific part */
+    uint32_t ctx;
 } sss_sscp_derive_key_t;
 
 typedef struct _sss_sscp_rng
@@ -312,7 +314,7 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
                                                sss_sscp_object_t *otherPartyKeyObject,
                                                sss_sscp_object_t *derivedKeyObject);
 
-void sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context);
+sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context);
 /*********************************MAC******************************************/
 sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
                                        sss_sscp_session_t *session,
@@ -337,7 +339,8 @@ sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_
 
 sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
-                                        const uint8_t *key,
+                                        const uint8_t *data,
+                                        size_t dataLen,
                                         uint32_t keyBitLen,
                                         void *options,
                                         size_t optionsLen);
@@ -345,6 +348,8 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
                                         uint8_t *key,
                                         size_t *pKeyBitLen);
+sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject,
+                                             size_t keyBitLen, void *options);
 
 sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
@@ -359,7 +364,8 @@ sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key
 sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
 
 sss_status_t sss_sscp_key_object_allocate_handle(
-    sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_type_t keyType, uint32_t keyByteLenMax, uint32_t options);
+    sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_part_t keyPart,
+    sss_cipher_type_t cipherType, uint32_t keyByteLenMax, uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
 sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);

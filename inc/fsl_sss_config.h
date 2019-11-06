@@ -20,6 +20,7 @@
 #define SSS_ASYMMETRIC_MAX_CONTEXT_SIZE     (16)
 #define SSS_TUNNEL_MAX_CONTEXT_SIZE         (16)
 #define SSS_DERIVE_KEY_MAX_CONTEXT_SIZE     (16)
+#define SSS_RNG_MAX_CONTEXT_SIZE            (16)
 /* clang-format on */
 
 #define SSS_TYPE_ENUM_ALT
@@ -95,26 +96,43 @@ typedef enum _sss_algorithm
     kAlgorithm_SSS_ECDSA_SHA512 = SAB_ALGO_ECDSA_SHA512,
 } sss_algorithm_t;
 
-#define SSS_KEY_TYPE_ENUM_ALT
-typedef enum _sss_key_type
+#define SSS_KEY_CIPHER_TYPE_ENUM_ALT
+typedef enum _sss_cipher_type
 {
-    kSSS_KeyType_NONE        = SAB_KEY_TYPE_SYMMETRIC,
-    kSSS_KeyType_Certificate = SAB_KEY_TYPE_SYMMETRIC,
-    kSSS_KeyType_AES         = SAB_KEY_TYPE_SYMMETRIC,
-    kSSS_KeyType_DES         = SAB_KEY_TYPE_SYMMETRIC,
-    kSSS_KeyType_MAC         = SAB_KEY_TYPE_SYMMETRIC,
-    kSSS_KeyType_RSA_Public  = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECC_Public  = SAB_KEY_TYPE_ASYMMETRIC, /*! Weierstrass form elliptic curve public key  */
-    kSSS_KeyType_ECM_Public  = SAB_KEY_TYPE_ASYMMETRIC, /*! Montgomery form elliptic curve public key  */
-    kSSS_KeyType_ECT_Public  = SAB_KEY_TYPE_ASYMMETRIC, /*! twisted Edwards form elliptic curve public key  */
-    kSSS_KeyType_RSA_Private = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECC_Private = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECM_Private = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECT_Private = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_RSA_Pair    = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECC_Pair    = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECM_Pair    = SAB_KEY_TYPE_ASYMMETRIC,
-    kSSS_KeyType_ECT_Pair    = SAB_KEY_TYPE_ASYMMETRIC,
-} sss_key_type_t;
+    kSSS_CipherType_NONE = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_CipherType_AES = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_CipherType_DES = SAB_KEY_TYPE_SYMMETRIC,
+
+    kSSS_CipherType_CMAC = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_CipherType_HMAC = SAB_KEY_TYPE_SYMMETRIC,
+
+    kSSS_CipherType_MAC = SAB_KEY_TYPE_SYMMETRIC,
+    kSSS_CipherType_RSA = SAB_KEY_TYPE_ASYMMETRIC,     /*! RSA RAW format      */
+    kSSS_CipherType_RSA_CRT = SAB_KEY_TYPE_ASYMMETRIC, /*! RSA CRT format      */
+
+    /* The following keys can be identified
+     * solely by the *Family* and bit length
+     */
+    kSSS_CipherType_EC_NIST_P = SAB_KEY_TYPE_ASYMMETRIC, /*! Keys Part of NIST-P Family */
+    kSSS_CipherType_EC_NIST_K = SAB_KEY_TYPE_ASYMMETRIC, /*! Keys Part of NIST-K Family */
+
+    /* The following keys need their full curve parameters (p,a,b,x,y,n,h)
+     */
+    /*! Montgomery Key,   */
+    kSSS_CipherType_EC_MONTGOMERY = SAB_KEY_TYPE_ASYMMETRIC,
+    /*! twisted Edwards form elliptic curve public key */
+    kSSS_CipherType_EC_TWISTED_ED = SAB_KEY_TYPE_ASYMMETRIC,
+    /*! Brainpool form elliptic curve public key */
+    kSSS_CipherType_EC_BRAINPOOL = SAB_KEY_TYPE_ASYMMETRIC,
+    /*! Barreto Naehrig curve */
+    kSSS_CipherType_EC_BARRETO_NAEHRIG = SAB_KEY_TYPE_ASYMMETRIC,
+
+    kSSS_CipherType_UserID = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_CipherType_Certificate = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_CipherType_Binary = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_CipherType_Count = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_CipherType_PCR = SAB_KEY_TYPE_ASYMMETRIC,
+    kSSS_CipherType_ReservedPin = SAB_KEY_TYPE_ASYMMETRIC,
+} sss_cipher_type_t;
 
 #endif /* _FSL_SSS_CONFIG_H_ */

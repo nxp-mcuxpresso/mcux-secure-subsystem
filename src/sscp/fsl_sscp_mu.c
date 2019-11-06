@@ -100,6 +100,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     case kSSCP_ParamContextType_SSS_KeyStore:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_key_store_t *)op->params[i].context.ptr)->ctx;
                         break;
+                    case kSSCP_ParamContextType_SSS_DeriveKey:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_derive_key_t *)op->params[i].context.ptr)->ctx;
+                        break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         msg[wrIdx++] = (uint32_t)((sss_mgmt_t *)op->params[i].context.ptr)->ctx;
                         break;
@@ -216,6 +219,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     case kSSCP_ParamContextType_SSS_KeyStore:
                         ((sss_sscp_key_store_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
+                    case kSSCP_ParamContextType_SSS_DeriveKey:
+                        ((sss_sscp_derive_key_t *)op->result[k].context.ptr)->ctx = msg[i];
+                        break;    
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         ((sss_mgmt_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;

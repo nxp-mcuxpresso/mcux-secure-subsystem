@@ -45,6 +45,7 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_AsymmetricVerifyDigest      = SAB_ASYMMETRIC_VERIFY_DIGEST_REQ,
     kSSCP_CMD_SSS_TunnelContextInit           = SAB_TUNNEL_CONTEXT_INIT_REQ,
     kSSCP_CMD_SSS_Tunnel                      = SAB_TUNNEL_REQ,
+    kSSCP_CMD_SSS_DeriveKeyContextInit        = SAB_DERIVE_KEY_CONTEXT_INIT_REQ,
     kSSCP_CMD_SSS_DeriveKey                   = SAB_DERIVE_KEY_REQ,
     kSSCP_CMD_SSS_AsymmetricDeriveKey         = SAB_ASYMMETRIC_DH_DERIVE_KEY_REQ,
     kSSCP_CMD_SSS_KeyObjectContextInit        = SAB_KEY_OBJECT_INIT_REQ,
