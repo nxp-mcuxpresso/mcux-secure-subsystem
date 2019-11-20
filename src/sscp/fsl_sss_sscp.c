@@ -1354,7 +1354,7 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
     op.params[2].context.ptr  = derivedKeyObject;
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
     
-    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueInputSingle);
     op.resultCount            = 1u;
     
     sscp_context_t *sscpCtx = context->session->sscp;
@@ -1490,7 +1490,8 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
     op.params[2].memref.buffer = (void *)(uintptr_t)data;
     op.params[2].memref.size   = dataLen;
 
-    if (keyObject->objectKeyCipher == kSSS_CipherType_EC_NIST_P)
+    /* This is temporary solution until new key store is developed */
+    if ((keyObject->objectKeyCipher == kSSS_CipherType_EC_NIST_P) && (keyBitLen < 1024))
     {
         op.params[3].value.a = 3*keyBitLen;
         op.params[3].value.b = opt;
@@ -1500,7 +1501,6 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
         op.params[3].value.a = keyBitLen;
         op.params[3].value.b = opt;
     }
-
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;
 
@@ -1513,10 +1513,10 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
 
     return (sss_status_t)ret;
 }
-
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
-                                        uint8_t *key,
+                                        uint8_t *data,
+                                        size_t *dataLen,
                                         size_t *pKeyBitLen)
 {
     sscp_operation_t op  = {0};
@@ -1527,21 +1527,20 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                       kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_ValueInputSingle,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
-    size_t bitLen = (pKeyBitLen != NULL) ? *pKeyBitLen : 0u;
-
     op.params[0].context.ptr  = keyStore;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
 
     op.params[1].context.ptr  = keyObject;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
 
-    op.params[2].memref.buffer = (void *)(uintptr_t)key;
-    op.params[2].memref.size   = (bitLen + 7u) / 8u;
+    op.params[2].memref.buffer = (void *)(uintptr_t)data;
+    op.params[2].memref.size   = *dataLen;
 
-    op.params[3].value.a = bitLen;
+    op.params[3].value.a = *dataLen;
 
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0u;
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = (uint32_t)dataLen;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreGetKey, &op, &ret);

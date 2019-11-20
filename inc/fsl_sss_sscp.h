@@ -346,7 +346,8 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         size_t optionsLen);
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
-                                        uint8_t *key,
+                                        uint8_t *data,
+                                        size_t *dataLen,
                                         size_t *pKeyBitLen);
 sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject,
                                              size_t keyBitLen, void *options);
