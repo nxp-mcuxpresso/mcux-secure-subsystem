@@ -9,7 +9,6 @@
 #include "fsl_sscp_mu.h"
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
-#include "msgunit_driver.h"
 
 #define MU_Deinit (void)
 #define SENTINEL_SUCCESS ((uint8_t)0x3C)
