@@ -567,7 +567,12 @@ typedef struct _sss_aead
     } extension;
 } sss_aead_t;
 
-/** Message Digest operations */
+typedef struct _sss_sha_ctx
+{
+    uint8_t ctx[SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE];
+    uint32_t pHashFcnInfo;    
+} sss_sha_ctx_t;
+
 typedef struct _sss_digest
 {
     /*! Virtual connection between application (user context) and specific
@@ -579,7 +584,8 @@ typedef struct _sss_digest
     sss_mode_t mode;
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-    /** Reserved memory for implementation specific extension */
+    sss_sha_ctx_t shaCtx;
+    /*! Implementation specific part */
     struct
     {
         uint8_t data[SSS_DIGEST_MAX_CONTEXT_SIZE];

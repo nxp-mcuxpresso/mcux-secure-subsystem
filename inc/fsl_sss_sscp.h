@@ -107,7 +107,7 @@ typedef struct _sss_sscp_digest
     sss_mode_t mode;           /*!  */
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-
+    sss_sha_ctx_t shaCtx;
     /*! Implementation specific part */
     struct
     {
@@ -271,7 +271,7 @@ sss_status_t sss_sscp_digest_one_go(
 
 sss_status_t sss_sscp_digest_init(sss_sscp_digest_t *context);
 
-sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, const uint8_t *message, size_t messageLen);
+sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, uint8_t *message, size_t messageLen);
 
 sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest, size_t *digestLen);
 
