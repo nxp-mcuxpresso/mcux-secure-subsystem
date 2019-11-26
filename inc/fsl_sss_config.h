@@ -21,6 +21,7 @@
 #define SSS_TUNNEL_MAX_CONTEXT_SIZE         (16)
 #define SSS_DERIVE_KEY_MAX_CONTEXT_SIZE     (16)
 #define SSS_RNG_MAX_CONTEXT_SIZE            (16)
+#define SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE   (216)
 /* clang-format on */
 
 #define SSS_TYPE_ENUM_ALT
