@@ -16,13 +16,13 @@
 
 void MU_Init(void)
 {
-    k4mu_init();
+    SNT_mu_init();
 }
 
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
-    if (k4mu_get_response(msg, wordNum) == MU_SUCCESS_RESULT)
+    if (SNT_mu_get_response(msg, wordNum) == MU_SUCCESS_RESULT)
     {
       ret = kStatus_SSCP_Success;
     }
@@ -32,7 +32,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
-    if (k4mu_send_message(msg, wordNum) == MU_SUCCESS_RESULT)
+    if (SNT_mu_send_message(msg, wordNum) == MU_SUCCESS_RESULT)
     {
         ret = kStatus_SSCP_Success;
     }

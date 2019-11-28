@@ -8,7 +8,7 @@
 #define _FSL_SSCP_MU_H_
 
 #include "fsl_sscp.h"
-#include "fsl_stl.h"
+#include "fsl_snt.h"
 typedef uint32_t MU_Type;
 
 /*!
