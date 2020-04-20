@@ -220,18 +220,18 @@
 
 /*! @brief Set parameter types for the SSCP operation. Each param type is encoded into 4-bits bit field. */
 #define SSCP_OP_SET_PARAM(p0, p1, p2, p3, p4, p5, p6)                                                   \
-    (((uint32_t)(p0) & 0xFu) << 0) | (((uint32_t)(p1) & 0xFu) << 4) | (((uint32_t)(p2) & 0xFu) << 8) |        \
-        (((uint32_t)(p3) & 0xFu) << 12) | (((uint32_t)(p4) & 0xFu) << 16) | (((uint32_t)(p5) & 0xFu) << 20) | \
-        (((uint32_t)(p6) & 0xFu) << 24)
+    (((uint32_t)(p0)&0xFu) << 0) | (((uint32_t)(p1)&0xFu) << 4) | (((uint32_t)(p2)&0xFu) << 8) |        \
+        (((uint32_t)(p3)&0xFu) << 12) | (((uint32_t)(p4)&0xFu) << 16) | (((uint32_t)(p5)&0xFu) << 20) | \
+        (((uint32_t)(p6)&0xFu) << 24)
 
 /*! @brief Set parameter types for the SSCP operation. Each param type is encoded into 4-bits bit field. */
-#define SSCP_OP_SET_RESULT(p0) (((uint32_t)(p0) & 0xFu) << 0)
+#define SSCP_OP_SET_RESULT(p0) (((uint32_t)(p0)&0xFu) << 0)
 
 /*! @brief Decode i-th parameter as 4-bit unsigned integer. */
-#define SSCP_OP_GET_PARAM(i, paramTypes) ((((uint32_t)(paramTypes)) >> (i) * 4u) & 0xFu)
+#define SSCP_OP_GET_PARAM(i, paramTypes) ((((uint32_t)(paramTypes)) >> (i)*4u) & 0xFu)
 
 /*! @brief Compile time sizeof() check */
-#define SSCP_BUILD_ASSURE(condition, msg) extern int (msg)[1 - 2 * (!(condition))] __attribute__((unused))
+#define SSCP_BUILD_ASSURE(condition, msg) extern int(msg)[1 - 2 * (!(condition))] __attribute__((unused))
 
 /**
  * @brief Enum with return values from SSCP functions
@@ -389,8 +389,8 @@ struct _sscp_operation
  */
 typedef enum _sscp_param_types
 {
-    kSSCP_ParamType_None,      /*! Parameter not in use */
-    kSSCP_ParamType_Aggregate,   /*! Link to another ::sscp_operation_t */
+    kSSCP_ParamType_None,               /*! Parameter not in use */
+    kSSCP_ParamType_Aggregate,          /*! Link to another ::sscp_operation_t */
     kSSCP_ParamType_ContextReference,   /*! Reference to a context structure - pointer and type */
     kSSCP_ParamType_MemrefInputNoSize,  /*! Reference to a memory buffer - input to remote function or service, no size
                                            specified */
@@ -407,7 +407,6 @@ typedef enum _sscp_param_types
     kSSCP_ParamType_ValueInputSingle,  /*! One 32-bit integers  - input to remote function or service */
     kSSCP_ParamType_ValueOutputSingle, /*! One 32-bit integers - output by remote function or service */
 } sscp_param_types_t;
-
 
 /*******************************************************************************
  * API

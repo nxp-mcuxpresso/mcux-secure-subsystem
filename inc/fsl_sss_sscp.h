@@ -92,7 +92,7 @@ typedef struct _sss_sscp_aead
     sss_mode_t mode;              /*!  */
 
     /*! Implementation specific part */
-        struct
+    struct
     {
         uint8_t data[SSS_SSCP_AEAD_CONTEXT_SIZE];
     } context;
@@ -349,8 +349,10 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         size_t *dataLen,
                                         size_t *pKeyBitLen,
                                         void *options);
-sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject,
-                                             size_t keyBitLen, void *options);
+sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
+                                             sss_sscp_object_t *keyObject,
+                                             size_t keyBitLen,
+                                             void *options);
 
 sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
@@ -364,9 +366,12 @@ sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key
 
 sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
 
-sss_status_t sss_sscp_key_object_allocate_handle(
-    sss_sscp_object_t *keyObject, uint32_t keyId, sss_key_part_t keyPart,
-    sss_cipher_type_t cipherType, uint32_t keyByteLenMax, uint32_t options);
+sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
+                                                 uint32_t keyId,
+                                                 sss_key_part_t keyPart,
+                                                 sss_cipher_type_t cipherType,
+                                                 uint32_t keyByteLenMax,
+                                                 uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
 sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);

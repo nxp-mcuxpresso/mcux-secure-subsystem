@@ -49,7 +49,7 @@ typedef uint8_t sab_rating_t;
 #define SAB_SUCCESS ((sab_ranking_t)0x3C)
 #define SAB_FAILURE ((sab_ranking_t)0xC3)
 
-#define SAB_BLOCKING_CONTEXT ((sab_rating_t)0x10) 
+#define SAB_BLOCKING_CONTEXT ((sab_rating_t)0x10)
 #define SAB_NO_PENDING_STATUS ((sab_rating_t)0x11)
 #define SAB_INVALID_ARGUMENT ((sab_rating_t)0x12)
 #define SAB_RESOURCE_BUSY ((sab_rating_t)0x13)
@@ -67,8 +67,7 @@ typedef struct
 } sab_status_t;
 
 typedef uint32_t sab_object_t;
-typedef uint32_t sab_key_store_t; 
-
+typedef uint32_t sab_key_store_t;
 
 typedef uint32_t session_cfg_t;
 
@@ -79,7 +78,6 @@ typedef uint32_t session_cfg_t;
 #define SAP_SESSION_DID_NB_BITS 4
 #define SAP_SESSION_DID_MSK ((1 << SAP_SESSION_DID_NB_BITS) - 1)
 #define SAP_SESSION_DID_POS 2
-
 
 #define SAP_SESSION_CFG_SIZE 1
 
