@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2020 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -53,10 +53,10 @@ sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
     return (sss_status_t)ret;
 }
 
-void sss_sscp_close_session(sss_sscp_session_t *session)
+sss_status_t sss_sscp_close_session(sss_sscp_session_t *session)
 {
     sscp_operation_t op  = {0};
-    /*sscp_status_t status = kStatus_SSCP_Fail;*/
+    sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
     op.paramTypes =
@@ -70,12 +70,12 @@ void sss_sscp_close_session(sss_sscp_session_t *session)
     op.resultCount = 0u;
 
     sscp_context_t *sscpCtx = session->sscp;
-    /*status                  = */sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_CloseSession, &op, &ret);
-    /*if (status != kStatus_SSCP_Success)
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_CloseSession, &op, &ret);
+    if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
     }
-    return (sss_status_t)ret;*/
+    return (sss_status_t)ret;
 }
 
 /*******************************SYMETRIC***************************************/
@@ -1731,7 +1731,6 @@ sss_status_t sss_sscp_rng_context_init(sss_sscp_session_t *session, sss_sscp_rng
 {
     context->session          = session;
     context->rngTypeSpecifier = rngTypeSpecifier;
-    context->ctx              = 0u;
     return kStatus_SSS_Success;
 }
 
