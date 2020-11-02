@@ -10,9 +10,9 @@
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
 
-#define MU_Deinit (void)
+#define MU_Deinit        (void)
 #define SENTINEL_SUCCESS ((uint8_t)0x3C)
-#define SENTINEL_FAIL ((uint8_t)0xC3)
+#define SENTINEL_FAIL    ((uint8_t)0xC3)
 
 void MU_Init(void)
 {
@@ -22,9 +22,9 @@ void MU_Init(void)
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
-    if (SNT_mu_get_response((S3MU_Type*)base, msg, wordNum) == MU_SUCCESS_RESULT)
+    if (SNT_mu_get_response((S3MU_Type *)base, msg, wordNum) == MU_SUCCESS_RESULT)
     {
-      ret = kStatus_SSCP_Success;
+        ret = kStatus_SSCP_Success;
     }
     return ret;
 }
@@ -32,7 +32,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
-    if (SNT_mu_send_message((S3MU_Type*)base, msg, wordNum) == MU_SUCCESS_RESULT)
+    if (SNT_mu_send_message((S3MU_Type *)base, msg, wordNum) == MU_SUCCESS_RESULT)
     {
         ret = kStatus_SSCP_Success;
     }
@@ -188,7 +188,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     }
     for (uint32_t i = 1u; i <= op->resultCount; i++)
     {
-      uint32_t k = i - 1u;
+        uint32_t k = i - 1u;
         switch (SSCP_OP_GET_PARAM(k, op->resultTypes))
         {
             case kSSCP_ParamType_ContextReference:
@@ -199,7 +199,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Symmetric:
                         ((sss_sscp_symmetric_t *)(op->result[k].context.ptr))->ctx = msg[i];
-                        break;                        
+                        break;
                     case kSSCP_ParamContextType_SSS_Aead:
                         ((sss_sscp_aead_t *)(op->result[k].context.ptr))->ctx = msg[i];
                         break;
@@ -220,7 +220,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_DeriveKey:
                         ((sss_sscp_derive_key_t *)op->result[k].context.ptr)->ctx = msg[i];
-                        break;    
+                        break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         ((sss_mgmt_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
