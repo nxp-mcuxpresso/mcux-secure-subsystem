@@ -25,10 +25,12 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
     if (SNT_mu_get_response((S3MU_Type *)base, msg, wordNum) != kStatus_SNT_Success)
     {
     }
+#if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
     /* SEMA4 disabled because it is not working on HAPS80. Will be enabled on real chip.
    else if (SNT_mu_release_ownership((S3MU_Type *)base) != kStatus_SNT_Success)
    {
    }*/
+#endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
     else
     {
         ret = kStatus_SSCP_Success;
@@ -39,12 +41,14 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
+#if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
     /* SEMA4 disabled because it is not working on HAPS80. Will be enabled on real chip.
     if (SNT_mu_get_ownership((S3MU_Type *)base) != kStatus_SNT_Success)
     {
         ret = kStatus_SSCP_ResourceBusy;
     }
     else*/
+#endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
     if (SNT_mu_send_message((S3MU_Type *)base, msg, wordNum) != kStatus_SNT_Success)
     {
     }
