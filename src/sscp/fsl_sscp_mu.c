@@ -1,42 +1,60 @@
 /*
- * Copyright 2019 NXP
+ * Copyright 2019-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <stdint.h>
-#include <stdio.h>
 
 #include "fsl_sscp_mu.h"
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
-#include "msgunit_driver.h"
 
-#define MU_Deinit (void)
+#define MU_Deinit        (void)
 #define SENTINEL_SUCCESS ((uint8_t)0x3C)
-#define SENTINEL_FAIL ((uint8_t)0xC3)
+#define SENTINEL_FAIL    ((uint8_t)0xC3)
 
-void MU_Init()
+void MU_Init(void)
 {
-    k4mu_init();
+    SNT_mu_init(S3MUA);
 }
 
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
-    if (k4mu_get_response(msg, wordNum) != MU_SUCCESS_RESULT)
+    sscp_status_t ret = kStatus_SSCP_Fail;
+    if (SNT_mu_get_response((S3MU_Type *)base, msg, wordNum) != kStatus_Success)
     {
-        return kStatus_SSCP_Fail;
     }
-    return kStatus_SSCP_Success;
+#if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
+    else if (SNT_mu_release_ownership((S3MU_Type *)base) != kStatus_Success)
+    {
+    }
+#endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
+    else
+    {
+        ret = kStatus_SSCP_Success;
+    }
+    return ret;
 }
 
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
-    if (k4mu_send_message(msg, wordNum) != MU_SUCCESS_RESULT)
+    sscp_status_t ret = kStatus_SSCP_Fail;
+#if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
+    if (SNT_mu_get_ownership((S3MU_Type *)base) != kStatus_Success)
     {
-        return kStatus_SSCP_Fail;
+        ret = kStatus_SSCP_ResourceBusy;
     }
-    return kStatus_SSCP_Success;
+    else
+#endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
+        if (SNT_mu_send_message((S3MU_Type *)base, msg, wordNum) != kStatus_Success)
+    {
+    }
+    else
+    {
+        ret = kStatus_SSCP_Success;
+    }
+    return ret;
 }
 
 sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
@@ -53,9 +71,9 @@ sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
 
 void sscp_mu_deinit(sscp_context_t *context)
 {
-    sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
+    /*sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
-    MU_Deinit(muContext->base);
+    MU_Deinit(muContext->base);*/
 }
 
 sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
@@ -66,9 +84,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
     uint32_t msg[MU_TR_COUNT] = {0};
-    uint32_t wrIdx            = 1;
+    uint32_t wrIdx            = 1u;
     bool done                 = false;
-    for (int i = 0; !done && (i < SSCP_OPERATION_PARAM_COUNT); i++)
+    for (uint32_t i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
         {
@@ -80,6 +98,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Symmetric:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_symmetric_t *)(op->params[i].context.ptr))->ctx;
+                        break;
+                    case kSSCP_ParamContextType_SSS_Aead:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_aead_t *)(op->params[i].context.ptr))->ctx;
                         break;
                     case kSSCP_ParamContextType_SSS_Digest:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_digest_t *)op->params[i].context.ptr)->ctx;
@@ -96,11 +117,14 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     case kSSCP_ParamContextType_SSS_KeyStore:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_key_store_t *)op->params[i].context.ptr)->ctx;
                         break;
+                    case kSSCP_ParamContextType_SSS_DeriveKey:
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_derive_key_t *)op->params[i].context.ptr)->ctx;
+                        break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         msg[wrIdx++] = (uint32_t)((sss_mgmt_t *)op->params[i].context.ptr)->ctx;
                         break;
                     case kSSCP_ParamContextType_SSS_Rng:
-                        msg[wrIdx++] = (uint32_t)((sss_sscp_rng_t *)op->params[i].context.ptr)->ctx;
+                        msg[wrIdx++] = (uint32_t)((sss_sscp_rng_t *)op->params[i].context.ptr)->rngTypeSpecifier;
                         break;
                     case kSSCP_ParamContextType_SSS_Mac:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_mac_t *)op->params[i].context.ptr)->ctx;
@@ -129,7 +153,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 
             case kSSCP_ParamType_MemrefOutput:
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.buffer);
-                msg[wrIdx++] = (uint32_t) & (op->params[i].memref.size);
+                msg[wrIdx++] = (uint32_t)(op->params[i].memref.size);
                 break;
 
             case kSSCP_ParamType_ValueInputTuple:
@@ -158,7 +182,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     muMsgHeader.check_bits = STATIC_CHECK_BITS;
     muMsgHeader.tag_sts    = MESSAGING_TAG_COMMAND;
     muMsgHeader.command    = commandID;
-    muMsgHeader.size       = wrIdx - MU_MSG_HEADER_SIZE;
+    muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
     msg[0]                 = (uint32_t)(*((uint32_t *)(&muMsgHeader)));
 
     if (MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
@@ -180,8 +204,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     {
         return kStatus_SSCP_Fail;
     }
-    for (int i = 1, k = 0; i <= op->resultCount; i++, k++)
+    for (uint32_t i = 1u; i <= op->resultCount; i++)
     {
+        uint32_t k = i - 1u;
         switch (SSCP_OP_GET_PARAM(k, op->resultTypes))
         {
             case kSSCP_ParamType_ContextReference:
@@ -192,6 +217,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         break;
                     case kSSCP_ParamContextType_SSS_Symmetric:
                         ((sss_sscp_symmetric_t *)(op->result[k].context.ptr))->ctx = msg[i];
+                        break;
+                    case kSSCP_ParamContextType_SSS_Aead:
+                        ((sss_sscp_aead_t *)(op->result[k].context.ptr))->ctx = msg[i];
                         break;
                     case kSSCP_ParamContextType_SSS_Digest:
                         ((sss_sscp_digest_t *)op->result[k].context.ptr)->ctx = msg[i];
@@ -208,11 +236,11 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     case kSSCP_ParamContextType_SSS_KeyStore:
                         ((sss_sscp_key_store_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
+                    case kSSCP_ParamContextType_SSS_DeriveKey:
+                        ((sss_sscp_derive_key_t *)op->result[k].context.ptr)->ctx = msg[i];
+                        break;
                     case kSSCP_ParamContextType_SSS_Mgmt:
                         ((sss_mgmt_t *)op->result[k].context.ptr)->ctx = msg[i];
-                        break;
-                    case kSSCP_ParamContextType_SSS_Rng:
-                        ((sss_sscp_rng_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
                     case kSSCP_ParamContextType_SSS_Mac:
                         ((sss_sscp_mac_t *)op->result[k].context.ptr)->ctx = msg[i];

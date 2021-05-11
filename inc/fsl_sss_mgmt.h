@@ -147,7 +147,10 @@ sss_status_t sss_mgmt_fuse_program(
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData);
+sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context,
+                                        uint32_t *lifecycleData,
+                                        void *options,
+                                        size_t *optionsLen);
 
 /*! @brief Import non-key sensitive data
  *  The function loads non-key sensitive data in plain to security sub-system
@@ -290,7 +293,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
                                     size_t requestSize,
                                     void *options,
                                     size_t *optionsLen,
-                                    uint32_t *status);
+                                    uint32_t *resultState);
 
 /*! @brief Configure host access permissions
  *

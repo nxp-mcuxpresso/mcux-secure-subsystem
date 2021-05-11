@@ -8,6 +8,7 @@
 #define _FSL_SSCP_MU_H_
 
 #include "fsl_sscp.h"
+#include "fsl_snt.h"
 typedef uint32_t MU_Type;
 
 /*!
@@ -408,7 +409,16 @@ void sscp_mu_deinit(sscp_context_t *context);
  * @retval kStatus_SSCP_Fail Operation failure, for example hardware fail.
  * @retval kStatus_SSCP_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sscp_status_t sscp_mu_invoke_command(sscp_context_t *context, sscp_command_t commandID, sscp_operation_t *op, uint32_t *ret);
+sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
+                                     sscp_command_t commandID,
+                                     sscp_operation_t *op,
+                                     uint32_t *ret);
+
+void MU_Init(void);
+
+sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum);
+
+sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum);
 
 #if defined(__cplusplus)
 }
