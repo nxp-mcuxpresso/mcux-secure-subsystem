@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_COMMANDS_H_
-#define _FSL_SSCP_COMMANDS_H_
+#ifndef FSL_SSCP_COMMANDS_H
+#define FSL_SSCP_COMMANDS_H
 
 #if !defined(SSCP_CONFIG_FILE)
 #include "fsl_sscp_config.h"
@@ -25,7 +25,7 @@
 
 #if !defined(SSCP_COMMAND_ENUM_ALT)
 /*! @brief SSCP common commands */
-typedef enum _sscp_command
+typedef enum
 {
     kSSCP_CMD_SSS_OpenSession,
     kSSCP_CMD_SSS_CloseSession,
@@ -133,11 +133,13 @@ typedef enum _sscp_command
     TEE_ASYMM_DH_DERIVE_KEY,
     TEE_CMD_LAST
 } sscp_command_t;
-#endif
+#endif /* SSCP_COMMAND_ENUM_ALT */
 
-enum _sscp_context_type
+#if !defined(SSCP_PARAMCONTEXTTYPE_ENUM_ALT)
+/*! @brief SSCP ParamContextType list */
+enum
 {
-    kSSCP_ParamContextType_SSS_Session = 1u,
+    kSSCP_ParamContextType_SSS_Session = 0x1u,
     kSSCP_ParamContextType_SSS_Symmetric,
     kSSCP_ParamContextType_SSS_Aead,
     kSSCP_ParamContextType_SSS_Digest,
@@ -151,9 +153,10 @@ enum _sscp_context_type
     kSSCP_ParamContextType_SSS_Mgmt,
     kSSCP_ParamContextType_SSS_Rng,
 };
+#endif /* SSCP_PARAMCONTEXTTYPE_ENUM_ALT */
 
 /*!
  *@}
  */ /* end of sscp */
 
-#endif /* _FSL_SSCP_COMMANDS_H_ */
+#endif /* FSL_SSCP_COMMANDS_H */

@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_H_
-#define _FSL_SSCP_H_
+#ifndef FSL_SSCP_H
+#define FSL_SSCP_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -210,7 +210,7 @@
  */
 
 /*! @brief Maximum number of parameters to be supported in one sscp_operation_t */
-#define SSCP_OPERATION_PARAM_COUNT (7u)
+#define SSCP_OPERATION_PARAM_COUNT   (7u)
 #define SSCP_OPERATION_RESULTS_COUNT (2u)
 
 /*! @brief Default SSCP context is a pointer to memory. */
@@ -231,24 +231,26 @@
 #define SSCP_OP_GET_PARAM(i, paramTypes) ((((uint32_t)(paramTypes)) >> (i)*4u) & 0xFu)
 
 /*! @brief Compile time sizeof() check */
+#if defined(DEBUG)
 #define SSCP_BUILD_ASSURE(condition, msg) extern int(msg)[1 - 2 * (!(condition))] __attribute__((unused))
+#else
+#define SSCP_BUILD_ASSURE(condition, msg)
+#endif
 
 /**
- * @brief Enum with return values from SSCP functions
+ * @brief Definitions with return values from SSCP functions
  */
-typedef enum
-{
-    kStatus_SSCP_Success = 0x10203040u,
-    kStatus_SSCP_Fail    = 0x40302010u,
-} sscp_status_t;
+typedef uint32_t sscp_status_t;
+#define kStatus_SSCP_Success ((sscp_status_t)0x10203040u)
+#define kStatus_SSCP_Fail    ((sscp_status_t)0x40302010u)
 
-typedef struct _sscp_context sscp_context_t;
+typedef struct sscp_context sscp_context_t;
 
 /**
  * @brief SSCP operation descriptor
  *
  */
-typedef struct _sscp_operation sscp_operation_t;
+typedef struct sscp_operation sscp_operation_t;
 
 /*! @brief Typedef for a function that sends a command and associated parameters to security sub-system
  *
@@ -281,7 +283,7 @@ typedef sscp_status_t (*fn_sscp_invoke_command_t)(sscp_context_t *context,
  * @param invoke Pointer to implementation specific invoke() function
  * @param context Container for the implementation specific data.
  */
-struct _sscp_context
+struct sscp_context
 {
     fn_sscp_invoke_command_t invoke;
     /*sscp_status_t (*sscp_invoke_command)(sscp_context_t *context, uint32_t commandID, sscp_operation_t *op);*/
@@ -301,21 +303,21 @@ struct _sscp_context
  * @param buffer Memory address
  * @param size Length of the buffer in bytes
  */
-typedef struct _sscp_memref
+typedef struct
 {
-    void *buffer;
+    uintptr_t buffer;
     size_t size;
 } sscp_memref_t;
 
 /**
- * struct _sscp_value - Small raw data
+ * struct sscp_value_t - Small raw data
  *
  * This data type is used to describe a function argument as a tuple of two 32-bit values.
  *
  * @param a First 32-bit data value.
  * @param b Second 32-bit data value.
  */
-typedef struct _sscp_value
+typedef struct
 {
     uint32_t a;
     uint32_t b;
@@ -328,7 +330,7 @@ typedef struct _sscp_value
  *
  * @param op Pointer to sscp_operation_t.
  */
-typedef struct _sscp_aggregate_operation
+typedef struct
 {
     sscp_operation_t *op;
 } sscp_aggregate_operation_t;
@@ -341,7 +343,7 @@ typedef struct _sscp_aggregate_operation
  * @param ptr Pointer to a data structure
  * @param type 32-bit identifier specifying context struct type
  */
-typedef struct _sscp_context_operation
+typedef struct
 {
     void *ptr;
     uint32_t type;
@@ -375,7 +377,7 @@ typedef union
  * @param   params      Array of parameters of type sscp_parameter_t.
  *
  */
-struct _sscp_operation
+struct sscp_operation
 {
     uint32_t paramTypes;
     sscp_parameter_t params[SSCP_OPERATION_PARAM_COUNT];
@@ -387,26 +389,34 @@ struct _sscp_operation
 /**
  * @brief Enum with SSCP operation parameters.
  */
-typedef enum _sscp_param_types
-{
-    kSSCP_ParamType_None,               /*! Parameter not in use */
-    kSSCP_ParamType_Aggregate,          /*! Link to another ::sscp_operation_t */
-    kSSCP_ParamType_ContextReference,   /*! Reference to a context structure - pointer and type */
-    kSSCP_ParamType_MemrefInputNoSize,  /*! Reference to a memory buffer - input to remote function or service, no size
-                                           specified */
-    kSSCP_ParamType_MemrefOutputNoSize, /*! Reference to a memory buffer - output by remote function or service, no size
-                                           specified.*/
-    kSSCP_ParamType_MemrefInput,        /*! Reference to a memory buffer - input to remote function or service */
-    kSSCP_ParamType_MemrefOutput,       /*! Reference to a memory buffer - output by remote function or service.
-                                            Implementations shall update the size member of the ::sscp_memref_t
-                                            with the actual number of bytes written. */
-    kSSCP_ParamType_MemrefInOut, /*! Reference to a memory buffer - input to and ouput from remote function or service
-                                  */
-    kSSCP_ParamType_ValueInputTuple,   /*! Tuple of two 32-bit integers  - input to remote function or service */
-    kSSCP_ParamType_ValueOutputTuple,  /*! Tuple of two 32-bit integers - output by remote function or service */
-    kSSCP_ParamType_ValueInputSingle,  /*! One 32-bit integers  - input to remote function or service */
-    kSSCP_ParamType_ValueOutputSingle, /*! One 32-bit integers - output by remote function or service */
-} sscp_param_types_t;
+typedef uint32_t sscp_param_types_t;
+#define kSSCP_ParamType_None      ((sscp_param_types_t)0x0u) /*! Parameter not in use */
+#define kSSCP_ParamType_Aggregate ((sscp_param_types_t)0x1u) /*! Link to another ::sscp_operation_t */
+#define kSSCP_ParamType_ContextReference \
+    ((sscp_param_types_t)0x2u) /*! Reference to a context structure - pointer and type */
+#define kSSCP_ParamType_MemrefInputNoSize                                                                      \
+    ((sscp_param_types_t)0x3u) /*! Reference to a memory buffer - input to remote function or service, no size \
+                                  specified */
+#define kSSCP_ParamType_MemrefOutputNoSize                                                                      \
+    ((sscp_param_types_t)0x4u) /*! Reference to a memory buffer - output by remote function or service, no size \
+                                  specified.*/
+#define kSSCP_ParamType_MemrefInput \
+    ((sscp_param_types_t)0x5u) /*! Reference to a memory buffer - input to remote function or service */
+#define kSSCP_ParamType_MemrefOutput                                                                    \
+    ((sscp_param_types_t)0x6u) /*! Reference to a memory buffer - output by remote function or service. \
+                                  Implementations shall update the size member of the ::sscp_memref_t with the                                                                                               \
+                                  actual number of bytes written. */
+#define kSSCP_ParamType_MemrefInOut                                                                                  \
+    ((sscp_param_types_t)0x7u) /*! Reference to a memory buffer - input to and ouput from remote function or service \
+                                */
+#define kSSCP_ParamType_ValueInputTuple \
+    ((sscp_param_types_t)0x8u) /*! Tuple of two 32-bit integers  - input to remote function or service */
+#define kSSCP_ParamType_ValueOutputTuple \
+    ((sscp_param_types_t)0x9u) /*! Tuple of two 32-bit integers - output by remote function or service */
+#define kSSCP_ParamType_ValueInputSingle \
+    ((sscp_param_types_t)0xau) /*! One 32-bit integers  - input to remote function or service */
+#define kSSCP_ParamType_ValueOutputSingle \
+    ((sscp_param_types_t)0xbu) /*! One 32-bit integers - output by remote function or service */
 
 /*******************************************************************************
  * API
@@ -441,4 +451,4 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
  *@}
  */ /* end of sscp */
 
-#endif /* _FSL_SSCP_H_ */
+#endif /* FSL_SSCP_H */

@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_CONFIG_H_
-#define _FSL_SSS_CONFIG_H_
+#ifndef FSL_SSS_CONFIG_H
+#define FSL_SSS_CONFIG_H
 
 /* clang-format off */
 #define SSS_SESSION_MAX_CONTEXT_SIZE        (16)
@@ -22,4 +22,4 @@
 #define SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE   (216)
 /* clang-format on */
 
-#endif /* _FSL_SSS_CONFIG_H_ */
+#endif /* FSL_SSS_CONFIG_H */

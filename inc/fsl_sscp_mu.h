@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_MU_H_
-#define _FSL_SSCP_MU_H_
+#ifndef FSL_SSCP_MU_H
+#define FSL_SSCP_MU_H
 
 #include "fsl_sscp.h"
 #include "fsl_snt.h"
@@ -356,14 +356,14 @@ extern "C" {
  */
 
 /**
- * struct _sscp_mu_context - SSCP context struct for MU implementation
+ * struct sscp_mu_context_t - SSCP context struct for MU implementation
  *
  * This data type is used to keep context of the SSCP link.
  * It is completely implementation specific.
  *
  * @param context Container for the implementation specific data.
  */
-typedef struct _sscp_mu_context
+typedef struct
 {
     fn_sscp_invoke_command_t invoke;
 
@@ -410,7 +410,7 @@ void sscp_mu_deinit(sscp_context_t *context);
  * @retval kStatus_SSCP_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
-                                     sscp_command_t commandID,
+                                     sscp_command_t commandId,
                                      sscp_operation_t *op,
                                      uint32_t *ret);
 
@@ -428,4 +428,4 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
  *@}
  */ /* end of sscp_mu */
 
-#endif /* _FSL_SSCP_MU_H_ */
+#endif /* FSL_SSCP_MU_H */

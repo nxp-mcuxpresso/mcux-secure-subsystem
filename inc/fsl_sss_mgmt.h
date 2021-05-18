@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_MGMT_H_
-#define _FSL_SSS_MGMT_H_
+#ifndef FSL_SSS_MGMT_H
+#define FSL_SSS_MGMT_H
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -105,7 +105,7 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_fuse_read(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen);
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, uintptr_t options, size_t *optionsLen);
 
 /*! @brief Get lifecycle
  *  The function provides read lifecycle service
@@ -135,7 +135,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_fuse_program(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, void *options, size_t *optionsLen);
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, uintptr_t options, size_t *optionsLen);
 
 /*! @brief Advance lifecycle
  *  The function provides advance lifecycle service
@@ -149,7 +149,7 @@ sss_status_t sss_mgmt_fuse_program(
  */
 sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context,
                                         uint32_t *lifecycleData,
-                                        void *options,
+                                        uintptr_t options,
                                         size_t *optionsLen);
 
 /*! @brief Import non-key sensitive data
@@ -291,7 +291,7 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
 sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
                                     const uint8_t *request,
                                     size_t requestSize,
-                                    void *options,
+                                    uintptr_t options,
                                     size_t *optionsLen,
                                     uint32_t *resultState);
 
@@ -350,4 +350,4 @@ sss_status_t sss_mgmt_context_free(sss_mgmt_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_MGMT_H_ */
+#endif /* FSL_SSS_MGMT_H */
