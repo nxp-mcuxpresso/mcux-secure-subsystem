@@ -152,6 +152,8 @@ typedef struct
 
     /*! Implementation specific part */
     uint32_t ctx;
+    uint8_t *buffer;
+    size_t bufferSize;
 } sss_sscp_tunnel_t;
 
 typedef struct

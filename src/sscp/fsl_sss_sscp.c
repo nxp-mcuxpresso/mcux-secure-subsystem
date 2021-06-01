@@ -13,6 +13,7 @@
 #define NUMBER_OF_BITS_IN_BYTE                  (8u)
 #define MAX_SUPPORTED_COORDINATE_LENGTH_IN_BITS (1024u)
 #define NUMBER_OF_COORDINATES_PER_EC_KEY_SLOT   (3u)
+#define SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK        (0x80000000u)
 
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
                                    sss_type_t subsystem,
@@ -1224,9 +1225,20 @@ sss_status_t sss_sscp_tunnel(sss_sscp_tunnel_t *context, uint8_t *data, size_t d
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
-                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+    if ((context->tunnelType & SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK) == SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK)
+    {
+        op.paramTypes              = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
+                                          kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                          kSSCP_ParamType_None, kSSCP_ParamType_None);
+        op.params[2].memref.buffer = (uintptr_t)context->buffer;
+        op.params[2].memref.size   = context->bufferSize;
+    }
+    else
+    {
+        op.paramTypes =
+            SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+                              kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+    }
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Tunnel;
