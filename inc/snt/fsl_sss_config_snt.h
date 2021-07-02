@@ -93,23 +93,23 @@ typedef uint32_t sss_algorithm_t;
 #define SAB_KEY_TYPE_ASYMMETRIC (0x01)
 #define SSS_KEY_CIPHER_TYPE_ENUM_ALT
 typedef uint32_t sss_cipher_type_t;
-#define kSSS_CipherType_NONE    ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_AES     ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_DES     ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_CMAC    ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_HMAC    ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_MAC     ((sss_cipher_type_t)0x0u)
-#define kSSS_CipherType_RSA     ((sss_cipher_type_t)0x1u)   /*! RSA RAW format      */
-#define kSSS_CipherType_RSA_CRT ((sss_cipher_type_t)0x1u)   /*! RSA CRT format      */
-                                                            /* The following keys can be identified
-                                                             * solely by the *Family* and bit length */
-#define kSSS_CipherType_EC_NIST_P ((sss_cipher_type_t)0x1u) /*! Keys Part of NIST-P Family */
-#define kSSS_CipherType_EC_NIST_K ((sss_cipher_type_t)0x1u) /*! Keys Part of NIST-K Family */
+#define kSSS_CipherType_NONE    ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_AES     ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_DES     ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_CMAC    ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_HMAC    ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_MAC     ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_RSA     ((sss_cipher_type_t)0x1u)    /*! RSA RAW format      */
+#define kSSS_CipherType_RSA_CRT ((sss_cipher_type_t)0x1u)    /*! RSA CRT format      */
+                                                             /* The following keys can be identified
+                                                              * solely by the *Family* and bit length */
+#define kSSS_CipherType_EC_NIST_P ((sss_cipher_type_t)0x40u) /*! Keys Part of NIST-P Family */
+#define kSSS_CipherType_EC_NIST_K ((sss_cipher_type_t)0x1u)  /*! Keys Part of NIST-K Family */
 /* The following keys need their full curve parameters (p,a,b,x,y,n,h) */
 /*! Montgomery Key,   */
-#define kSSS_CipherType_EC_MONTGOMERY ((sss_cipher_type_t)0x1u)
+#define kSSS_CipherType_EC_MONTGOMERY ((sss_cipher_type_t)0x50u)
 /*! twisted Edwards form elliptic curve public key */
-#define kSSS_CipherType_EC_TWISTED_ED ((sss_cipher_type_t)0x1u)
+#define kSSS_CipherType_EC_TWISTED_ED ((sss_cipher_type_t)0x51u)
 /*! Brainpool form elliptic curve public key */
 #define kSSS_CipherType_EC_BRAINPOOL ((sss_cipher_type_t)0x1u)
 /*! Barreto Naehrig curve */
@@ -136,5 +136,25 @@ typedef uint32_t sss_status_t;
  * This status is not expected to be returned to higher layers.
  * */
 #define kStatus_SSS_ResourceBusy ((sss_status_t)0x3c3c0002u)
+
+#define SSS_KEY_PART_ENUM_ALT
+typedef uint32_t sss_key_part_t;
+/** Part of a key */
+#define kSSS_KeyPart_NONE ((sss_key_part_t)0x0u)
+/** Applicable where we have UserID, PIN, Binary Files,
+ * Certificates, Symmetric Keys, PCR */
+#define kSSS_KeyPart_Default ((sss_key_part_t)0x1u)
+/** Public part of asymmetric key */
+#define kSSS_KeyPart_Public ((sss_key_part_t)0x2u)
+/** Private only part of asymmetric key */
+#define kSSS_KeyPart_Private ((sss_key_part_t)0x3u)
+/** Both, public and private part of asymmetric key */
+#define kSSS_KeyPart_Pair ((sss_key_part_t)0x4u)
+
+typedef uint32_t sss_sscp_key_store_property_t;
+#define kSSS_key_store_prop_totalAllocatedMemory    ((sss_sscp_key_store_property_t)0x0u)
+#define kSSS_key_store_prop_availableMemory         ((sss_sscp_key_store_property_t)0x1u)
+#define kSSS_key_store_prop_totalNumberOfKeyObjects ((sss_sscp_key_store_property_t)0x2u)
+#define kSSS_key_store_prop_availableKeyObjects     ((sss_sscp_key_store_property_t)0x3u)
 
 #endif /* FSL_SSS_CONFIG_H */

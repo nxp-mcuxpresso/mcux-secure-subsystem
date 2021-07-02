@@ -335,7 +335,7 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context);
 
 /*******************************KEYSTORE***************************************/
-sss_status_t sss_sscp_key_store_context_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
+sss_status_t sss_sscp_key_store_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
 /* sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId); */
 
 sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
@@ -343,13 +343,13 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         const uint8_t *data,
                                         size_t dataLen,
                                         uint32_t keyBitLen,
-                                        void *options);
+                                        sss_key_part_t keyPart);
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
                                         uint8_t *data,
                                         size_t *dataLen,
                                         size_t *pKeyBitLen,
-                                        void *options);
+                                        sss_key_part_t keyPart);
 sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
                                              sss_sscp_object_t *keyObject,
                                              size_t keyBitLen,
@@ -358,14 +358,21 @@ sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
 sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);
+sss_status_t sss_sscp_key_store_get_property(sss_sscp_key_store_t *keyStore,
+                                             sss_sscp_key_store_property_t propertyId,
+                                             uint32_t *property);
 
-sss_status_t sss_sscp_key_store_context_free(sss_sscp_key_store_t *keyStore);
+sss_status_t sss_sscp_key_store_free(sss_sscp_key_store_t *keyStore);
 /******************************KEYOBJECT***************************************/
 sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
 sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
 sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
+
+sss_status_t sss_sscp_key_object_set_properties(sss_sscp_object_t *keyObject, uint32_t options);
+
+sss_status_t sss_sscp_key_object_get_properties(sss_sscp_object_t *keyObject, uint32_t *options);
 
 sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
                                                  uint32_t keyId,
@@ -375,7 +382,7 @@ sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
                                                  uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
-sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);
+sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject, uint32_t options);
 /*******************************TUNNEL*****************************************/
 sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_session_t *session, uint32_t tunnelType);
 
