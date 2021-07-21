@@ -536,21 +536,20 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen)
+sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const sss_mgmt_security_level_t secLvl)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)srcData;
-    op.params[1].memref.size   = dataLen;
+    op.params[1].value.a = secLvl;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;

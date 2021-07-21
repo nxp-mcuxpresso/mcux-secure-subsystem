@@ -1535,8 +1535,8 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
     uint32_t ret         = 0u;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
-                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_ValueInputTuple,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefOutputNoSize,
+                                      kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = keyStore;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
@@ -1547,8 +1547,9 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
     op.params[2].memref.buffer = (uintptr_t)data;
     op.params[2].memref.size   = *dataLen;
 
-    op.params[3].value.a = *pKeyBitLen;
-    op.params[3].value.b = keyPart;
+    op.params[3].memref.buffer = (uintptr_t)pKeyBitLen;
+
+    op.params[4].value.a = keyPart;
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;

@@ -151,6 +151,12 @@ typedef uint32_t sss_key_part_t;
 /** Both, public and private part of asymmetric key */
 #define kSSS_KeyPart_Pair ((sss_key_part_t)0x4u)
 
+typedef uint32_t sss_mgmt_security_level_t;
+#define kSSS_mgmt_security_lvl_NON_SECURE            ((sss_mgmt_security_level_t)0x00u)
+#define kSSS_mgmt_security_lvl_NON_SECURE_PRIVILEGED ((sss_mgmt_security_level_t)0x01u)
+#define kSSS_mgmt_security_lvl_SECURE                ((sss_mgmt_security_level_t)0x10u)
+#define kSSS_mgmt_security_lvl_SECURE_PRIVILEGED     ((sss_mgmt_security_level_t)0x11u)
+
 typedef uint32_t sss_sscp_key_store_property_t;
 #define kSSS_key_store_prop_totalAllocatedMemory    ((sss_sscp_key_store_property_t)0x0u)
 #define kSSS_key_store_prop_availableMemory         ((sss_sscp_key_store_property_t)0x1u)

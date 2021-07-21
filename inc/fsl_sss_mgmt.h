@@ -298,15 +298,14 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
 /*! @brief Configure host access permissions
  *
  * @param context Pointer to mgmt crypto context.
- * @param srcData Address of the input data buffer
- * @param dataLen Lenght of the input data buffer in bytes
+ * @param secLvl Required security level, must be either equal or lower as security level of the host sending this command
  *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen);
+sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const sss_mgmt_security_level_t secLvl);
 
 /*! @brief Enable runtime integrity checks
  *  The function sends a request to enable runtime integrity checks within security sub-system
