@@ -298,7 +298,8 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
 /*! @brief Configure host access permissions
  *
  * @param context Pointer to mgmt crypto context.
- * @param secLvl Required security level, must be either equal or lower as security level of the host sending this command
+ * @param secLvl Required security level, must be either equal or lower as security level of the host sending this
+ * command
  *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
@@ -334,6 +335,18 @@ sss_status_t sss_mgmt_integrity_check_enable(sss_mgmt_t *context);
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_ping(sss_mgmt_t *context);
+
+/*! @brief Removes all keys in SSS
+ *  The function sends a request to remove all keys within security sub-system
+ *
+ * @param context Pointer to mgmt crypto context.
+ *
+ * @returns Status of the operation
+ * @retval kStatus_SSS_Success The operation has completed successfully.
+ * @retval kStatus_SSS_Fail The operation has failed.
+ * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
+ */
+sss_status_t sss_mgmt_clear_all_keys(sss_mgmt_t *context);
 
 /*! @brief Mgmt context release.
  *  The function frees Mgmt context.

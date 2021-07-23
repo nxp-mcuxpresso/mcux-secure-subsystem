@@ -607,6 +607,31 @@ sss_status_t sss_mgmt_ping(sss_mgmt_t *context)
     return (sss_status_t)ret;
 }
 
+sss_status_t sss_mgmt_clear_all_keys(sss_mgmt_t *context)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_ClearAllKeys, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+
 sss_status_t sss_mgmt_context_free(sss_mgmt_t *context)
 {
     sscp_operation_t op  = {0};

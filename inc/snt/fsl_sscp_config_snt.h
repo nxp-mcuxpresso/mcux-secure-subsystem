@@ -62,7 +62,6 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_CMD_SSS_KeyStoreOpenKey              ((sscp_command_t)0x4f)
 #define kSSCP_CMD_SSS_KeyStoreFreezeKey            ((sscp_command_t)0x50)
 #define kSSCP_CMD_SSS_KeyStoreEraseKey             ((sscp_command_t)0x51)
-#define kSSCP_CMD_SSS_KeyStoreEraseAll             ((sscp_command_t)0x74)
 #define kSSCP_CMD_SSS_KeyStoreGetProperty          ((sscp_command_t)0x77)
 #define KSSCP_CMD_SSS_RngGet                       ((sscp_command_t)0x73)
 #define kSSCP_CMD_SSS_MGMT_ContextInit             ((sscp_command_t)0x65)
@@ -83,6 +82,9 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_CMD_SSS_MGMT_ReturnFaSet             ((sscp_command_t)0x72)
 #define kSSCP_CMD_SSS_MGMT_HostAccessPermissionSet ((sscp_command_t)0x70)
 #define kSSCP_CMD_SSS_MGMT_IntegrityCheckEnable    ((sscp_command_t)0x6f)
+#define kSSCP_CMD_SSS_MGMT_ClearAllKeys            ((sscp_command_t)0x74)
+/* kSSCP_CMD_SSS_KeyStoreEraseAll command ID have to be updated once value will be defined in elke specification */
+#define kSSCP_CMD_SSS_KeyStoreEraseAll ((sscp_command_t)0xff)
 
 #define SSCP_PARAMCONTEXTTYPE_ENUM_ALT
 /*! @brief SSCP ParamContextType list */
