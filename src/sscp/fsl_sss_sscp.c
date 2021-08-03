@@ -16,10 +16,10 @@
 #define SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK        (0x80000000u)
 
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
+                                   uint32_t sessionId,
                                    sss_type_t subsystem,
-                                   sscp_context_t *sscpctx,
-                                   uint32_t connectionMethod,
-                                   const uintptr_t connectionData)
+                                   sscp_context_t *sscpctx)
+
 {
     SSCP_BUILD_ASSURE(sizeof(sss_session_t) >= sizeof(sss_sscp_session_t), _sss_sscp_session_size);
     sscp_operation_t op  = {0};
@@ -28,18 +28,12 @@ sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
 
     session->subsystem = subsystem;
     session->sscp      = sscpctx;
-
-    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_ContextReference,
-                                      kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ValueInputTuple, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].value.a = (uint32_t)subsystem;
-
-    op.params[1].context.ptr  = session;
-    op.params[1].context.type = kSSCP_ParamContextType_SSS_Session;
-
-    op.params[2].value.a = connectionMethod;
-    op.params[2].value.b = connectionData;
+    op.params[0].value.b = sessionId;
 
     op.resultTypes            = SSCP_OP_SET_RESULT(kSSCP_ParamType_ContextReference);
     op.resultCount            = 1u;
