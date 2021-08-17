@@ -22,6 +22,7 @@ void MU_Init(void)
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
+    /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     if (SNT_mu_get_response((S3MU_Type *)base, msg, wordNum) == MU_SUCCESS_RESULT)
     {
         ret = kStatus_SSCP_Success;
@@ -32,6 +33,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
+    /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     if (SNT_mu_send_message((S3MU_Type *)base, msg, wordNum) == MU_SUCCESS_RESULT)
     {
         ret = kStatus_SSCP_Success;
@@ -60,6 +62,7 @@ void sscp_mu_deinit(sscp_context_t *context)
 
 sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], uint32_t *wrId);
 
+/* NBOOT HIS metric Ex. 1 - HIS_CCM - Cyclomatic complexity */
 sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], uint32_t *wrId)
 {
     bool done            = false;
@@ -162,11 +165,14 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], ui
     *wrId = wrIdx;
     return ret;
 }
+
+/* NBOOT HIS metric Ex. 1 - HIS_CCM - Cyclomatic complexity */
 sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                                      sscp_command_t commandId,
                                      sscp_operation_t *op,
                                      uint32_t *ret)
 {
+    /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)context;
     /* parse the operation to create message */
     uint32_t msg[MU_TR_COUNT] = {0};
@@ -187,7 +193,8 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         muMsgHeader.tag_sts    = MESSAGING_TAG_COMMAND;
         muMsgHeader.command    = commandId;
         muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
-        msg[0]                 = (uint32_t)(*((uint32_t *)(&muMsgHeader)));
+        /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
+        msg[0] = (uint32_t)(*((uint32_t *)(&muMsgHeader)));
         if (MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
         {
             ret2 = kStatus_SSCP_Fail;
@@ -200,6 +207,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
             ret2 = kStatus_SSCP_Fail;
             break;
         }
+        /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
         mu_hdr_t *muReplyHeader = (mu_hdr_t *)&msg[0];
         if (muReplyHeader->size != op->resultCount)
         {
