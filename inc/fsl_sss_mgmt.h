@@ -98,14 +98,21 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  * @param context Pointer to mgmt crypto context.
  * @param propertyId Id of the fuse to read
  * @param destData Destination address of the read value
+ * @param srcDataSize Input length of the destData buffer in bytes, actual number of output bytes written to destData
+ * @param options Address of the implementation specific data buffer
+ * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
  *
  * @returns Status of the operation
  * @retval kStatus_SSS_Success The operation has completed successfully.
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_read(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, uintptr_t options, size_t *optionsLen);
+sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
+                                uint32_t fuseId,
+                                uint32_t *destData,
+                                size_t *destDataSize,
+                                uintptr_t options,
+                                size_t *optionsLen);
 
 /*! @brief Get lifecycle
  *  The function provides read lifecycle service
@@ -126,6 +133,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @param context Pointer to mgmt crypto context.
  * @param fuseId Id of the fuse to write
  * @param srcData Fuse write value
+ * @param srcDataSize Input length of the srcData buffer in bytes, actual number of bytes written to OTP
  * @param options Address of the implementation specific data buffer
  * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
  *
@@ -134,8 +142,12 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_program(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, uintptr_t options, size_t *optionsLen);
+sss_status_t sss_mgmt_fuse_program(sss_mgmt_t *context,
+                                   uint32_t fuseId,
+                                   uint32_t *srcData,
+                                   size_t *srcDataSize,
+                                   uintptr_t options,
+                                   size_t *optionsLen);
 
 /*! @brief Advance lifecycle
  *  The function provides advance lifecycle service

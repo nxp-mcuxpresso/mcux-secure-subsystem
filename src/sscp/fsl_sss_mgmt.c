@@ -124,17 +124,22 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_mgmt_fuse_read(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, uintptr_t options, size_t *optionsLen)
+sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
+                                uint32_t fuseId,
+                                uint32_t *destData,
+                                size_t *destDataLen,
+                                uintptr_t options,
+                                size_t *optionsLen)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
-    size_t len           = (optionsLen != NULL) ? *optionsLen : 0u;
+    size_t optLen        = (optionsLen != NULL) ? *optionsLen : 0u;
+    size_t fuseLen       = (destDataLen != NULL) ? *destDataLen : 0u;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
@@ -142,9 +147,10 @@ sss_status_t sss_mgmt_fuse_read(
     op.params[1].value.a = fuseId;
 
     op.params[2].memref.buffer = (uintptr_t)destData;
+    op.params[2].memref.size   = fuseLen;
 
     op.params[3].memref.buffer = options;
-    op.params[3].memref.size   = len;
+    op.params[3].memref.size   = optLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;
@@ -185,26 +191,28 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
 }
 
 sss_status_t sss_mgmt_fuse_program(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, uintptr_t options, size_t *optionsLen)
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, size_t *srcDataLen, uintptr_t options, size_t *optionsLen)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
-
-    size_t len = (optionsLen != NULL) ? *optionsLen : 0u;
+    size_t optLen        = (optionsLen != NULL) ? *optionsLen : 0u;
+    size_t fuseLen       = (srcDataLen != NULL) ? *srcDataLen : 0u;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefInputNoSize, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].value.a       = fuseId;
+    op.params[1].value.a = fuseId;
+
     op.params[2].memref.buffer = (uintptr_t)srcData;
+    op.params[2].memref.size   = fuseLen;
 
     op.params[3].memref.buffer = options;
-    op.params[3].memref.size   = len;
+    op.params[3].memref.size   = optLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;
@@ -227,7 +235,7 @@ sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    uint32_t data = (lifecycleData != NULL) ? *lifecycleData : 0x0u;
+    uint32_t data = (lifecycleData != NULL) ? *lifecycleData : 0u;
     size_t len    = (optionsLen != NULL) ? *optionsLen : 0u;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
