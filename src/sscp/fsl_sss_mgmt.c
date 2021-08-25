@@ -135,11 +135,10 @@ sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
     size_t optLen        = (optionsLen != NULL) ? *optionsLen : 0u;
-    size_t fuseLen       = (destDataLen != NULL) ? *destDataLen : 0u;
 
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_MemrefOutputNoSize,
+                                      kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
@@ -147,10 +146,11 @@ sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
     op.params[1].value.a = fuseId;
 
     op.params[2].memref.buffer = (uintptr_t)destData;
-    op.params[2].memref.size   = fuseLen;
 
-    op.params[3].memref.buffer = options;
-    op.params[3].memref.size   = optLen;
+    op.params[3].memref.buffer = (uintptr_t)destDataLen;
+
+    op.params[4].memref.buffer = options;
+    op.params[4].memref.size   = optLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;

@@ -96,9 +96,9 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  *  The function provides read fuse service
  *
  * @param context Pointer to mgmt crypto context.
- * @param propertyId Id of the fuse to read
+ * @param fuseId Id of the fuse to read
  * @param destData Destination address of the read value
- * @param srcDataSize Input length of the destData buffer in bytes, actual number of output bytes written to destData
+ * @param destDataSize Input length of the destData buffer in bytes, actual number of output bytes written to destData
  * @param options Address of the implementation specific data buffer
  * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
  *
