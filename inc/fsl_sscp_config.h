@@ -1,10 +1,10 @@
 /*
- * Copyright 2018-2019 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_CONFIG_H_
-#define _FSL_SSCP_CONFIG_H_
+#ifndef FSL_SSCP_CONFIG_H
+#define FSL_SSCP_CONFIG_H
 
-#endif /* _FSL_SSCP_CONFIG_H_ */
+#endif /* FSL_SSCP_CONFIG_H */

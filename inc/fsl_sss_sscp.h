@@ -1,11 +1,11 @@
 /*
- * Copyright 2018-2020 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_SSCP_H_
-#define _FSL_SSS_SSCP_H_
+#ifndef FSL_SSS_SSCP_H
+#define FSL_SSS_SSCP_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -19,7 +19,7 @@
 #include SSS_SSCP_CONFIG_FILE
 #endif
 
-typedef struct _sss_sscp_session
+typedef struct
 {
     /*! Indicates which security subsystem is selected to be used. */
     sss_type_t subsystem;
@@ -29,7 +29,7 @@ typedef struct _sss_sscp_session
     uint32_t ctx;
 } sss_sscp_session_t;
 
-typedef struct _sss_sscp_key_store
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -40,11 +40,11 @@ typedef struct _sss_sscp_key_store
     {
         uint8_t data[SSS_SSCP_KEY_STORE_CONTEXT_SIZE];
     } context;
-    uint32_t keyStoreCtx;
+    /*uint32_t keyStoreCtx;*/
     uint32_t ctx;
 } sss_sscp_key_store_t;
 
-typedef struct _sss_sscp_object
+typedef struct
 {
     /*! key store holding the data and other properties */
     sss_sscp_key_store_t *keyStore;
@@ -65,7 +65,7 @@ typedef struct _sss_sscp_object
 } sss_sscp_object_t;
 
 /*! @brief ::_sss_symmetric with SSCP specific information */
-typedef struct _sss_sscp_symmetric
+typedef struct
 {
     /*! Virtual connection between application (user context) and
                 specific security subsystem  and function thereof. */
@@ -82,7 +82,7 @@ typedef struct _sss_sscp_symmetric
     uint32_t ctx;
 } sss_sscp_symmetric_t;
 
-typedef struct _sss_sscp_aead
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -99,7 +99,7 @@ typedef struct _sss_sscp_aead
     uint32_t ctx;
 } sss_sscp_aead_t;
 
-typedef struct _sss_sscp_digest
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific security subsystem and function thereof. */
     sss_sscp_session_t *session;
@@ -116,7 +116,7 @@ typedef struct _sss_sscp_digest
     uint32_t ctx;
 } sss_sscp_digest_t;
 
-typedef struct _sss_sscp_mac
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -133,7 +133,7 @@ typedef struct _sss_sscp_mac
     } context;
 } sss_sscp_mac_t;
 
-typedef struct _sss_sscp_asymmetric
+typedef struct
 {
     sss_sscp_session_t *session;
     sss_sscp_object_t *keyObject;
@@ -145,16 +145,18 @@ typedef struct _sss_sscp_asymmetric
     uint32_t ctx;
 } sss_sscp_asymmetric_t;
 
-typedef struct _sss_sscp_tunnel
+typedef struct
 {
     sss_sscp_session_t *session;
     uint32_t tunnelType;
 
     /*! Implementation specific part */
     uint32_t ctx;
+    uint8_t *buffer;
+    size_t bufferSize;
 } sss_sscp_tunnel_t;
 
-typedef struct _sss_sscp_derive_key
+typedef struct
 {
     sss_sscp_session_t *session;
     sss_sscp_object_t *keyObject;
@@ -165,7 +167,7 @@ typedef struct _sss_sscp_derive_key
     uint32_t ctx;
 } sss_sscp_derive_key_t;
 
-typedef struct _sss_sscp_rng
+typedef struct
 {
     sss_sscp_session_t *session;
     uint32_t rngTypeSpecifier;
@@ -180,10 +182,9 @@ extern "C" {
 #endif
 
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
+                                   uint32_t sessionId,
                                    sss_type_t subsystem,
-                                   sscp_context_t *sscpctx,
-                                   uint32_t connectionMethod,
-                                   const void *connectionData);
+                                   sscp_context_t *sscpctx);
 
 sss_status_t sss_sscp_close_session(sss_sscp_session_t *session);
 
@@ -333,21 +334,21 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context);
 
 /*******************************KEYSTORE***************************************/
-sss_status_t sss_sscp_key_store_context_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
-sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId);
+sss_status_t sss_sscp_key_store_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
+/* sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId); */
 
 sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
                                         const uint8_t *data,
                                         size_t dataLen,
                                         uint32_t keyBitLen,
-                                        void *options);
+                                        sss_key_part_t keyPart);
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
                                         uint8_t *data,
                                         size_t *dataLen,
                                         size_t *pKeyBitLen,
-                                        void *options);
+                                        sss_key_part_t keyPart);
 sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
                                              sss_sscp_object_t *keyObject,
                                              size_t keyBitLen,
@@ -356,14 +357,21 @@ sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
 sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);
+sss_status_t sss_sscp_key_store_get_property(sss_sscp_key_store_t *keyStore,
+                                             sss_sscp_key_store_property_t propertyId,
+                                             uint32_t *property);
 
-sss_status_t sss_sscp_key_store_context_free(sss_sscp_key_store_t *keyStore);
+sss_status_t sss_sscp_key_store_free(sss_sscp_key_store_t *keyStore);
 /******************************KEYOBJECT***************************************/
 sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
 sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
 sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
+
+sss_status_t sss_sscp_key_object_set_properties(sss_sscp_object_t *keyObject, uint32_t options);
+
+sss_status_t sss_sscp_key_object_get_properties(sss_sscp_object_t *keyObject, uint32_t *options);
 
 sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
                                                  uint32_t keyId,
@@ -373,7 +381,7 @@ sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
                                                  uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
-sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);
+sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject, uint32_t options);
 /*******************************TUNNEL*****************************************/
 sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_session_t *session, uint32_t tunnelType);
 
@@ -391,4 +399,4 @@ sss_status_t sss_sscp_rng_free(sss_sscp_rng_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_SSCP_H_ */
+#endif /* FSL_SSS_SSCP_H */

@@ -4,8 +4,8 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_SSCP_CONFIG_H_
-#define _FSL_SSS_SSCP_CONFIG_H_
+#ifndef FSL_SSS_SSCP_CONFIG_H
+#define FSL_SSS_SSCP_CONFIG_H
 
 #define SSS_SSCP_KEY_STORE_CONTEXT_SIZE  8
 #define SSS_SSCP_KEY_OBJECT_CONTEXT_SIZE 8
@@ -14,4 +14,4 @@
 #define SSS_SSCP_MAC_CONTEXT_SIZE        8
 #define SSS_SSCP_AEAD_CONTEXT_SIZE       8
 
-#endif /* _FSL_SSS_SSCP_CONFIG_H_ */
+#endif /* FSL_SSS_SSCP_CONFIG_H */

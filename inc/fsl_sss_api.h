@@ -5,8 +5,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 /** @file */
-#ifndef _FSL_SSS_H_
-#define _FSL_SSS_H_
+#ifndef FSL_SSS_H
+#define FSL_SSS_H
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -35,7 +35,7 @@
 
 /** Status of the SSS APIs */
 #if !defined(SSS_STATUS_ENUM_ALT)
-typedef enum _sss_status
+typedef enum
 {
     /** Operation was successful */
     kStatus_SSS_Success = 0x5a5a5a5au,
@@ -58,7 +58,7 @@ typedef enum _sss_status
 #define SSS_ENUM(GROUP, INDEX) ((GROUP) | (INDEX))
 
 #if !defined(SSS_TYPE_ENUM_ALT)
-typedef enum _sss_type
+typedef enum
 {
     kType_SSS_SubSystem_NONE,
     /** Software based */
@@ -77,10 +77,10 @@ typedef enum _sss_type
     kType_SSS_Sentinel500 = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
     /** Secure Eleemnt */
     kType_SSS_SecureElement = SSS_ENUM(0x08 < 8, 0x00),
-    /** To connect to https://www.nxp.com/products/:A71CH */
+    /** To connect to www.nxp.com/products/:A71CH */
     kType_SSS_SE_A71CH = SSS_ENUM(kType_SSS_SecureElement, 0x01),
     kType_SSS_SE_A71CL = SSS_ENUM(kType_SSS_SecureElement, 0x02),
-    /** To connect to https://www.nxp.com/products/:SE050 */
+    /** To connect to www.nxp.com/products/:SE050 */
     kType_SSS_SE_SE05x = SSS_ENUM(kType_SSS_SecureElement, 0x03),
     kType_SSS_SubSystem_LAST
 } sss_type_t;
@@ -134,7 +134,7 @@ typedef enum
 
 /** Cryptographic algorithm to be applied */
 #if !defined(SSS_ALGORITHM_ENUM_ALT)
-typedef enum _sss_algorithm
+typedef enum
 {
     kAlgorithm_None,
     /* AES */
@@ -217,7 +217,7 @@ typedef enum _sss_algorithm
  * Augmented by @ref sss_algorithm_t
  */
 #if !defined(SSS_MODE_ENUM_ALT)
-typedef enum _sss_mode
+typedef enum
 {
     kMode_SSS_Encrypt = 1, //!< Encrypt
     kMode_SSS_Decrypt = 2, //!< Decrypt
@@ -234,7 +234,7 @@ typedef enum _sss_mode
  * Permissions of an object
  */
 #if !defined(SSS_ACCESS_PERMISSION_ENUM_ALT)
-typedef enum _sss_access_permission
+typedef enum
 {
     /** Can read (applicable) contents of the key.
      *
@@ -258,7 +258,7 @@ typedef enum _sss_access_permission
  * Persistent / Non persistent mode of a key
  */
 #if !defined(SSS_KEY_OBJECT_MODE_ENUM_ALT)
-typedef enum _sss_key_object_mode
+typedef enum
 {
     kKeyObject_Mode_None = 0, //!< kKeyObject_Mode_None
     /** Key object will be persisted in memory
@@ -274,7 +274,7 @@ typedef enum _sss_key_object_mode
 
 #if !defined(SSS_KEY_PART_ENUM_ALT)
 /** Part of a key */
-typedef enum _sss_key_part
+typedef enum
 {
     kSSS_KeyPart_NONE,
     /** Applicable where we have UserID, PIN, Binary Files,
@@ -291,7 +291,7 @@ typedef enum _sss_key_part
 
 /*! For all cipher types, key bit length is provides at the time key is inserted/generated */
 #if !defined(SSS_KEY_CIPHER_TYPE_ENUM_ALT)
-typedef enum _sss_cipher_type
+typedef enum
 {
     kSSS_CipherType_NONE,
     kSSS_CipherType_AES = 10,
@@ -331,7 +331,7 @@ typedef enum _sss_cipher_type
 #endif
 
 /** XY Co-ordinates for ECC Curves */
-typedef struct _sss_ecc_point
+typedef struct
 {
     /** X Point */
     uint8_t *X;
@@ -340,7 +340,7 @@ typedef struct _sss_ecc_point
 } sss_ecc_point_t;
 
 /** ECC Curve Parameter */
-typedef struct _sss_eccgfp_group
+typedef struct
 {
     uint8_t *p;         /**< ECC parameter P */
     uint8_t *a;         /**< ECC parameter a */
@@ -434,7 +434,7 @@ typedef enum
  * This is a *singleton* for each connection (physical/logical)
  * to individual cryptographic system.
  */
-typedef struct _sss_session
+typedef struct
 {
     /*! Indicates which security subsystem is selected.
      *
@@ -459,7 +459,7 @@ typedef struct _sss_session
  * - A cryptographic system may have more than partitions to store such keys.
  *
  */
-typedef struct _sss_key_store
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -488,7 +488,7 @@ typedef enum
 /** @brief An object (secure / non-secure) within a Key Store.
  *
  */
-typedef struct _sss_object
+typedef struct
 {
     /*! key store holding the data and other properties */
     sss_key_store_t *keyStore;
@@ -515,7 +515,7 @@ typedef struct _sss_object
  */
 
 /*! @brief Typedef for the symmetric crypto context */
-typedef struct _sss_symmetric
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -538,7 +538,7 @@ typedef struct _sss_symmetric
 /** @brief Authenticated Encryption with Additional Data
  *
  */
-typedef struct _sss_aead
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -557,13 +557,13 @@ typedef struct _sss_aead
     } extension;
 } sss_aead_t;
 
-typedef struct _sss_sha_ctx
+typedef struct
 {
     uint8_t ctx[SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE];
     uint32_t pHashFcnInfo;
 } sss_sha_ctx_t;
 
-typedef struct _sss_digest
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -585,7 +585,7 @@ typedef struct _sss_digest
 /** @brief Message Authentication Code
  *
  */
-typedef struct _sss_mac
+typedef struct
 {
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
@@ -610,7 +610,7 @@ typedef struct _sss_mac
  * e.g. RSA/ECC.
  */
 
-typedef struct _sss_asymmetric
+typedef struct
 {
     /** Pointer to root session */
     sss_session_t *session;
@@ -642,7 +642,7 @@ typedef struct
 } tlvHeader_t;
 
 /** Tunneling */
-typedef struct _sss_tunnel
+typedef struct
 {
     /** Pointer to the session */
     sss_session_t *session;
@@ -662,7 +662,7 @@ typedef struct _sss_tunnel
  */
 
 /** Key derivation */
-typedef struct _sss_derive_key
+typedef struct
 {
     /** Pointer to the session */
     sss_session_t *session;
@@ -1744,4 +1744,4 @@ void sss_tunnel_context_free(sss_tunnel_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_H_ */
+#endif /* FSL_SSS_H */
