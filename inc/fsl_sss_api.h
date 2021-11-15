@@ -14,10 +14,6 @@
 #include SSS_CONFIG_FILE
 #endif
 
-/* #include "fsl_sss_types.h" */
-
-/* #include <fsl_sss_policy.h> */
-
 #include <stdint.h>
 #include <stddef.h>
 
@@ -559,12 +555,6 @@ typedef struct
 
 typedef struct
 {
-    uint8_t ctx[SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE];
-    uint32_t pHashFcnInfo;
-} sss_sha_ctx_t;
-
-typedef struct
-{
     /*! Virtual connection between application (user context) and specific
      * security subsystem and function thereof. */
     sss_session_t *session;
@@ -574,7 +564,6 @@ typedef struct
     sss_mode_t mode;
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-    sss_sha_ctx_t shaCtx;
     /*! Implementation specific part */
     struct
     {

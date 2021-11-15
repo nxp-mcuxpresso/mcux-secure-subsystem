@@ -241,8 +241,9 @@
  * @brief Definitions with return values from SSCP functions
  */
 typedef uint32_t sscp_status_t;
-#define kStatus_SSCP_Success ((sscp_status_t)0x10203040u)
-#define kStatus_SSCP_Fail    ((sscp_status_t)0x40302010u)
+#define kStatus_SSCP_Success      ((sscp_status_t)0x10203040u)
+#define kStatus_SSCP_Fail         ((sscp_status_t)0x40302010u)
+#define kStatus_SSCP_ResourceBusy ((sscp_status_t)0x40302020u)
 
 typedef struct sscp_context sscp_context_t;
 
@@ -402,9 +403,9 @@ typedef uint32_t sscp_param_types_t;
                                   specified.*/
 #define kSSCP_ParamType_MemrefInput \
     ((sscp_param_types_t)0x5u) /*! Reference to a memory buffer - input to remote function or service */
-#define kSSCP_ParamType_MemrefOutput                                                                    \
-    ((sscp_param_types_t)0x6u) /*! Reference to a memory buffer - output by remote function or service. \
-                                  Implementations shall update the size member of the ::sscp_memref_t with the                                                                                               \
+#define kSSCP_ParamType_MemrefOutput                                                                           \
+    ((sscp_param_types_t)0x6u) /*! Reference to a memory buffer - output by remote function or service.        \
+                                  Implementations shall update the size member of the ::sscp_memref_t with the \
                                   actual number of bytes written. */
 #define kSSCP_ParamType_MemrefInOut                                                                                  \
     ((sscp_param_types_t)0x7u) /*! Reference to a memory buffer - input to and ouput from remote function or service \

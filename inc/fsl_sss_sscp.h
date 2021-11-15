@@ -107,7 +107,6 @@ typedef struct
     sss_mode_t mode;           /*!  */
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-    sss_sha_ctx_t shaCtx;
     /*! Implementation specific part */
     struct
     {
@@ -381,6 +380,8 @@ sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
                                                  uint32_t options);
 
 sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
+#define SSS_SSCP_KEY_OBJECT_FREE_STATIC  (0x0u)
+#define SSS_SSCP_KEY_OBJECT_FREE_DYNAMIC (0x1u)
 sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject, uint32_t options);
 /*******************************TUNNEL*****************************************/
 sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_session_t *session, uint32_t tunnelType);

@@ -41,6 +41,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
+#if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     if (SNT_mu_get_ownership((S3MU_Type *)base) != kStatus_Success)
     {
@@ -86,7 +87,8 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], ui
     uint32_t wrIdx       = MU_MSG_HEADER_SIZE;
     sscp_status_t ret    = kStatus_SSCP_Fail;
     sscp_status_t tmpRet = kStatus_SSCP_Success;
-    for (uint32_t i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
+    uint32_t i;
+    for (i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
         {
@@ -173,11 +175,16 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], ui
             ret = kStatus_SSCP_Fail;
             break;
         }
-        if (wrIdx >= MU_TR_COUNT - MU_MSG_HEADER_SIZE)
+        /* Buffer overoload, end with error. */
+        if (wrIdx > MU_TR_COUNT - 1u)
         {
-            ret = kStatus_SSCP_Success;
+            ret = kStatus_SSCP_Fail;
             break;
         }
+    }
+    if (i == SSCP_OPERATION_PARAM_COUNT)
+    {
+        ret = kStatus_SSCP_Success;
     }
     *wrId = wrIdx;
     return ret;
@@ -287,6 +294,8 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                     break;
                 case kSSCP_ParamType_ValueOutputSingle:
                     *((uint32_t *)(op->result[k].value.a)) = msg[i];
+                    break;
+                case kSSCP_ParamType_None:
                     break;
                 default:
                     tmpRet = kStatus_SSCP_Fail;
