@@ -16,14 +16,14 @@
 
 void MU_Init(void)
 {
-    SNT_mu_init(S3MUA);
+    SNT_mu_init(ELEMUA);
 }
 
 sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-    if (SNT_mu_get_response((S3MU_Type *)base, msg, wordNum) != kStatus_Success)
+    if (SNT_mu_get_response((ELEMU_Type *)base, msg, wordNum) != kStatus_Success)
     {
     }
 #if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
@@ -49,7 +49,7 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
     }
     else
 #endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
-        if (SNT_mu_send_message((S3MU_Type *)base, msg, wordNum) != kStatus_Success)
+        if (SNT_mu_send_message((ELEMU_Type *)base, msg, wordNum) != kStatus_Success)
     {
     }
     else
