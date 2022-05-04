@@ -49,11 +49,11 @@ status_t CRYPTO_InitHardware(void)
         {
             break;
         }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)        
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
         if (sss_sscp_open_session(&g_sssSession,
-                                  SSS_SUBSYSTEM, 
-                                  &g_sscpContext, 
-                                  0u, 
+                                  SSS_SUBSYSTEM,
+                                  &g_sscpContext,
+                                  0u,
                                   NULL) != kStatus_SSS_Success)
         {
             break;
@@ -67,9 +67,9 @@ status_t CRYPTO_InitHardware(void)
             break;
         }
 #else
-        if (sss_sscp_open_session(&g_sssSession, 
-                                  0u, 
-                                  SSS_SUBSYSTEM, 
+        if (sss_sscp_open_session(&g_sssSession,
+                                  0u,
+                                  SSS_SUBSYSTEM,
                                   &g_sscpContext) != kStatus_SSS_Success)
         {
             break;

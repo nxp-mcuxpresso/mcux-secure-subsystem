@@ -37,7 +37,7 @@
 
 static void ecp_coordinate_copy(ec_p256_coordinate* dest, const uint8_t *src)
 {
-      FLib_MemCpy(dest->raw_8bit, src, ECP256_COORDINATE_LEN);
+    FLib_MemCpy(dest->raw_8bit, src, ECP256_COORDINATE_LEN);
 }
 
 static void ecp_coordinate_copy_and_change_endiannes(ec_p256_coordinate* dest, const uint8_t *src)
@@ -80,9 +80,7 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecdh_context_t *ecdh_ctx,
     size_t coordinateLen      = ECP256_COORDINATE_LEN;
     size_t coordinateBitsLen  = ECP256_COORDINATE_BITLEN;
     size_t keySize            = 2u * coordinateLen;             /* X and Y coordinates of EC point */
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-    uint32_t keyOpt           = (uint32_t)kSSS_KeyGenMode_Ecc;
-#endif
+
     FLib_MemSet(wrk_buf, 0, keySize);
     do {
         if ((CRYPTO_InitHardware()) != kStatus_Success)
@@ -118,30 +116,15 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecdh_context_t *ecdh_ctx,
             }
         }
 
-        if ((ret = sss_sscp_key_store_generate_key(&g_keyStore,
-                                                    &ecdh_ctx->key,
-                                                    coordinateBitsLen,
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                                                    &keyOpt
-#else
-                                                    NULL
-#endif
-                                              )) != kStatus_SSS_Success)
+        if ((ret = SSS_ECP_GENERATE_KEY(&ecdh_ctx->key,
+                                        coordinateBitsLen)) != kStatus_SSS_Success)
         {
             break;
         }
-        if ((ret = sss_sscp_key_store_generate_key(&g_keyStore, &ecdh_ctx->key, coordinateBitsLen, NULL)) != kStatus_SSS_Success)
-        if ((ret = sss_sscp_key_store_get_key(&g_keyStore,
-                                       &ecdh_ctx->key,
-                                       wrk_buf,
-                                       &keySize,
-                                       &coordinateBitsLen,
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                                       NULL
-#else
-                                       kSSS_KeyPart_Public
-#endif
-                                       )) != kStatus_SSS_Success)
+        if ((ret =  SSS_KEY_STORE_GET_PUBKEY(&ecdh_ctx->key,
+                                             wrk_buf,
+                                             &keySize,
+                                             &coordinateBitsLen)) != kStatus_SSS_Success)
         {
             break;
         }
@@ -170,27 +153,28 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx,
     sss_sscp_derive_key_t dCtx;
     size_t coordinateLen      = ECP256_COORDINATE_LEN;
     size_t coordinateBitsLen  = ECP256_COORDINATE_BITLEN;
+    size_t key_sz = 2*coordinateLen;
     assert(wrk_buf != NULL);
-    assert(wrk_buf_lg >= coordinateLen*2u);
+    assert(wrk_buf_lg >= coordinateLen*3u);
     do {
         if ((CRYPTO_InitHardware()) != kStatus_Success)
             break;
         if ((ret = sss_sscp_key_object_init(&ecdh_ctx->peerPublicKey, &g_keyStore)) != kStatus_SSS_Success)
             break;
-
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-        if ((ret = sss_sscp_key_object_allocate_handle(&Ecdh_ComputeJacobiChunk(->peerPublicKey,
+        key_sz += coordinateLen;
+        if ((ret = sss_sscp_key_object_allocate_handle(&ecdh_ctx->peerPublicKey,
                                                  1u,
                                                  kSSS_KeyPart_Pair,
                                                  kSSS_CipherType_EC_NIST_P,
-                                                 wrk_buf_lg,
+                                                 key_sz,
                                                  SSS_PUBLIC_KEY_PART_EXPORTABLE)) != kStatus_SSS_Success)
 #else
         if ((ret = sss_sscp_key_object_allocate_handle(&ecdh_ctx->peerPublicKey,
                                                  1u,
                                                  kSSS_KeyPart_Public,
                                                  kSSS_CipherType_EC_NIST_P,
-                                                 wrk_buf_lg,
+                                                 key_sz,
                                                  SSS_KEYPROP_OPERATION_KDF)) != kStatus_SSS_Success)
 #endif
         {
@@ -201,10 +185,9 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx,
         memcpy(&wrk_buf[0],                     &ecdh_ctx->Qp.components_8bit.x, ECP256_COORDINATE_LEN);
         memcpy(&wrk_buf[ECP256_COORDINATE_LEN], &ecdh_ctx->Qp.components_8bit.y, ECP256_COORDINATE_LEN);
 
-
         if ((ret = SSS_KEY_STORE_SET_KEY(&ecdh_ctx->peerPublicKey,
                                          (const uint8_t *)wrk_buf,
-                                         wrk_buf_lg,
+                                         key_sz,
                                          coordinateBitsLen,
                                          kSSS_KeyPart_Public)) != kStatus_SSS_Success)
         {
@@ -266,7 +249,7 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx,
     return ret;
 }
 
-//#define ECDH_SELF_TEST
+#define ECDH_SELF_TEST  2
 
 /* test suite functions*/
 #if defined(ECDH_SELF_TEST)
@@ -324,8 +307,10 @@ int EC_P256_ComputeDhKey(ecdhPrivateKey_t*   pPrivateKey,
 }
 
 
+#if defined(ECDH_SELF_TEST) && (ECDH_SELF_TEST == 1)
 
 
+#include "fsl_debug_console.h"
 sss_ecdh_context_t ecdhClient;
 sss_ecdh_context_t ecdhServer;
 #define  TRACE(...) { if (verbose) PRINTF(...);}
@@ -355,7 +340,7 @@ int sss_ecdh_self_test(bool verbose)
         if (sss_ecdh_make_public_ecp256_key(&ecdhClient,
                                         wrk_buf, sizeof(ecdhPublicKey_t),
                                         &ecdhClient.OwnPublicKey, &ecdhClient.PrivateKey)
-            != kStatus_SecLib_Success)
+            != kStatus_SSS_Success)
         {
             TRACE("Client: Error generating SSS ECDH Key Pair\n");
             break;
@@ -368,7 +353,7 @@ int sss_ecdh_self_test(bool verbose)
 
         FLib_MemSet(wrk_buf, 0, sizeof(wrk_buf_sz));
 
-        if(sss_ecdh_calc_secret(&ecdhClient, wrk_buf, 3 * ECP256_COORDINATE_LEN, &ecdhClient.z) != kStatus_SecLib_Success)
+        if(sss_ecdh_calc_secret(&ecdhClient, wrk_buf, 3 * ECP256_COORDINATE_LEN, &ecdhClient.z) != kStatus_SSS_Success)
         {
             TRACE("Client: Error computing DH secret\n");
             break;
@@ -395,4 +380,6 @@ int sss_ecdh_self_test(bool verbose)
     } while (0);
     return ret;
 }
-#endif /* MBEDTLS_SELF_TEST */
+#endif /* MBEDTLS_SELF_TEST == 1 */
+#endif /* defined MBEDTLS_SELF_TEST */
+

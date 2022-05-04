@@ -145,9 +145,7 @@ status_t SSS_aes_cmac
     uint8_t ramKey[32];
     (void)memcpy(ramKey, key, key_bytelen);
 
-    //bool sscp_mac_was_set = false;
-    //sss_sscp_object_t sssKey;
-    //sss_sscp_mac_t sscp_mac;
+
     pCtx->sscp_mac_was_set = false;
     do {
         if (CRYPTO_InitHardware() != kStatus_Success)

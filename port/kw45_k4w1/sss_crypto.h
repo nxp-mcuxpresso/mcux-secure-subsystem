@@ -122,6 +122,7 @@ typedef  struct sss_ecdh_p256_context_t {
     sss_session_t session;
     sss_sscp_key_store_t ks;
     sss_asymmetric_t asymm;
+    uint32_t keyId;
 
     sss_sscp_object_t key;
     sss_sscp_object_t peerPublicKey;
@@ -472,15 +473,15 @@ static inline  int SSS_ECP_GENERATE_KEY(sss_sscp_object_t key_obj, size_t key_bi
 #else   /* KW45_A0_SUPPORT */
 
 #define SSS_KEY_OBJ_FREE(_KEY_OBJ_)  \
-        sss_sscp_key_object_free(_KEY_OBJ_, SSS_SSCP_KEY_OBJECT_FREE_DYNAMIC)
+    sss_sscp_key_object_free(_KEY_OBJ_, SSS_SSCP_KEY_OBJECT_FREE_DYNAMIC)
 
 #define SSS_KEY_STORE_SET_KEY(_KEY_OBJ_,_KEY_,_KEY_BYTE_LEN_,_KEY_BITLEN_, _KEY_PART_) \
     sss_sscp_key_store_set_key(&g_keyStore,        \
-                                   _KEY_OBJ_,      \
-                                   _KEY_,          \
-                                   _KEY_BYTE_LEN_, \
-                                   _KEY_BITLEN_,      \
-                                   _KEY_PART_)
+                               _KEY_OBJ_,      \
+                               _KEY_,          \
+                               _KEY_BYTE_LEN_, \
+                               _KEY_BITLEN_,      \
+                               _KEY_PART_)
 
 #define SSS_ECP_KEY_SZ(_KEYLEN_)    (2 * (_KEYLEN_))
 

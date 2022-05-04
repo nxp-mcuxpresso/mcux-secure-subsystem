@@ -173,7 +173,6 @@ status_t SSS_md_hmac_sha256(sss_hmac_sha256_context_t *pCtx,
                            unsigned char *output )
 {
     /* Relatively big context on the stack */
-    sss_hmac_sha256_context_t ctx;
     status_t status = kStatus_SSS_Fail;
 
     SSS_md_hmac_sha256_init( pCtx );
