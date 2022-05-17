@@ -183,7 +183,7 @@ status_t SSS_ccm_auth_decrypt(sss_ccm_context_t *ctx,
           RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
 #else
         if (tag_len != 0u)
-            RAISE_ERROR(status, kStatus_SecLib_BadArg);
+            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
 #endif
         status = sss_ccm_auth_crypt(ctx,
                          kMode_SSS_Decrypt,
