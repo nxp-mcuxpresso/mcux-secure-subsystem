@@ -250,6 +250,8 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_CMD_SSS_MGMT_HostAccessPermissionSet ((sscp_command_t)0x70)
 #define kSSCP_CMD_SSS_MGMT_IntegrityCheckEnable    ((sscp_command_t)0x6f)
 #define kSSCP_CMD_SSS_MGMT_ClearAllKeys            ((sscp_command_t)0x74)
+#define kSSCP_CMD_SSS_KeyStoreImportKey            ((sscp_command_t)0x78)
+#define kSSCP_CMD_SSS_KeyStoreExportKey            ((sscp_command_t)0x79)
 /* kSSCP_CMD_SSS_KeyStoreEraseAll command ID have to be updated once value will be defined in elke specification */
 #define kSSCP_CMD_SSS_KeyStoreEraseAll             ((sscp_command_t)0xff)
 

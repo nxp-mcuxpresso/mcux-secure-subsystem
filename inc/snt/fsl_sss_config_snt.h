@@ -268,6 +268,7 @@ typedef uint32_t sss_mode_t;
 #define kMode_SSS_ComputeSharedSecret ((sss_mode_t)0x04u)
 #define kMode_SSS_Digest              ((sss_mode_t)0x05u)
 #define kMode_SSS_Mac                 ((sss_mode_t)0x06u)
+#define kMode_SSS_SymmetricKdf        ((sss_mode_t)0x07u)
 
 #define SSS_ALGORITHM_ENUM_ALT
 typedef uint32_t sss_algorithm_t;
@@ -294,6 +295,7 @@ typedef uint32_t sss_algorithm_t;
 /* Diffie-Helmann */
 #define kAlgorithm_SSS_DH                           ((sss_algorithm_t)0x0fu)
 #define kAlgorithm_SSS_ECDH                         ((sss_algorithm_t)0x10u)
+#define kAlgorithm_MONTDH                           ((sss_algorithm_t)0x30u)
 /* DSA */
 #define kAlgorithm_SSS_DSA_SHA1                     ((sss_algorithm_t)0x11u)
 #define kAlgorithm_SSS_DSA_SHA224                   ((sss_algorithm_t)0x12u)
@@ -315,6 +317,9 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_ECDSA_SHA256                 ((sss_algorithm_t)0x20u)
 #define kAlgorithm_SSS_ECDSA_SHA384                 ((sss_algorithm_t)0x21u)
 #define kAlgorithm_SSS_ECDSA_SHA512                 ((sss_algorithm_t)0x22u)
+/* KDF */
+#define kAlgorithm_SSS_E2E_BLOB                     ((sss_algorithm_t)0x40u)
+#define kAlgorithm_SSS_BLE_F5                       ((sss_algorithm_t)0x50u)
 
 #define SAB_KEY_TYPE_SYMMETRIC  (0x00)
 #define SAB_KEY_TYPE_ASYMMETRIC (0x01)
@@ -326,6 +331,7 @@ typedef uint32_t sss_cipher_type_t;
 #define kSSS_CipherType_CMAC               ((sss_cipher_type_t)0x10u)
 #define kSSS_CipherType_HMAC               ((sss_cipher_type_t)0x10u)
 #define kSSS_CipherType_MAC                ((sss_cipher_type_t)0x10u)
+#define kSSS_CipherType_SYMMETRIC          ((sss_cipher_type_t)0x10u)
 #define kSSS_CipherType_RSA                ((sss_cipher_type_t)0x1u)  /*! RSA RAW format      */
 #define kSSS_CipherType_RSA_CRT            ((sss_cipher_type_t)0x1u)  /*! RSA CRT format      */
 /* The following keys can be identified
@@ -389,6 +395,39 @@ typedef uint32_t sss_sscp_key_store_property_t;
 #define kSSS_key_store_prop_availableMemory          ((sss_sscp_key_store_property_t)0x1u)
 #define kSSS_key_store_prop_totalNumberOfKeyObjects  ((sss_sscp_key_store_property_t)0x2u)
 #define kSSS_key_store_prop_availableKeyObjects      ((sss_sscp_key_store_property_t)0x3u)
+
+typedef uint32_t sss_sscp_key_property_t;
+#define kSSS_KeyProp_Locked                          ((sss_sscp_key_property_t)0x80000000u)
+#define kSSS_KeyProp_SecAccess_NS_USER               ((sss_sscp_key_property_t)0x00000000u)
+#define kSSS_KeyProp_SecAccess_NS_PRIV               ((sss_sscp_key_property_t)0x20000000u)
+#define kSSS_KeyProp_SecAccess_S_USER                ((sss_sscp_key_property_t)0x40000000u)
+#define kSSS_KeyProp_SecAccess_S_PRIV                ((sss_sscp_key_property_t)0x60000000u)
+#define kSSS_KeyProp_TrustedKey                      ((sss_sscp_key_property_t)0x10000000u)
+#define kSSS_KeyProp_NoImportExport                  ((sss_sscp_key_property_t)0x00010000u)
+#define kSSS_KeyProp_NoPlainRead                     ((sss_sscp_key_property_t)0x00008000u)
+#define kSSS_KeyProp_NoPlainWrite                    ((sss_sscp_key_property_t)0x00004000u)
+#define kSSS_KeyProp_NoVerify                        ((sss_sscp_key_property_t)0x00002000u)
+#define kSSS_KeyProp_NoSign                          ((sss_sscp_key_property_t)0x00001000u)
+#define kSSS_KeyProp_CryptoAlgo_KDF                  ((sss_sscp_key_property_t)0x00000010u)
+#define kSSS_KeyProp_CryptoAlgo_AsymSignVerify       ((sss_sscp_key_property_t)0x00000008u)
+#define kSSS_KeyProp_CryptoAlgo_AEAD                 ((sss_sscp_key_property_t)0x00000004u)
+#define kSSS_KeyProp_CryptoAlgo_MAC                  ((sss_sscp_key_property_t)0x00000002u)
+#define kSSS_KeyProp_CryptoAlgo_AES                  ((sss_sscp_key_property_t)0x00000001u)
+
+typedef uint32_t sss_keyObjFree_options_t;
+#define kSSS_keyObjFree_KeysStoreNoDefragment        ((sss_sscp_keyObjFree_options_t)0x0u)
+#define kSSS_keyObjFree_KeysStoreDefragment          ((sss_sscp_keyObjFree_options_t)0x1u)
+
+typedef uint32_t sss_blob_type_t;
+#define kSSS_blobType_ELKE_blob                       ((sss_sscp_blob_type_t)0x1u)
+#define kSSS_blobType_E2E_blob                        ((sss_sscp_blob_type_t)0x2u)
+#define kSSS_blobType_NBU_ESK_blob                    ((sss_sscp_blob_type_t)0x3u)
+#define kSSS_blobType_NBU_EIRK_blob                   ((sss_sscp_blob_type_t)0x4u)
+
+typedef uint32_t sss_internal_keyID_t;
+#define kSSS_internalKey_NPX                          ((sss_sscp_internal_keyID_t)0x80000007u)
+#define kSSS_internalKey_NBU_DKEY_SK                  ((sss_sscp_internal_keyID_t)0x80000009u)
+#define kSSS_internalKey_NBU_DKEY_IRK                 ((sss_sscp_internal_keyID_t)0x8000000Au)
 
 #endif /* FSL_SSS_CONFIG_H */
 #endif /* KW45_A0_SUPPORT */

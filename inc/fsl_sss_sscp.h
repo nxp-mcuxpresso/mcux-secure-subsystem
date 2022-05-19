@@ -738,18 +738,34 @@ sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
                                         size_t dataLen,
                                         uint32_t keyBitLen,
                                         sss_key_part_t keyPart);
+
 sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         sss_sscp_object_t *keyObject,
                                         uint8_t *data,
                                         size_t *dataLen,
                                         size_t *pKeyBitLen,
                                         sss_key_part_t keyPart);
+
+sss_status_t sss_sscp_key_store_export_key(sss_sscp_key_store_t *keyStore,
+                                           sss_sscp_object_t *keyObject,
+                                           uint8_t *data,
+                                           size_t *dataLen,
+                                           sss_blob_type_t blobType);
+
+sss_status_t sss_sscp_key_store_import_key(sss_sscp_key_store_t *keyStore,
+                                           sss_sscp_object_t *keyObject,
+                                           const uint8_t *data,
+                                           size_t dataLen,
+                                           uint32_t keyBitLen,
+                                           sss_blob_type_t blobType);
+
 sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
                                              sss_sscp_object_t *keyObject,
                                              size_t keyBitLen,
                                              void *options);
 
 sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
+sss_status_t sss_sscp_key_store_open_internal_key(sss_sscp_key_store_t *keyStore, sss_internal_keyID_t keyID);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);
 sss_status_t sss_sscp_key_store_get_property(sss_sscp_key_store_t *keyStore,
