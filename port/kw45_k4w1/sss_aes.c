@@ -42,7 +42,7 @@ status_t SSS_set_aes_key(aes_context_t *ctx, const unsigned char *key, const siz
         {
             break;
         }
-        if ((ret = sss_sscp_key_store_set_key(&g_keyStore, &ctx->sssKey, ramKey, key_byte_len, (key_byte_len << 3),
+        if ((ret = SSS_KEY_STORE_SET_KEY(&ctx->sssKey, ramKey, key_byte_len, (key_byte_len << 3),
                                               kSSS_KeyPart_Default)) != kStatus_SSS_Success)
         {
             break;

@@ -369,7 +369,7 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx, unsigned char *wrk_b
 
 #define SSS_ECP_KEY_SZ(_KEYLEN_) (3u * (_KEYLEN_))
 
-static inline int SSS_ECP_GENERATE_KEY(sss_sscp_object_t key_obj, size_t key_bitlen)
+static inline int SSS_ECP_GENERATE_KEY(sss_sscp_object_t *key_obj, size_t key_bitlen)
 {
     uint32_t keyOpt = (uint32_t)kSSS_KeyGenMode_Ecc;
     return sss_sscp_key_store_generate_key(&g_keyStore, key_obj, key_bitlen, &keyOpt);
