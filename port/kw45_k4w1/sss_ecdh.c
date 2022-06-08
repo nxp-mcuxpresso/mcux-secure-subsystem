@@ -17,11 +17,8 @@
  * Note: This file restricts the implementation to EC P256 R1.
  */
 
-#include "fsl_component_mem_manager.h"
-
-#include "CryptoLibSW.h"
+#include "ecp256.h"
 #include "sss_crypto.h"
-#include "FunctionLib.h"
 #include "fsl_sss_config_snt.h"
 
 /************************************************************************************
@@ -49,7 +46,7 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
     size_t coordinateBitsLen = ECP256_COORDINATE_BITLEN;
     size_t keySize           = 2u * coordinateLen; /* X and Y coordinates of EC point */
 
-    FLib_MemSet(wrk_buf, 0, keySize);
+    memset(wrk_buf, 0, keySize);
     do
     {
         if ((CRYPTO_InitHardware()) != kStatus_Success)
@@ -138,8 +135,8 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
         }
         pPubKey = &pEcdh_ctx->peerPublicKey;
         /* Copy the Peer Public Key to the work buffer */
-        memcpy(&wrk_buf[0], &pEcdh_ctx->Qp.components_8bit.x, ECP256_COORDINATE_LEN);
-        memcpy(&wrk_buf[ECP256_COORDINATE_LEN], &pEcdh_ctx->Qp.components_8bit.y, ECP256_COORDINATE_LEN);
+        memcpy(&wrk_buf[0], &pEcdh_ctx->Qp.coord.X, ECP256_COORDINATE_LEN);
+        memcpy(&wrk_buf[ECP256_COORDINATE_LEN], &pEcdh_ctx->Qp.coord.Y, ECP256_COORDINATE_LEN);
 
         if ((ret = SSS_KEY_STORE_SET_KEY(pPubKey, (const uint8_t *)wrk_buf, key_sz, coordinateBitsLen,
                                          kSSS_KeyPart_Public)) != kStatus_SSS_Success)

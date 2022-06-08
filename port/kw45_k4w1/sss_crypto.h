@@ -13,6 +13,7 @@
 #include "fsl_common.h"
 #include "fsl_sscp_mu.h"
 #include "fsl_sss_sscp.h"
+#include "ecp256.h"
 
 #define SSS_HIGH_QUALITY_RNG 1
 
@@ -48,6 +49,10 @@
 
 #define ECP256_COORDINATE_BITLEN 256u
 #define ECP256_COORDINATE_LEN    (ECP256_COORDINATE_BITLEN >> 3)
+
+/* HMAC SHA256 section */
+#define MD_HMAC_SHA256_SIZE       32u
+#define MD_HMAC_SHA256_BLOCK_SIZE 64u
 
 extern sss_sscp_key_store_t g_keyStore;
 extern sss_sscp_session_t g_sssSession;
@@ -89,10 +94,6 @@ typedef struct sss_ccm_context_t
 
 } sss_ccm_context_t;
 
-/* HMAC SHA256 section */
-#define MD_HMAC_SHA256_SIZE       32u
-#define MD_HMAC_SHA256_BLOCK_SIZE 64u
-
 typedef struct sss_hmac_context_t
 {
     unsigned char ipad[MD_HMAC_SHA256_BLOCK_SIZE];
@@ -106,8 +107,6 @@ typedef struct sss_hmac_sha256_context_s
     sss_hmac_context_t hmac_ctx;
 
 } sss_hmac_sha256_context_t;
-
-#include "CryptoLibSW.h"
 
 typedef struct sss_ecp256_context_t
 {

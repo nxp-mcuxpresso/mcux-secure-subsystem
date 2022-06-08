@@ -1,12 +1,6 @@
 
 
-#include "fsl_common.h"
-#include "fsl_device_registers.h"
-#include "fsl_os_abstraction.h"
-#include "fsl_component_mem_manager.h"
-#include "fsl_snt.h"
 #include "sss_crypto.h"
-
 
 sss_sscp_key_store_t g_keyStore;
 sss_sscp_session_t g_sssSession;

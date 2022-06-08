@@ -9,7 +9,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "FunctionLib.h"
 
 #include "sss_crypto.h"
 

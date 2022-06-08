@@ -8,8 +8,6 @@
 ********************************************************************************** */
 
 #include "fsl_device_registers.h"
-#include "fsl_os_abstraction.h"
-#include "fsl_component_mem_manager.h"
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_api.h"
 #include "sss_crypto.h"
