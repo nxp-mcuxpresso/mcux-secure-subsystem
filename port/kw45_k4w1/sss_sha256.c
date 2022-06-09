@@ -56,20 +56,28 @@ status_t SSS_sha256_starts_ret(sss_sha256_context_t *ctx, bool is_sha224)
     do {
         if (ctx == NULL)
         {
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
         }
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
+        }
     
-        if ((status = sss_sscp_digest_context_init(&ctx->ctx, 
+        if ((sss_sscp_digest_context_init(&ctx->ctx, 
                                          &g_sssSession, 
                                          alg, 
                                          kMode_SSS_Digest)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
-        if ((status = sss_sscp_digest_init(&ctx->ctx)) != kStatus_SSS_Success)
+        }
+        if ((sss_sscp_digest_init(&ctx->ctx)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
+        }
 
-    } while (0);
+    } while (false);
     return status;
 }
 
@@ -81,10 +89,15 @@ status_t SSS_sha256_update_ret(sss_sha256_context_t *ctx, const unsigned char *i
     status_t status;
     do {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
-        if ((status = sss_sscp_digest_update(&ctx->ctx, (uint8_t *)(uintptr_t)input, ilen)) != kStatus_SSS_Success)
+        }
+        if ((sss_sscp_digest_update(&ctx->ctx, (uint8_t *)(uintptr_t)input, ilen)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
-    } while (0);
+        }
+    } while (false);
     return status;
 }
 
@@ -97,11 +110,16 @@ status_t SSS_sha256_finish_ret(sss_sha256_context_t *ctx, unsigned char output[3
     size_t len = ctx->ctx.digestFullLen;
     do {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
-        if ((status = sss_sscp_digest_finish(&ctx->ctx, output, &len)) != kStatus_SSS_Success)
+        }
+        if ((sss_sscp_digest_finish(&ctx->ctx, output, &len)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
+        }
         (void)sss_sscp_digest_context_free(&ctx->ctx);
-    } while (0);
+    } while (false);
     return status;
 }
 
@@ -117,17 +135,25 @@ status_t SSS_sha256_ret(const unsigned char *input, size_t ilen, unsigned char o
     size_t size = 32u;
     do {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
-        if ((status = sss_sscp_digest_context_init(&dctx, &g_sssSession,
+        }
+        if ((sss_sscp_digest_context_init(&dctx, &g_sssSession,
                                          alg, 
                                          kMode_SSS_Digest)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
+        }
 
-        if ((status = sss_sscp_digest_one_go(&dctx, input, ilen, output, &size)) != kStatus_SSS_Success)
+        if ((sss_sscp_digest_one_go(&dctx, input, ilen, output, &size)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
+        }
 
         (void)sss_sscp_digest_context_free(&dctx);
-    } while (0);
+    } while (false);
     return status;
 }
 

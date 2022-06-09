@@ -25,15 +25,19 @@ status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, 
         {
             break;
         }
-        if ((ret = SSS_set_aes_key_cmac(ctx, key, key_bytelen)) != kStatus_SSS_Success)
+        if ((ret = SSS_set_aes_key_cmac(ctx, key, key_bytelen)) != kStatus_Success)
         {
             break;
         }
         /* CMAC OPERATION INIT */
-        ret = sss_sscp_mac_context_init(&ctx->sscp_mac, &g_sssSession, &ctx->sssKey, kAlgorithm_SSS_CMAC_AES,
-                                        kMode_SSS_Mac);
+        if ((sss_sscp_mac_context_init(&ctx->sscp_mac, &g_sssSession, &ctx->sssKey, kAlgorithm_SSS_CMAC_AES,
+                                        kMode_SSS_Mac)) != kStatus_SSS_Success)
+        {
+            ret =kStatus_Fail;
+            break;
+        }
 
-    } while (0);
+    } while (false);
     return ret;
 }
 
@@ -46,7 +50,7 @@ status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input
     {
         if (ctx == NULL || input == NULL)
         {
-            RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(ret, kStatus_InvalidArgument);
         }
 
         ret = sss_sscp_mac_update(&ctx->sscp_mac, input, ilen);
@@ -65,10 +69,15 @@ status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
         if (ctx == NULL || output == NULL)
         {
             RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
+            break;
         }
-        ret = sss_sscp_mac_finish(&ctx->sscp_mac, output, &olen);
+        if((sss_sscp_mac_finish(&ctx->sscp_mac, output, &olen)) != kStatus_SSS_Success)
+        {
+            ret = kStatus_Fail;
+            break;
+        }
 
-    } while (0);
+    } while (false);
 
     return (ret);
 }
@@ -95,7 +104,7 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
     size_t macSize     = 16u;
     size_t key_bytelen = (keylen + 7u) / 8u;
 
-    status_t ret = kStatus_SSS_Fail;
+    status_t ret = kStatus_Fail;
     memset(pCtx, 0, sizeof(cmac_aes_context_t));
 
     pCtx->sscp_mac_was_set = false;
@@ -106,22 +115,23 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
             break;
         }
 
-        if (SSS_aes_cmac_starts(pCtx, key, key_bytelen) != kStatus_SSS_Success)
+        if (SSS_aes_cmac_starts(pCtx, key, key_bytelen) != kStatus_Success)
         {
             break;
         }
 
         pCtx->sscp_mac_was_set = true;
         /* RUN CMAC ONE GO */
-        if ((ret = sss_sscp_mac_one_go(&pCtx->sscp_mac, (const uint8_t *)input, ilen, (uint8_t *)output, &macSize)) !=
+        if ((sss_sscp_mac_one_go(&pCtx->sscp_mac, (const uint8_t *)input, ilen, (uint8_t *)output, &macSize)) !=
             kStatus_SSS_Success)
         {
+            ret =kStatus_Fail;
             break;
         }
-
+        ret = kStatus_Success;
         /* Free MAC context only if its init has been successful */
         (void)sss_sscp_mac_context_free(&pCtx->sscp_mac);
-    } while (0);
+    } while (false);
     /* CLEAN UP */
     /* KEYOBJECT FREE*/
     SSS_aes_cmac_free(pCtx);
@@ -147,7 +157,7 @@ status_t SSS_aes_cmac_prf_128(cmac_aes_context_t *pCtx,
     {
         if (key == NULL || input == NULL || output == NULL)
         {
-            RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(ret, kStatus_InvalidArgument);
         }
         if (key_len == AES_128_KEY_BYTE_LEN)
         {
@@ -159,13 +169,13 @@ status_t SSS_aes_cmac_prf_128(cmac_aes_context_t *pCtx,
             memset(zero_key, 0, AES_128_KEY_BYTE_LEN);
 
             ret = SSS_aes_cmac(pCtx, zero_key, AES_128_KEY_BITS, key, key_len, int_key);
-            if (ret != kStatus_SSS_Success)
+            if (ret != kStatus_Success)
             {
                 break;
             }
         }
         ret = SSS_aes_cmac(pCtx, int_key, AES_128_KEY_BITS, input, in_len, output);
-    } while (0);
+    } while (false);
 
     memset(int_key, 0, sizeof(int_key));
 
@@ -181,21 +191,25 @@ status_t SSS_set_aes_key_cmac(cmac_aes_context_t *pCtx, const unsigned char *key
         uint8_t ramKey[32];
         (void)memcpy(ramKey, key, key_bytelen);
 
-        if ((ret = sss_sscp_key_object_init(&pCtx->sssKey, &g_keyStore)) != kStatus_SSS_Success)
+        if ((sss_sscp_key_object_init(&pCtx->sssKey, &g_keyStore)) != kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
-        if ((ret = SSS_KEY_ALLOCATE_HANDLE(&pCtx->sssKey, 1u, kSSS_KeyPart_Default, kSSS_CipherType_AES, key_bytelen,
+        if ((SSS_KEY_ALLOCATE_HANDLE(&pCtx->sssKey, 1u, kSSS_KeyPart_Default, kSSS_CipherType_AES, key_bytelen,
                                            SSS_KEYPROP_OPERATION_MAC)) != kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
-        if ((ret = SSS_KEY_STORE_SET_KEY(&pCtx->sssKey, ramKey, key_bytelen, keylen, kSSS_KeyPart_Default)) !=
+        if ((SSS_KEY_STORE_SET_KEY(&pCtx->sssKey, ramKey, key_bytelen, keylen, kSSS_KeyPart_Default)) !=
             kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
+        ret = kStatus_Success;
 
-    } while (0);
+    } while (false);
     return ret;
 }

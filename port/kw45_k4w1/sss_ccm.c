@@ -49,29 +49,36 @@ status_t SSS_ccm_setkey(sss_ccm_context_t *ctx,
         uint16_t key_bytes = keybits >> 3;
         (void)memcpy(ramKey, key, key_bytes);
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
-        if ((status = sss_sscp_key_object_init(&ctx->key, &g_keyStore)) != kStatus_SSS_Success)
+        }
+        if ((sss_sscp_key_object_init(&ctx->key, &g_keyStore)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail;
             break;
-        if ((status = SSS_KEY_ALLOCATE_HANDLE(&ctx->key,
+        }
+        if ((SSS_KEY_ALLOCATE_HANDLE(&ctx->key,
                                               1u,
                                               kSSS_KeyPart_Default,
                                               kSSS_CipherType_AES,
                                               key_bytes,
                                               SSS_KEYPROP_OPERATION_AEAD)) != kStatus_SSS_Success)
         {
+            status = kStatus_Fail;
             break;
         }
 
-        if ((status = SSS_KEY_STORE_SET_KEY(&ctx->key,
+        if ((SSS_KEY_STORE_SET_KEY(&ctx->key,
                                             ramKey,
                                             key_bytes,
                                             keybits,
                                             kSSS_KeyPart_Default)) != kStatus_SSS_Success)
         {
+            status = kStatus_Fail;
             break;
         }
 
-    } while (0);
+    } while (false);
 
     return status;
 }
@@ -112,19 +119,19 @@ status_t SSS_ccm_encrypt_and_tag(sss_ccm_context_t *ctx,
     do {
 #ifdef DEBUG
         if (ctx == NULL)
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if (iv == NULL)
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if ((add_len != 0u) && (add == NULL))
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if ((length != 0u) && ((input == NULL) || (output == NULL)))
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if ((tag_len != 0u) && (tag == NULL))
-              RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+              RAISE_ERROR(status, kStatus_InvalidArgument);
 #endif
         status = sss_ccm_auth_crypt(ctx,
                          kMode_SSS_Encrypt,
@@ -137,7 +144,7 @@ status_t SSS_ccm_encrypt_and_tag(sss_ccm_context_t *ctx,
                          output,
                         (unsigned char *)(uintptr_t)tag,
                         tag_len);
-    } while (0);
+    } while (false);
 
     return status;
 }
@@ -161,27 +168,27 @@ status_t SSS_ccm_auth_decrypt(sss_ccm_context_t *ctx,
     do {
 #ifdef DEBUG
         if (ctx == NULL)
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if (iv == NULL)
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if ((add_len != 0u) && (add == NULL))
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if ((length != 0u) && ((input == NULL) || (output == NULL)))
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 
         if (tag_len != 0u)
         {
             if (tag == NULL)
-              RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+              RAISE_ERROR(status, kStatus_InvalidArgument);
         }
         else
-          RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+          RAISE_ERROR(status, kStatus_InvalidArgument);
 #else
         if (tag_len != 0u)
-            RAISE_ERROR(status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(status, kStatus_InvalidArgument);
 #endif
         status = sss_ccm_auth_crypt(ctx,
                          kMode_SSS_Decrypt,
@@ -192,7 +199,7 @@ status_t SSS_ccm_auth_decrypt(sss_ccm_context_t *ctx,
                          output,
                          (unsigned char *)(uintptr_t)tag,
                          tag_len);
-    } while (0);
+    } while (false);
 
     return status;
 }
@@ -221,20 +228,24 @@ static status_t sss_ccm_auth_crypt(sss_ccm_context_t *ctx,
     size_t tlen        = tag_len;
 
     do {
-        status_t st;
 
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
+        }
 
         /* AEAD OPERATION INIT */
-        if ((status = sss_sscp_aead_context_init(&ctx->aead_ctx,
+        if ((sss_sscp_aead_context_init(&ctx->aead_ctx,
                                        &g_sssSession,
                                        &ctx->key,
                                        kAlgorithm_SSS_AES_CCM,
                                        sssMode)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail; 
             break;
+        }
         /* RUN AEAD */
-        status = sss_sscp_aead_one_go(&ctx->aead_ctx,
+        if((sss_sscp_aead_one_go(&ctx->aead_ctx,
                                  input,
                                  output,
                                  length,
@@ -243,12 +254,16 @@ static status_t sss_ccm_auth_crypt(sss_ccm_context_t *ctx,
                                  add,
                                  add_len,
                                  tag,
-                                 &tlen);
+                                 &tlen)) != kStatus_SSS_Success)
+        {
+            status = kStatus_Fail; 
+            break;
+        }
 
         /* FREE AEAD CONTEXT anyhow but keep status */
-        if ((st = sss_sscp_aead_context_free(&ctx->aead_ctx)) != kStatus_SSS_Success)
+        if ((sss_sscp_aead_context_free(&ctx->aead_ctx)) != kStatus_SSS_Success)
         {
-            status = st;
+            status = kStatus_Fail;
             break;
         }
 

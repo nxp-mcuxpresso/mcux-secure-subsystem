@@ -55,18 +55,18 @@ status_t SSS_md_hmac_sha256_starts(sss_hmac_sha256_context_t *ctx,
                                       const unsigned char *key,
                                       size_t keylen )
 {
-    status_t ret = kStatus_SSS_Fail;
+    status_t ret = kStatus_Fail;
     unsigned char sum[MD_HMAC_SHA256_SIZE] = { 0 };
     unsigned char *ipad, *opad;
     size_t i;
 
     do{
         if( ctx == NULL )
-            RAISE_ERROR (ret,  kStatus_SSS_InvalidArgument);
+            RAISE_ERROR (ret,  kStatus_InvalidArgument);
 
         if( keylen > (size_t) MD_HMAC_SHA256_BLOCK_SIZE )
         {
-            if ((ret = SSS_sha256_ret(key, keylen, sum, false)) != kStatus_SSS_Success)
+            if ((SSS_sha256_ret(key, keylen, sum, false)) != kStatus_Success)
             {
                 break;
             }
@@ -86,14 +86,19 @@ status_t SSS_md_hmac_sha256_starts(sss_hmac_sha256_context_t *ctx,
             ipad[i] ^= keybyte;
             opad[i] ^= keybyte;
         }
-        if( (ret = SSS_sha256_starts_ret(&ctx->md_ctx, false )) != kStatus_SSS_Success)
+        if( (SSS_sha256_starts_ret(&ctx->md_ctx, false )) != kStatus_Success)
+        {
             break;
+        }
 
-        if( ( ret = SSS_sha256_update_ret(&ctx->md_ctx,
+        if( (SSS_sha256_update_ret(&ctx->md_ctx,
                                           ipad,
-                                          MD_HMAC_SHA256_BLOCK_SIZE)) != kStatus_SSS_Success)
+                                          MD_HMAC_SHA256_BLOCK_SIZE)) != kStatus_Success)
+        {
             break;
-    } while (0);
+        }
+        ret = kStatus_Success;
+    } while (false);
 
      /* Cleanup the stacked sum array before leaving :
       * has been used  only if key was larger than block size */
@@ -105,7 +110,7 @@ status_t SSS_md_hmac_sha256_starts(sss_hmac_sha256_context_t *ctx,
 
 status_t SSS_md_hmac_sha256_update( sss_hmac_sha256_context_t *ctx, const unsigned char *input, size_t ilen )
 {
-    status_t ret = kStatus_SSS_InvalidArgument;
+    status_t ret = kStatus_InvalidArgument;
 
     if( ctx != NULL )
     {
@@ -117,29 +122,39 @@ status_t SSS_md_hmac_sha256_update( sss_hmac_sha256_context_t *ctx, const unsign
 
 status_t SSS_md_hmac_sha256_finish( sss_hmac_sha256_context_t *ctx, unsigned char *output )
 {
-    status_t ret = kStatus_SSS_Fail;
+    status_t ret = kStatus_Fail;
     unsigned char * tmp = &ctx->hmac_ctx.tmp[0];
     unsigned char *opad;
     do {
         if( ctx == NULL )
-            RAISE_ERROR (ret, kStatus_SSS_InvalidArgument);
+        {
+            RAISE_ERROR (ret, kStatus_InvalidArgument);
+        }
 
         opad = (unsigned char *) &ctx->hmac_ctx.opad[0];
 
-        if ((ret = SSS_sha256_finish_ret(&ctx->md_ctx, tmp)) != kStatus_SSS_Success)
+        if ((ret = SSS_sha256_finish_ret(&ctx->md_ctx, tmp)) != kStatus_Success)
+        {
             break;
-        if ((ret = SSS_sha256_starts_ret(&ctx->md_ctx, false)) != kStatus_SSS_Success)
+        }
+        if ((ret = SSS_sha256_starts_ret(&ctx->md_ctx, false)) != kStatus_Success)
+        {
             break;
+        }
         if ((ret = SSS_sha256_update_ret(&ctx->md_ctx,
                                          opad,
-                                         MD_HMAC_SHA256_BLOCK_SIZE)) != kStatus_SSS_Success)
+                                         MD_HMAC_SHA256_BLOCK_SIZE)) != kStatus_Success)
+        {
             break;
+        }
         if ((ret = SSS_sha256_update_ret(&ctx->md_ctx,
                                          tmp,
-                                         MD_HMAC_SHA256_SIZE)) != kStatus_SSS_Success)
+                                         MD_HMAC_SHA256_SIZE)) != kStatus_Success)
+        {
             break;
+        }
         ret = SSS_sha256_finish_ret(&ctx->md_ctx, output);
-    } while (0);
+    } while (false);
 
     return ret;
 }
@@ -147,22 +162,24 @@ status_t SSS_md_hmac_sha256_finish( sss_hmac_sha256_context_t *ctx, unsigned cha
 
 int SSS_md_hmac_sha256_reset( sss_hmac_sha256_context_t *ctx )
 {
-    status_t status = kStatus_SSS_Fail;
+    status_t status = kStatus_Fail;
 
     do {
           unsigned char *ipad;
 
         if( ctx == NULL )
-            RAISE_ERROR (status, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR (status, kStatus_InvalidArgument);
 
         ipad = (unsigned char *) ctx->hmac_ctx.ipad;
 
         if(( status = SSS_sha256_starts_ret(&ctx->md_ctx, false) ) != kStatus_SSS_Success )
+        {
             break;
+        }
         status = SSS_sha256_update_ret(&ctx->md_ctx,
                                        ipad,
                                        MD_HMAC_SHA256_BLOCK_SIZE);
-    } while (0);
+    } while (false);
     return status;
 }
 

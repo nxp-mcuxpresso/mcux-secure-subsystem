@@ -2345,7 +2345,7 @@ sss_status_t sss_sscp_aead_context_free(sss_sscp_aead_t *context)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret         = 0u;
+    uint32_t ret;
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
@@ -2361,8 +2361,9 @@ sss_status_t sss_sscp_aead_context_free(sss_sscp_aead_t *context)
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
+        
     return (sss_status_t)ret;
 }
 
@@ -2453,9 +2454,10 @@ sss_status_t sss_sscp_digest_context_init(sss_sscp_digest_t *context,
 
     sscp_context_t *sscpCtx = session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestContextInit, &op, &ret);
+    
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2498,7 +2500,7 @@ sss_status_t sss_sscp_digest_one_go(
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret  = kStatus_SSS_Fail;
     }
 
     return (sss_status_t)ret;
@@ -2521,7 +2523,7 @@ sss_status_t sss_sscp_digest_init(sss_sscp_digest_t *context)
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
 
     return (sss_status_t)ret;
@@ -2547,7 +2549,7 @@ sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, uint8_t *message
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
 
     return (sss_status_t)ret;
@@ -2625,7 +2627,7 @@ sss_status_t sss_sscp_digest_context_free(sss_sscp_digest_t *context)
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2669,7 +2671,7 @@ sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacContextInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret  = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2707,7 +2709,7 @@ sss_status_t sss_sscp_mac_one_go(
         {
             *macLen = 0u;
         }
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2729,7 +2731,7 @@ sss_status_t sss_sscp_mac_init(sss_sscp_mac_t *context)
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
 
     return (sss_status_t)ret;
@@ -2755,7 +2757,7 @@ sss_status_t sss_sscp_mac_update(sss_sscp_mac_t *context, const uint8_t *message
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacUpdate, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
 
     return (sss_status_t)ret;
@@ -2790,7 +2792,7 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
         {
             *macLen = 0u;
         }
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2815,7 +2817,7 @@ sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context)
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_ContextFree, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -2859,7 +2861,7 @@ sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymetricContextInit, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -3001,7 +3003,7 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        return kStatus_SSS_Fail;
+        ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }

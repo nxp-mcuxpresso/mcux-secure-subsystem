@@ -23,44 +23,52 @@ sss_sscp_key_object_allocate_handle(&keyObj__bleLTK,
 
 status_t SSS_set_aes_key(aes_context_t *ctx, const unsigned char *key, const size_t key_byte_len)
 {
-    status_t ret = kStatus_SSS_Fail;
+    status_t ret = kStatus_Fail;
     uint8_t ramKey[32];
     do
     {
         if (key_byte_len != 16u && key_byte_len != 24u && key_byte_len != 32u)
-            RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
+        {
+            RAISE_ERROR(ret, kStatus_InvalidArgument);
+        }
         memcpy(ramKey, key, key_byte_len);
 
-        if ((ret = sss_sscp_key_object_init(&ctx->sssKey, &g_keyStore)) != kStatus_SSS_Success)
+        if ((sss_sscp_key_object_init(&ctx->sssKey, &g_keyStore)) != kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
 
-        if ((ret = SSS_KEY_ALLOCATE_HANDLE(&ctx->sssKey, 1u, /* key id */
+        if ((SSS_KEY_ALLOCATE_HANDLE(&ctx->sssKey, 1u, /* key id */
                                            kSSS_KeyPart_Default, kSSS_CipherType_AES, key_byte_len,
                                            SSS_KEYPROP_OPERATION_AES)) != kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
-        if ((ret = SSS_KEY_STORE_SET_KEY(&ctx->sssKey, ramKey, key_byte_len, (key_byte_len << 3),
+        if ((SSS_KEY_STORE_SET_KEY(&ctx->sssKey, ramKey, key_byte_len, (key_byte_len << 3),
                                               kSSS_KeyPart_Default)) != kStatus_SSS_Success)
         {
+            ret = kStatus_Fail;
             break;
         }
-    } while (0);
+        ret = kStatus_Success;
+    } while (false);
     return ret;
 }
 
 status_t SSS_aes_init(aes_context_t *ctx, const unsigned char *key, size_t keybits)
 {
-    status_t ret = kStatus_SSS_Fail;
+    status_t ret = kStatus_Fail;
     do
     {
         if ((CRYPTO_InitHardware()) != kStatus_Success)
+        {
             break;
+        }
         ret = SSS_set_aes_key(ctx, key, keybits >> 3);
 
-    } while (0);
+    } while (false);
     return ret;
 }
 
@@ -76,22 +84,28 @@ status_t SSS_aes_operation(aes_context_t *ctx,
 {
     status_t ret;
     size_t iv_len;
-    ret = SSS_aes_init(ctx, key, key_bitlen);
-    if (ret == kStatus_SSS_Success)
+
+    if ((ret = SSS_aes_init(ctx, key, key_bitlen)) == kStatus_Success)
     {
         do
         {
             sss_mode_t mode;
             mode = encrypt_nDecrypt ? kMode_SSS_Encrypt : kMode_SSS_Decrypt;
-            if ((ret = sss_sscp_symmetric_context_init(&ctx->cipher_ctx, &g_sssSession, &ctx->sssKey, algo, mode)) !=
+            if ((sss_sscp_symmetric_context_init(&ctx->cipher_ctx, &g_sssSession, &ctx->sssKey, algo, mode)) !=
                 kStatus_SSS_Success)
+            {
+                ret = kStatus_Fail;
                 break;
+            }
             iv_len = (iv == NULL) ? 0 : 16;
-            if ((ret = sss_sscp_cipher_one_go(&ctx->cipher_ctx, iv, iv_len, input, output, inputLen)) !=
+            if ((sss_sscp_cipher_one_go(&ctx->cipher_ctx, iv, iv_len, input, output, inputLen)) !=
                 kStatus_SSS_Success)
+            {
+                ret = kStatus_Fail;
                 break;
+            }
 
-        } while (0);
+        } while (false);
         (void)SSS_KEY_OBJ_FREE(&ctx->sssKey);
     }
     return ret;
@@ -108,26 +122,32 @@ status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
                                   size_t *offset_sz_left)
 {
     status_t ret;
-    if ((ret = SSS_aes_init(ctx, key, 128u)) == kStatus_SSS_Success)
+    if ((ret = SSS_aes_init(ctx, key, 128u)) == kStatus_Success)
     {
         do
         {
             sss_mode_t mode;
             mode = encrypt_nDecrypt ? kMode_SSS_Encrypt : kMode_SSS_Decrypt;
-            if ((ret = sss_sscp_symmetric_context_init(&ctx->cipher_ctx, &g_sssSession, &ctx->sssKey,
+            if ((sss_sscp_symmetric_context_init(&ctx->cipher_ctx, &g_sssSession, &ctx->sssKey,
                                                        kAlgorithm_SSS_AES_CTR, mode)) != kStatus_SSS_Success)
+            {
+                ret = kStatus_Fail;
                 break;
+            }
 #if 0
-            if ((ret = sss_sscp_cipher_crypt_ctr(&ctx->cipher_ctx, input, output, inputLen,
+            if ((sss_sscp_cipher_crypt_ctr(&ctx->cipher_ctx, input, output, inputLen,
                                     initialCounter, stream_block,
                                     offset_sz_left)) != kStatus_SSS_Success)
 #else
-            if ((ret = sss_sscp_cipher_one_go(&ctx->cipher_ctx, initialCounter, 16u, input, output, inputLen)) !=
+            if ((sss_sscp_cipher_one_go(&ctx->cipher_ctx, initialCounter, 16u, input, output, inputLen)) !=
                 kStatus_SSS_Success)
 #endif
-            break;
+            {
+                ret = kStatus_Fail;
+                break;
+            }
 
-        } while (0);
+        } while (false);
         (void)SSS_KEY_OBJ_FREE(&ctx->sssKey);
     }
     return ret;

@@ -116,7 +116,7 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
         {
             break;
         }
-        if ((ret = sss_sscp_key_object_init(&pEcdh_ctx->peerPublicKey, &g_keyStore)) != kStatus_SSS_Success)
+        if ((sss_sscp_key_object_init(&pEcdh_ctx->peerPublicKey, &g_keyStore)) != kStatus_SSS_Success)
         {
             break;
         }
