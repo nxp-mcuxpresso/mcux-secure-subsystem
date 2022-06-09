@@ -13,7 +13,6 @@
 #include "fsl_common.h"
 #include "fsl_sscp_mu.h"
 #include "fsl_sss_sscp.h"
-#include "ecp256.h"
 
 #define SSS_HIGH_QUALITY_RNG 1
 
@@ -49,6 +48,7 @@
 
 #define ECP256_COORDINATE_BITLEN 256u
 #define ECP256_COORDINATE_LEN    (ECP256_COORDINATE_BITLEN >> 3)
+#define ECP256_COORDINATE_WLEN ((ECP256_COORDINATE_LEN)/4U)
 
 /* HMAC SHA256 section */
 #define MD_HMAC_SHA256_SIZE       32u
@@ -110,8 +110,8 @@ typedef struct sss_hmac_sha256_context_s
 
 typedef struct sss_ecp256_context_t
 {
-    ec_p256_coordinate PrivateKey; /*!< The private key : RNG output */
-    ecp256Point_t OwnPublicKey;    /*! Own Public computed from PrivateKey */
+    uint32_t PrivateKey[ECP256_COORDINATE_WLEN]; /*!< The private key : RNG output */
+    uint32_t OwnPublicKey[2U*ECP256_COORDINATE_WLEN];    /*! Own Public computed from PrivateKey */
     sss_session_t session;
     sss_sscp_key_store_t ks;
     uint32_t keyId;
@@ -121,8 +121,8 @@ typedef struct sss_ecp256_context_t
 typedef struct sss_ecdh_p256_context_t
 {
     sss_ecp256_context_t *ecdh_key_pair;
-    ecdhPublicKey_t Qp; /*!< The value of the public key of the peer. */
-    ecdhDhKey_t z;      /*!< The shared secret is the X  coordinate of the DH Key   */
+    uint32_t Qp[2U*ECP256_COORDINATE_WLEN]; /*!< The value of the public key of the peer. */
+    uint32_t z[2U*ECP256_COORDINATE_WLEN];      /*!< The shared secret is the X  coordinate of the DH Key   */
 
     sss_sscp_object_t peerPublicKey;
     sss_sscp_object_t sharedSecret;
