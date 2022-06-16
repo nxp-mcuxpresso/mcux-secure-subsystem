@@ -119,3 +119,12 @@ status_t CRYPTO_ReinitHardware(void)
 
     return ret;
 }
+
+/*!
+ * @brief This function will allow reinitizialize the cryptographic HW acceleration 
+ * next time we need it, typically after lowpower mode.
+ */
+void CRYPTO_DeinitHardware(void)
+{
+    g_isCryptoHWInitialized = SSS_CRYPTOHW_NONINITIALIZED;
+}

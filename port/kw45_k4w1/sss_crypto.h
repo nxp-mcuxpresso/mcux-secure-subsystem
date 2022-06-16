@@ -135,6 +135,8 @@ extern "C" {
 status_t CRYPTO_InitHardware(void);
 status_t CRYPTO_ReinitHardware(void);
 
+void CRYPTO_DeinitHardware(void);
+
 status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
 
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen);
