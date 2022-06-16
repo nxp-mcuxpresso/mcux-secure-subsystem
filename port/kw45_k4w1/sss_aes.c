@@ -49,6 +49,7 @@ status_t SSS_set_aes_key(aes_context_t *ctx, const unsigned char *key, const siz
         if ((SSS_KEY_STORE_SET_KEY(&ctx->sssKey, ramKey, key_byte_len, (key_byte_len << 3),
                                               kSSS_KeyPart_Default)) != kStatus_SSS_Success)
         {
+            (void)SSS_KEY_OBJ_FREE(&ctx->sssKey);
             ret = kStatus_Fail;
             break;
         }
