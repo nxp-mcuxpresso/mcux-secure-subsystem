@@ -3413,7 +3413,7 @@ sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
                                         uint8_t *data,
                                         size_t *dataLen,
                                         size_t *pKeyBitLen,
-                                        sss_blob_type_t keyPart)
+                                        sss_key_part_t keyPart)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
@@ -3480,7 +3480,7 @@ sss_status_t sss_sscp_key_store_import_key(sss_sscp_key_store_t *keyStore,
     op.resultCount = 0u;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreExportKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreImportKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -3519,7 +3519,7 @@ sss_status_t sss_sscp_key_store_export_key(sss_sscp_key_store_t *keyStore,
     op.result[0].value.a = (uint32_t)dataLen;
 
     sscp_context_t *sscpCtx = keyStore->session->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreGetKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_KeyStoreExportKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
