@@ -126,9 +126,11 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
             kStatus_SSS_Success)
         {
             ret =kStatus_Fail;
-            break;
         }
-        ret = kStatus_Success;
+        else
+        {
+            ret = kStatus_Success;
+        }
         /* Free MAC context only if its init has been successful */
         (void)sss_sscp_mac_context_free(&pCtx->sscp_mac);
     } while (false);

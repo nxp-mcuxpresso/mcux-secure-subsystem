@@ -257,7 +257,10 @@ static status_t sss_ccm_auth_crypt(sss_ccm_context_t *ctx,
                                  &tlen)) != kStatus_SSS_Success)
         {
             status = kStatus_Fail; 
-            break;
+        }
+        else
+        {
+            status = kStatus_Success; 
         }
 
         /* FREE AEAD CONTEXT anyhow but keep status */

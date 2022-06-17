@@ -73,6 +73,7 @@ status_t SSS_sha256_starts_ret(sss_sha256_context_t *ctx, bool is_sha224)
         }
         if ((sss_sscp_digest_init(&ctx->ctx)) != kStatus_SSS_Success)
         {
+            sss_sscp_digest_context_free(&ctx->ctx);
             status = kStatus_Fail;
             break;
         }
@@ -94,6 +95,7 @@ status_t SSS_sha256_update_ret(sss_sha256_context_t *ctx, const unsigned char *i
         }
         if ((sss_sscp_digest_update(&ctx->ctx, (uint8_t *)(uintptr_t)input, ilen)) != kStatus_SSS_Success)
         {
+            sss_sscp_digest_context_free(&ctx->ctx);
             status = kStatus_Fail;
             break;
         }
@@ -116,8 +118,12 @@ status_t SSS_sha256_finish_ret(sss_sha256_context_t *ctx, unsigned char output[3
         if ((sss_sscp_digest_finish(&ctx->ctx, output, &len)) != kStatus_SSS_Success)
         {
             status = kStatus_Fail;
-            break;
         }
+        else
+        {
+            status = kStatus_Success;
+        }
+
         (void)sss_sscp_digest_context_free(&ctx->ctx);
     } while (false);
     return status;

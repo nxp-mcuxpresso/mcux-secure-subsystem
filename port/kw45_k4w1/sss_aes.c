@@ -85,6 +85,7 @@ status_t SSS_aes_operation(aes_context_t *ctx,
 {
     status_t ret;
     size_t iv_len;
+    sss_sscp_symmetric_t *symmetric_context_ptr = NULL;
 
     if ((ret = SSS_aes_init(ctx, key, key_bitlen)) == kStatus_Success)
     {
@@ -98,6 +99,7 @@ status_t SSS_aes_operation(aes_context_t *ctx,
                 ret = kStatus_Fail;
                 break;
             }
+            symmetric_context_ptr = &ctx->cipher_ctx;
             iv_len = (iv == NULL) ? 0 : 16;
             if ((sss_sscp_cipher_one_go(&ctx->cipher_ctx, iv, iv_len, input, output, inputLen)) !=
                 kStatus_SSS_Success)
@@ -107,6 +109,11 @@ status_t SSS_aes_operation(aes_context_t *ctx,
             }
 
         } while (false);
+
+        if(symmetric_context_ptr != NULL)
+        {
+            sss_sscp_symmetric_context_free(symmetric_context_ptr);
+        }
         (void)SSS_KEY_OBJ_FREE(&ctx->sssKey);
     }
     return ret;
@@ -123,6 +130,7 @@ status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
                                   size_t *offset_sz_left)
 {
     status_t ret;
+    sss_sscp_symmetric_t *symmetric_context_ptr = NULL;
     if ((ret = SSS_aes_init(ctx, key, 128u)) == kStatus_Success)
     {
         do
@@ -135,6 +143,7 @@ status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
                 ret = kStatus_Fail;
                 break;
             }
+            symmetric_context_ptr = &ctx->cipher_ctx;
 #if 0
             if ((sss_sscp_cipher_crypt_ctr(&ctx->cipher_ctx, input, output, inputLen,
                                     initialCounter, stream_block,
@@ -147,8 +156,12 @@ status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
                 ret = kStatus_Fail;
                 break;
             }
-
         } while (false);
+        
+        if(symmetric_context_ptr != NULL)
+        {
+            sss_sscp_symmetric_context_free(symmetric_context_ptr);
+        }
         (void)SSS_KEY_OBJ_FREE(&ctx->sssKey);
     }
     return ret;
