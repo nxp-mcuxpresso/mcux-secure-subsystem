@@ -175,6 +175,16 @@ status_t SSS_aes_operation(aes_context_t *ctx,
                            bool encrypt_nDecrypt,
                            sss_algorithm_t algo);
 
+status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
+                                  const unsigned char *input,
+                                  size_t inputLen,
+                                  unsigned char *initialCounter,
+                                  const unsigned char *key,
+                                  unsigned char *output,
+                                  bool encrypt_nDecrypt,
+                                  unsigned char *stream_block,
+                                  size_t *offset_sz_left);
+
 /* CMAC related section */
 
 /* CCM section */
