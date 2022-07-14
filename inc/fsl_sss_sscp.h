@@ -750,14 +750,14 @@ sss_status_t sss_sscp_key_store_export_key(sss_sscp_key_store_t *keyStore,
                                            sss_sscp_object_t *keyObject,
                                            uint8_t *data,
                                            size_t *dataLen,
-                                           sss_blob_type_t blobType);
+                                           sss_sscp_blob_type_t blobType);
 
 sss_status_t sss_sscp_key_store_import_key(sss_sscp_key_store_t *keyStore,
                                            sss_sscp_object_t *keyObject,
                                            const uint8_t *data,
                                            size_t dataLen,
                                            uint32_t keyBitLen,
-                                           sss_blob_type_t blobType);
+                                           sss_sscp_blob_type_t blobType);
 
 sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
                                              sss_sscp_object_t *keyObject,

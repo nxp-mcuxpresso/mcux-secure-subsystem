@@ -3235,6 +3235,9 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
     op.params[2].context.ptr  = derivedKeyObject;
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 1u;
+
     sscp_context_t *sscpCtx = context->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DeriveKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
@@ -3455,7 +3458,7 @@ sss_status_t sss_sscp_key_store_import_key(sss_sscp_key_store_t *keyStore,
                                            const uint8_t *data,
                                            size_t dataLen,
                                            uint32_t keyBitLen,
-                                           sss_blob_type_t blobType)
+                                           sss_sscp_blob_type_t blobType)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
@@ -3493,7 +3496,7 @@ sss_status_t sss_sscp_key_store_export_key(sss_sscp_key_store_t *keyStore,
                                            sss_sscp_object_t *keyObject,
                                            uint8_t *data,
                                            size_t *dataLen,
-                                           sss_blob_type_t blobType)
+                                           sss_sscp_blob_type_t blobType)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
