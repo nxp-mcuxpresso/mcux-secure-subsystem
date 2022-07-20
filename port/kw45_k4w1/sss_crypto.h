@@ -18,7 +18,7 @@
 
 #define RAISE_ERROR(x, code) \
     {                        \
-        x = code;            \
+        (x) = (code);            \
         break;               \
     }
 
