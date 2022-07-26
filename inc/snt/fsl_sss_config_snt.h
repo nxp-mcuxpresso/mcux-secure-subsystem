@@ -418,7 +418,7 @@ typedef uint32_t sss_keyObjFree_options_t;
 #define kSSS_keyObjFree_KeysStoreNoDefragment        ((sss_sscp_keyObjFree_options_t)0x0u)
 #define kSSS_keyObjFree_KeysStoreDefragment          ((sss_sscp_keyObjFree_options_t)0x1u)
 
-typedef uint32_t sss_blob_type_t;
+typedef uint32_t sss_sscp_blob_type_t;
 #define kSSS_blobType_ELKE_blob                       ((sss_sscp_blob_type_t)0x1u)
 #define kSSS_blobType_E2E_blob                        ((sss_sscp_blob_type_t)0x2u)
 #define kSSS_blobType_NBU_ESK_blob                    ((sss_sscp_blob_type_t)0x3u)
