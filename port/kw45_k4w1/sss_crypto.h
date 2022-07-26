@@ -416,8 +416,4 @@ static inline int SSS_ECP_GENERATE_KEY(sss_sscp_object_t *key_obj, size_t key_bi
 }
 #endif
 
-#ifdef __cplusplus
-}
-#endif
-
 #endif
