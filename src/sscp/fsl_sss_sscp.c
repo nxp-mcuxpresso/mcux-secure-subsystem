@@ -3538,7 +3538,7 @@ sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_ssc
     uint32_t ret         = 0u;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = keyStore;
@@ -3567,7 +3567,7 @@ sss_status_t sss_sscp_key_store_open_internal_key(sss_sscp_key_store_t *keyStore
     uint32_t ret         = 0u;
 
     op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_None,
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = keyStore;
