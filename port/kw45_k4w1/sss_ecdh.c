@@ -151,7 +151,7 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
                                                        SSS_FULL_KEY_EXPORTABLE
 #else
-                                                       SSS_KEYPROP_OPERATION_NONE
+                                                       kSSS_KeyProp_CryptoAlgo_KDF
 #endif
                                                        )) != kStatus_SSS_Success)
         {
