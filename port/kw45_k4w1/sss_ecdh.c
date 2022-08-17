@@ -191,7 +191,10 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
     }
     if (pSharedSecret != NULL)
     {
-        (void)SSS_KEY_OBJ_FREE(pSharedSecret);
+        if (pEcdh_ctx->keepSharedSecret == false)
+        {
+            (void)SSS_KEY_OBJ_FREE(pSharedSecret);
+        }
     }
 
     return ret;
