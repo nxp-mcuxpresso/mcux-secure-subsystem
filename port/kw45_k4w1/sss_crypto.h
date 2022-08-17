@@ -126,6 +126,7 @@ typedef struct sss_ecdh_p256_context_t
 
     sss_sscp_object_t peerPublicKey;
     sss_sscp_object_t sharedSecret;
+    bool keepSharedSecret;
 } sss_ecdh_context_t;
 
 #ifdef __cplusplus
