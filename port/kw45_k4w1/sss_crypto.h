@@ -372,6 +372,7 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
  *
  ********************************************************************************** */
 status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
+status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 #define SSS_KEY_OBJ_FREE(_KEY_OBJ_) sss_sscp_key_object_free(_KEY_OBJ_)
