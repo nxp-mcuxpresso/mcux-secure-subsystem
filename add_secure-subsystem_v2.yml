@@ -1,0 +1,274 @@
+---
+__hierarchy__:
+  tmp_common_secure-subsystem_component:
+    section-type: component
+    component_info:
+      common:
+        component_bundle: bundles.secure-subsystem
+        full_name: Tmp_common_secure-subsystem_component
+        description: Tmp_common_secure-subsystem_component
+        type: other
+        version: 1.0.0
+        manifest_name: tmp_common_secure-subsystem_component
+middleware.secure-subsystem:
+  section-type: component
+  meta-name: middleware.secure-subsystem
+  __requires__:
+  - middleware.secure-subsystem.ui_control
+  configuration:
+    tools:
+      __common__:
+        config:
+          __common__: {}
+  contents:
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    cc-include:
+    - repo_relative_path: inc
+    - repo_relative_path: inc
+      project_relative_path: sscp
+    - repo_relative_path: port/ksdk
+      project_relative_path: port
+    files:
+    - source: inc/fsl_sss_api.h
+    - source: inc/fsl_sss_config.h
+    - source: inc/fsl_sss_sscp.h
+    - source: src/sscp/fsl_sss_sscp.c
+      project_relative_path: sscp
+    - source: inc/fsl_sscp.h
+    - source: inc/fsl_sscp_commands.h
+    - source: inc/fsl_sscp_config.h
+    - source: inc/fsl_sss_sscp_config.h
+      project_relative_path: sscp
+  component_info:
+    common:
+      description: Secure subsystem library
+      type: middleware
+      version: 0.0.1
+      change_log: "./ChangeLogKSDK.txt"
+      component_bundle: bundles.secure-subsystem
+      manifest_name: secure-subsystem
+      full_name: Middleware secure-subsystem
+middleware.secure-subsystem.ui_control:
+  section-type: component_support
+  __requires__:
+  - middleware.secure-subsystem.support
+  component_info:
+    common:
+      fixed_id: nxp_secure_subsystem
+      user_visible: true
+      ui_name: secure-subsystem
+      ui_description: Secure subsystem library - SSS APIs
+      ui_category: Middleware
+      ui_control: true
+      ui_control_default: true
+      ui_release_specific: true
+      version: 1.0.0
+      component_set_path:
+        repo_base_path: middleware/secure-subsystem
+middleware.secure-subsystem.mu:
+  section-type: component
+  meta-name: middleware.secure-subsystem.mu
+  __requires__:
+  - middleware.secure-subsystem
+  contents:
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    cc-include:
+    - repo_relative_path: inc
+      project_relative_path: sscp
+    files:
+    - source: inc/fsl_sscp_mu.h
+      project_relative_path: sscp
+    - source: src/sscp/fsl_sscp_mu.c
+      project_relative_path: sscp
+  component_info:
+    common:
+      description: SSCP_MU
+      type: other
+      version: 0.0.1
+      change_log: "./ChangeLogKSDK.txt"
+      user_visible: false
+      manifest_name: secure-subsystem_sscp_mu
+      full_name: Middleware secure-subsystem mu
+middleware.secure-subsystem.snt:
+  section-type: component
+  meta-name: middleware.secure-subsystem.snt
+  __requires__:
+  - middleware.secure-subsystem.mu driver.snt
+  configuration:
+    tools:
+      __common__:
+        config:
+          __common__:
+            cc-define:
+              SSS_CONFIG_FILE: '"fsl_sss_config_snt.h"'
+              SSCP_CONFIG_FILE: '"fsl_sscp_config_snt.h"'
+  contents:
+    cc-define:
+      SSS_CONFIG_FILE: '"fsl_sss_config_snt.h"'
+      SSCP_CONFIG_FILE: '"fsl_sscp_config_snt.h"'
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    cc-include:
+    - repo_relative_path: inc/snt
+      project_relative_path: inc
+    - repo_relative_path: inc
+      project_relative_path: mgmt
+    files:
+    - source: inc/snt/fsl_sss_config_snt.h
+      project_relative_path: inc
+    - source: inc/snt/fsl_sscp_config_snt.h
+      project_relative_path: inc
+    - source: src/sscp/fsl_sss_mgmt.c
+      project_relative_path: mgmt
+    - source: inc/fsl_sss_mgmt.h
+      project_relative_path: mgmt
+  component_info:
+    common:
+      description: Secure subsystem library for snt
+      type: middleware
+      version: 0.0.1
+      change_log: "./ChangeLogKSDK.txt"
+      manifest_name: secure-subsystem_snt
+      full_name: Middleware secure-subsystem snt
+middleware.secure-subsystem.support:
+  section-type: component_support
+  __requires__:
+  - board.frdmk64f
+  - board.frdmk82f
+  - board.frdmk32l4a50
+  - board.k4w1tvebb
+  - board.kw45b41zevk
+  - board.k32w148evk
+  - board.kw45b41zloc
+  - board.mcxw34xevk
+middleware.secure-subsystem.snt.port_kw45_k4w1:
+  section-type: component
+  meta-name: middleware.secure-subsystem.port_kw45_k4w1
+  __requires__:
+  - middleware.secure-subsystem.snt
+  configuration:
+    tools:
+      __common__:
+        config:
+          __common__:
+            cc-define:
+
+  contents:
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    cc-include:
+    - repo_relative_path: port/kw45_k4w1
+      project_relative_path: port
+    files:
+    - source: port/kw45_k4w1/sss_aes.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_aes_cmac.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_ccm.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_crypto.h
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_ecdh.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_hmac_sha256.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_init.c
+      project_relative_path: port
+    - source: port/kw45_k4w1/sss_sha256.c
+      project_relative_path: port
+
+  component_info:
+    common:
+      description: Secure subsystem helpers for snt use in KW45 K4W1
+      type: middleware
+      version: 0.0.1
+      change_log: "./ChangeLogKSDK.txt"
+      manifest_name: secure-subsystem_snt.port_kw45_k4w1
+      full_name: Middleware secure-subsystem snt port kw45_k4w1
+
+middleware.secure-subsystem.unused_files:
+  section-type: component
+  meta-name: middleware.secure-subsystem.unused_files
+  contents:
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    files:
+    - source: ".clang-format"
+      hidden: true
+      exclude: true
+    - source: ChangeLogKSDK.txt
+    - source: CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: SW-Content-Register-sshost.txt
+      hidden: true
+      exclude: true
+    - source: inc/fsl_sss_sscp_types.h
+      hidden: true
+      exclude: true
+    - source: tst/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/asymmetric/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/asymmetric/test_asymmetric.c
+      hidden: true
+      exclude: true
+    - source: tst/inc/sss_tst.h
+      hidden: true
+      exclude: true
+    - source: tst/keyobject/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/keyobject/test_keyobject.c
+      hidden: true
+      exclude: true
+    - source: tst/keystore/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/keystore/test_keystore.c
+      hidden: true
+      exclude: true
+    - source: tst/session/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/session/test_session.c
+      hidden: true
+      exclude: true
+    - source: tst/src/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/src/sss_tst_fixture.c
+      hidden: true
+      exclude: true
+    - source: tst/symmetric/CMakeLists.txt
+      hidden: true
+      exclude: true
+    - source: tst/symmetric/test_symm.c
+      hidden: true
+      exclude: true
+  component_info:
+    common:
+      description: Secure subsytem files unused by projects
+      version: 0.0.1
+      change_log: "./ChangeLogKSDK.txt"
+      user_visible: false
+      manifest_name: unused_files
+      full_name: Middleware secure-subsystem unused_files
+      type: middleware
+  __requires__:
+  - middleware.secure-subsystem.ui_control
+bundles.secure-subsystem:
+  section-type: component_support
+  bundle: true
+  component_info:
+    common:
+      full_name: Secure subsystem library
+      class: Security
+      version: 0.0.1
+      description: SSS APIs
+  __requires__:
+  - middleware.secure-subsystem.ui_control
