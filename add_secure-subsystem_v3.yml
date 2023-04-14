@@ -45,6 +45,10 @@ middleware.secure-subsystem:
       csub: secure-subsystem
       belong_to: secure-subsystem
     display_name: secure-subsystem
+  dependency:
+    allOf:
+    - middleware.secure-subsystem.mu
+    - middleware.secure-subsystem.snt
 middleware.secure-subsystem.mu:
   section-type: component
   meta-name: middleware.secure-subsystem.mu
