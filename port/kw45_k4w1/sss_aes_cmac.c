@@ -1,3 +1,11 @@
+/*! *********************************************************************************
+ * Copyright 2023 NXP
+ * All rights reserved.
+ *
+ * \file
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ ********************************************************************************** */
 
 #include "fsl_debug_console.h"
 #include "sss_crypto.h"
