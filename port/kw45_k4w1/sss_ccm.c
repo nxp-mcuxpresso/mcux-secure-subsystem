@@ -155,27 +155,36 @@ status_t SSS_ccm_auth_decrypt(sss_ccm_context_t *ctx,
     {
 #ifdef DEBUG
         if (ctx == NULL)
+        {
             RAISE_ERROR(status, kStatus_InvalidArgument);
+        }
 
         if (iv == NULL)
+        {
             RAISE_ERROR(status, kStatus_InvalidArgument);
+        }
 
         if ((add_len != 0u) && (add == NULL))
+        {
             RAISE_ERROR(status, kStatus_InvalidArgument);
+        }
 
         if ((length != 0u) && ((input == NULL) || (output == NULL)))
+        {
             RAISE_ERROR(status, kStatus_InvalidArgument);
+        }
 
         if (tag_len != 0u)
         {
             if (tag == NULL)
+            {
                 RAISE_ERROR(status, kStatus_InvalidArgument);
+            }
         }
         else
+        {
             RAISE_ERROR(status, kStatus_InvalidArgument);
-#else
-        if (tag_len != 0u)
-            RAISE_ERROR(status, kStatus_InvalidArgument);
+        }
 #endif
         status = sss_ccm_auth_crypt(ctx, kMode_SSS_Decrypt, length, iv, iv_len, add, add_len, input, output,
                                     (unsigned char *)(uintptr_t)tag, tag_len);
