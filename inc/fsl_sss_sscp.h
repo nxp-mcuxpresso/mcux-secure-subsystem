@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
- * Copyright 2018-2020 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_SSCP_H_
-#define _FSL_SSS_SSCP_H_
+#ifndef FSL_SSS_SSCP_H
+#define FSL_SSS_SSCP_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -392,16 +393,7 @@ sss_status_t sss_sscp_rng_free(sss_sscp_rng_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_SSCP_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSS_SSCP_H
-#define FSL_SSS_SSCP_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -812,5 +804,5 @@ sss_status_t sss_sscp_rng_free(sss_sscp_rng_t *context);
 }
 #endif
 
-#endif /* FSL_SSS_SSCP_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSS_SSCP_H */

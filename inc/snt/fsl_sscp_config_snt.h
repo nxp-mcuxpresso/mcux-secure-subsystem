@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
- * Copyright 2018-2020 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_CONFIG_SNT_H_
-#define _FSL_SSCP_CONFIG_SNT_H_
+#ifndef FSL_SSCP_CONFIG_SNT_H
+#define FSL_SSCP_CONFIG_SNT_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 /* SAB command definitions */
 typedef uint8_t sab_command_t;
@@ -163,16 +164,7 @@ typedef enum _sscp_command
     kSSCP_CMD_SSS_MGMT_IntegrityCheckEnable    = SAB_MGMT_INTEGRITY_CHECK_ENABLE_REQ,
 } sscp_command_t;
 
-#endif /* _FSL_SSCP_CONFIG_SNT_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSCP_CONFIG_SNT_H
-#define FSL_SSCP_CONFIG_SNT_H
 
 #define SSCP_COMMAND_ENUM_ALT
 typedef uint8_t sscp_command_t;
@@ -271,5 +263,5 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_ParamContextType_SSS_Mgmt       (0xcu)
 #define kSSCP_ParamContextType_SSS_Rng        (0xdu)
 
-#endif /* FSL_SSCP_CONFIG_SNT_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSCP_CONFIG_SNT */

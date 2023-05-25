@@ -18,7 +18,7 @@
 
 #define RAISE_ERROR(x, code) \
     {                        \
-        (x) = (code);            \
+        (x) = (code);        \
         break;               \
     }
 
@@ -48,7 +48,7 @@
 
 #define ECP256_COORDINATE_BITLEN 256u
 #define ECP256_COORDINATE_LEN    (ECP256_COORDINATE_BITLEN >> 3)
-#define ECP256_COORDINATE_WLEN ((ECP256_COORDINATE_LEN)/4U)
+#define ECP256_COORDINATE_WLEN   ((ECP256_COORDINATE_LEN) / 4U)
 
 /* HMAC SHA256 section */
 #define MD_HMAC_SHA256_SIZE       32u
@@ -110,8 +110,8 @@ typedef struct sss_hmac_sha256_context_s
 
 typedef struct sss_ecp256_context_t
 {
-    uint32_t PrivateKey[ECP256_COORDINATE_WLEN]; /*!< The private key : RNG output */
-    uint32_t OwnPublicKey[2U*ECP256_COORDINATE_WLEN];    /*! Own Public computed from PrivateKey */
+    uint32_t PrivateKey[ECP256_COORDINATE_WLEN];        /*!< The private key : RNG output */
+    uint32_t OwnPublicKey[2U * ECP256_COORDINATE_WLEN]; /*! Own Public computed from PrivateKey */
     sss_session_t session;
     sss_sscp_key_store_t ks;
     uint32_t keyId;
@@ -121,8 +121,8 @@ typedef struct sss_ecp256_context_t
 typedef struct sss_ecdh_p256_context_t
 {
     sss_ecp256_context_t *ecdh_key_pair;
-    uint32_t Qp[2U*ECP256_COORDINATE_WLEN]; /*!< The value of the public key of the peer. */
-    uint32_t z[2U*ECP256_COORDINATE_WLEN];      /*!< The shared secret is the X  coordinate of the DH Key   */
+    uint32_t Qp[2U * ECP256_COORDINATE_WLEN]; /*!< The value of the public key of the peer. */
+    uint32_t z[2U * ECP256_COORDINATE_WLEN];  /*!< The shared secret is the X  coordinate of the DH Key   */
 
     sss_sscp_object_t peerPublicKey;
     sss_sscp_object_t sharedSecret;
@@ -140,29 +140,33 @@ void CRYPTO_DeinitHardware(void);
 
 status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
 
+#ifdef SSS_CMAC_UPDATE_SUPPORTED
+
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen);
 
 status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output);
 
-status_t SSS_aes_cmac_reset(cmac_aes_context_t *ctx);
+#endif /* SSS_CMAC_UPDATE_SUPPORTED */
 
-status_t SSS_aes_cmac(cmac_aes_context_t *ctx,
+status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
                       const unsigned char *key,
-                      size_t key_bytelen,
+                      size_t keylen,
                       const unsigned char *input,
                       size_t ilen,
                       unsigned char *output);
 
-status_t SSS_aes_cmac_prf_128(cmac_aes_context_t *ctx,
+status_t SSS_aes_cmac_prf_128(cmac_aes_context_t *pCtx,
                               const unsigned char *key,
-                              const size_t key_len,
+                              size_t key_len,
                               const unsigned char *input,
                               size_t in_len,
                               unsigned char output[16]);
 
-status_t SSS_set_aes_key_cmac(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
+status_t SSS_set_aes_key_cmac(cmac_aes_context_t *pCtx, const unsigned char *key, size_t key_bytelen);
 
 void SSS_aes_cmac_free(cmac_aes_context_t *ctx);
+
+status_t SSS_set_aes_key(aes_context_t *ctx, const unsigned char *key, const size_t key_byte_len);
 
 status_t SSS_aes_init(aes_context_t *ctx, const unsigned char *key, size_t keybits);
 
@@ -216,32 +220,10 @@ status_t SSS_ccm_auth_decrypt(sss_ccm_context_t *ctx,
                               const unsigned char *tag,
                               size_t tag_len);
 
-status_t SSS_ccm_star_auth_decrypt(sss_ccm_context_t *ctx,
-                                   size_t length,
-                                   const unsigned char *iv,
-                                   size_t iv_len,
-                                   const unsigned char *add,
-                                   size_t add_len,
-                                   const unsigned char *input,
-                                   unsigned char *output,
-                                   const unsigned char *tag,
-                                   size_t tag_len);
-
-status_t SSS_ccm_encrypt_and_tag(sss_ccm_context_t *ctx,
-                                 size_t length,
-                                 const unsigned char *iv,
-                                 size_t iv_len,
-                                 const unsigned char *add,
-                                 size_t add_len,
-                                 const unsigned char *input,
-                                 unsigned char *output,
-                                 unsigned char *tag,
-                                 size_t tag_len);
-
 /* SHA256 Digest section */
 
-void SSS_sha256_init(sss_sha256_context_t *ctx);
-void SSS_sha256_free(sss_sha256_context_t *ctx);
+void SSS_sha256_init(sss_sha256_context_t *p_ctx);
+void SSS_sha256_free(sss_sha256_context_t *p_ctx);
 void SSS_sha256_clone(sss_sha256_context_t *dst, const sss_sha256_context_t *src);
 
 /* The output of SHA224 and SHA256 is similar in size so the codeis shared */
@@ -274,12 +256,20 @@ void SSS_md_hmac_sha256_init(sss_hmac_sha256_context_t *ctx);
 void SSS_md_hmac_sha256_free(sss_hmac_sha256_context_t *ctx);
 
 /*! *********************************************************************************
+ * \brief   Reset the HMAC SHA256 context data.
+ *
+ * \param [in]    ctx    Pointer to the HMAC SHA256 context data structure.
+ *
+ *
+ ********************************************************************************** */
+status_t SSS_md_hmac_sha256_reset(sss_hmac_sha256_context_t *ctx);
+
+/*! *********************************************************************************
  * \brief  Clones a HMAC SHA256 context
  *
  * \param [out]   dst    Pointer to buffer sufficient to hold HMAC SHA256 context data
  *
  * \param [in]    src    Pointer to the HMAC SHA256 context to be cloned
- * \param [in]    keyLen      Length of the HMAC key in bytes
  *
  ********************************************************************************** */
 status_t SSS_md_hmac_sha256_clone(sss_hmac_sha256_context_t *dst, const sss_hmac_sha256_context_t *src);
@@ -360,7 +350,7 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
 /*! *********************************************************************************
  * \brief  This function performs ECDH P256 DH secret calculation using the peer public key
  *
- * \param[in]  ecdh_ctx Pointer to the ECDH context.
+ * \param[in]  pEcdh_ctx Pointer to the ECDH context.
  *                      prerequiste: Qp must have been set.
  *
  * \param[in]  wrk_buf Pointer to the location of the 64 byte public key where public key
@@ -371,7 +361,7 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
  * Remark: On completion, the reponse DH Key is in the wrk_buf in big endian format
  *
  ********************************************************************************** */
-status_t sss_ecdh_calc_secret(sss_ecdh_context_t *ecdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
+status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
 status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)

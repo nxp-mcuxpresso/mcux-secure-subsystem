@@ -1,4 +1,3 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
  * Copyright 2018-2021 NXP
  * All rights reserved.
@@ -6,8 +5,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 /** @file */
-#ifndef _FSL_SSS_H_
-#define _FSL_SSS_H_
+#ifndef FSL_SSS_H
+#define FSL_SSS_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -78,10 +79,10 @@ typedef enum _sss_type
     kType_SSS_Sentinel500 = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
     /** Secure Eleemnt */
     kType_SSS_SecureElement = SSS_ENUM(0x08 < 8, 0x00),
-    /** To connect to https://www.nxp.com/products/:A71CH */
+    /** To connect to www.nxp.com/products/:A71CH */
     kType_SSS_SE_A71CH = SSS_ENUM(kType_SSS_SecureElement, 0x01),
     kType_SSS_SE_A71CL = SSS_ENUM(kType_SSS_SecureElement, 0x02),
-    /** To connect to https://www.nxp.com/products/:SE050 */
+    /** To connect to www.nxp.com/products/:SE050 */
     kType_SSS_SE_SE05x = SSS_ENUM(kType_SSS_SecureElement, 0x03),
     kType_SSS_SubSystem_LAST
 } sss_type_t;
@@ -1745,17 +1746,7 @@ void sss_tunnel_context_free(sss_tunnel_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-/** @file */
-#ifndef FSL_SSS_H
-#define FSL_SSS_H
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -3482,5 +3473,5 @@ void sss_tunnel_context_free(sss_tunnel_t *context);
 }
 #endif
 
-#endif /* FSL_SSS_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSS_H */

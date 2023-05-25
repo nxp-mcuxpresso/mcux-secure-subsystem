@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_COMMANDS_H_
-#define _FSL_SSCP_COMMANDS_H_
+#ifndef FSL_SSCP_COMMANDS_H
+#define FSL_SSCP_COMMANDS_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #if !defined(SSCP_CONFIG_FILE)
 #include "fsl_sscp_config.h"
@@ -157,16 +158,7 @@ enum _sscp_context_type
  *@}
  */ /* end of sscp */
 
-#endif /* _FSL_SSCP_COMMANDS_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSCP_COMMANDS_H
-#define FSL_SSCP_COMMANDS_H
 
 #if !defined(SSCP_CONFIG_FILE)
 #include "fsl_sscp_config.h"
@@ -320,5 +312,5 @@ enum
  *@}
  */ /* end of sscp */
 
-#endif /* FSL_SSCP_COMMANDS_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSCP_COMMANDS_H */

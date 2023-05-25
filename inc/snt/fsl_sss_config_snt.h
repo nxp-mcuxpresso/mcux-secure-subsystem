@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
  * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_CONFIG_SNT_H_
-#define _FSL_SSS_CONFIG_SNT_H_
+#ifndef FSL_SSS_CONFIG_SNT_H
+#define FSL_SSS_CONFIG_SNT_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #include <stdint.h>
 
@@ -223,16 +224,7 @@ typedef enum
     kSSS_KeyGenMode_Ecdsa    = SAB_KEY_GEN_MODE_EDDSA
 } sss_key_gen_mode_t;
 
-#endif /* _FSL_SSS_CONFIG_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSS_CONFIG_SNT_H
-#define FSL_SSS_CONFIG_SNT_H
 
 #include <stdint.h>
 
@@ -418,15 +410,15 @@ typedef uint32_t sss_keyObjFree_options_t;
 #define kSSS_keyObjFree_KeysStoreDefragment          ((sss_sscp_keyObjFree_options_t)0x1u)
 
 typedef uint32_t sss_sscp_blob_type_t;
-#define kSSS_blobType_ELKE_blob                       ((sss_sscp_blob_type_t)0x1u)
-#define kSSS_blobType_E2E_blob                        ((sss_sscp_blob_type_t)0x2u)
-#define kSSS_blobType_NBU_ESK_blob                    ((sss_sscp_blob_type_t)0x3u)
-#define kSSS_blobType_NBU_EIRK_blob                   ((sss_sscp_blob_type_t)0x4u)
+#define kSSS_blobType_ELKE_blob                      ((sss_sscp_blob_type_t)0x1u)
+#define kSSS_blobType_E2E_blob                       ((sss_sscp_blob_type_t)0x2u)
+#define kSSS_blobType_NBU_ESK_blob                   ((sss_sscp_blob_type_t)0x3u)
+#define kSSS_blobType_NBU_EIRK_blob                  ((sss_sscp_blob_type_t)0x4u)
 
 typedef uint32_t sss_internal_keyID_t;
-#define kSSS_internalKey_NPX                          ((sss_sscp_internal_keyID_t)0x80000007u)
-#define kSSS_internalKey_NBU_DKEY_SK                  ((sss_sscp_internal_keyID_t)0x80000009u)
-#define kSSS_internalKey_NBU_DKEY_IRK                 ((sss_sscp_internal_keyID_t)0x8000000Au)
+#define kSSS_internalKey_NPX                         ((sss_sscp_internal_keyID_t)0x80000007u)
+#define kSSS_internalKey_NBU_DKEY_SK                 ((sss_sscp_internal_keyID_t)0x80000009u)
+#define kSSS_internalKey_NBU_DKEY_IRK                ((sss_sscp_internal_keyID_t)0x8000000Au)
 
-#endif /* FSL_SSS_CONFIG_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSS_CONFIG_H */

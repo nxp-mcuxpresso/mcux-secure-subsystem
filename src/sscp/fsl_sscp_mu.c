@@ -138,6 +138,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         msg[wrIdx++] = (uint32_t)((sss_sscp_tunnel_t *)op->params[i].context.ptr)->ctx;
                         break;
                     default:
+                        /* All the cases have been listed above, the default clause should not be reached. */
                         break;
                 }
                 break;
@@ -175,6 +176,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                 break;
 
             default:
+                /* All the cases have been listed above, the default clause should not be reached. */
                 break;
         }
         if (wrIdx >= MU_TR_COUNT - MU_MSG_HEADER_SIZE)
@@ -254,6 +256,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                         ((sss_sscp_tunnel_t *)op->result[k].context.ptr)->ctx = msg[i];
                         break;
                     default:
+                        /* All the cases have been listed above, the default clause should not be reached. */
                         break;
                 }
                 break;
@@ -261,6 +264,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                 *((uint32_t *)(op->result[k].value.a)) = msg[i];
                 break;
             default:
+                /* All the cases have been listed above, the default clause should not be reached. */
                 break;
         }
     }
@@ -302,7 +306,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-    if (SNT_mu_get_response((ELEMU_Type *)base, msg, wordNum) != kStatus_Success)
+    if (SNT_mu_get_response((ELEMU_Type *)(uintptr_t)base, msg, wordNum) != kStatus_Success)
     {
     }
 #if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
@@ -328,7 +332,7 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
     }
     else
 #endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
-        if (SNT_mu_send_message((ELEMU_Type *)base, msg, wordNum) != kStatus_Success)
+        if (SNT_mu_send_message((ELEMU_Type *)(uintptr_t)base, msg, wordNum) != kStatus_Success)
     {
     }
     else
@@ -476,7 +480,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                                      uint32_t *ret)
 {
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-    sscp_mu_context_t *muContext = (sscp_mu_context_t *)context;
+    sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
     uint32_t msg[MU_TR_COUNT] = {0};
     uint32_t wrIdx            = 0;
@@ -497,7 +501,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         muMsgHeader.command    = commandId;
         muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
         /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-        msg[0] = (uint32_t)(*((uint32_t *)(&muMsgHeader)));
+        msg[0] = (uint32_t)(*((uint32_t *)(uintptr_t)(&muMsgHeader)));
         if (MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
         {
             ret2 = kStatus_SSCP_Fail;
@@ -511,7 +515,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
             break;
         }
         /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-        mu_hdr_t *muReplyHeader = (mu_hdr_t *)&msg[0];
+        mu_hdr_t *muReplyHeader = (mu_hdr_t *)(uintptr_t)&msg[0];
         if (muReplyHeader->size != op->resultCount)
         {
             ret2 = kStatus_SSCP_Fail;

@@ -1,12 +1,14 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
+
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSS_MGMT_H_
-#define _FSL_SSS_MGMT_H_
+#ifndef FSL_SSS_MGMT_H
+#define FSL_SSS_MGMT_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -351,16 +353,7 @@ sss_status_t sss_mgmt_context_free(sss_mgmt_t *context);
 }
 #endif
 
-#endif /* _FSL_SSS_MGMT_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSS_MGMT_H
-#define FSL_SSS_MGMT_H
 
 #if !defined(SSS_CONFIG_FILE)
 #include "fsl_sss_config.h"
@@ -453,7 +446,7 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
  * @param context Pointer to mgmt crypto context.
  * @param fuseId Id of the fuse to read
  * @param destData Destination address of the read value
- * @param destDataSize Input length of the destData buffer in bytes, actual number of output bytes written to destData
+ * @param destDataLen Input length of the destData buffer in bytes, actual number of output bytes written to destData
  * @param options Address of the implementation specific data buffer
  * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
  *
@@ -465,7 +458,7 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
 sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
                                 uint32_t fuseId,
                                 uint32_t *destData,
-                                size_t *destDataSize,
+                                size_t *destDataLen,
                                 uintptr_t options,
                                 size_t *optionsLen);
 
@@ -488,7 +481,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @param context Pointer to mgmt crypto context.
  * @param fuseId Id of the fuse to write
  * @param srcData Fuse write value
- * @param srcDataSize Input length of the srcData buffer in bytes, actual number of bytes written to OTP
+ * @param srcDataLen Input length of the srcData buffer in bytes, actual number of bytes written to OTP
  * @param options Address of the implementation specific data buffer
  * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
  *
@@ -497,12 +490,8 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
  * @retval kStatus_SSS_Fail The operation has failed.
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
-sss_status_t sss_mgmt_fuse_program(sss_mgmt_t *context,
-                                   uint32_t fuseId,
-                                   uint32_t *srcData,
-                                   size_t *srcDataSize,
-                                   uintptr_t options,
-                                   size_t *optionsLen);
+sss_status_t sss_mgmt_fuse_program(
+    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, size_t *srcDataLen, uintptr_t options, size_t *optionsLen);
 
 /*! @brief Advance lifecycle
  *  The function provides advance lifecycle service
@@ -729,5 +718,5 @@ sss_status_t sss_mgmt_context_free(sss_mgmt_t *context);
 }
 #endif
 
-#endif /* FSL_SSS_MGMT_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSS_MGMT_H */

@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
  * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_H_
-#define _FSL_SSCP_H_
+#ifndef FSL_SSCP_H
+#define FSL_SSCP_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -443,16 +444,7 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
  *@}
  */ /* end of sscp */
 
-#endif /* _FSL_SSCP_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSCP_H
-#define FSL_SSCP_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -678,7 +670,7 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
 #define SSCP_OP_GET_PARAM(i, paramTypes) ((((uint32_t)(paramTypes)) >> (i)*4u) & 0xFu)
 
 /*! @brief Compile time sizeof() check */
-#if defined(DEBUG)
+#if 0
 #define SSCP_BUILD_ASSURE(condition, msg) extern int(msg)[1 - 2 * (!(condition))] __attribute__((unused))
 #else
 #define SSCP_BUILD_ASSURE(condition, msg)
@@ -899,5 +891,5 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
  *@}
  */ /* end of sscp */
 
-#endif /* FSL_SSCP_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSCP_H */

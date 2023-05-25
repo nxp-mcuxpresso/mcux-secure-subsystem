@@ -126,7 +126,7 @@ status_t CRYPTO_InitHardware(void)
         g_isCryptoHWInitialized = SSS_CRYPTOHW_INITIALIZED;
         ret                     = kStatus_Success;
 
-    } while (0);
+    } while (false);
     return ret;
 }
 

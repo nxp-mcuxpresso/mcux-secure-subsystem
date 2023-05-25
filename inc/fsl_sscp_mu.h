@@ -1,12 +1,13 @@
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 /*
- * Copyright 2018 NXP
+ * Copyright 2018-2021 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _FSL_SSCP_MU_H_
-#define _FSL_SSCP_MU_H_
+#ifndef FSL_SSCP_MU_H
+#define FSL_SSCP_MU_H
+
+#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #include "fsl_sscp.h"
 #include "fsl_snt.h"
@@ -429,16 +430,7 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
  *@}
  */ /* end of sscp_mu */
 
-#endif /* _FSL_SSCP_MU_H_ */
 #else
-/*
- * Copyright 2018-2021 NXP
- * All rights reserved.
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-#ifndef FSL_SSCP_MU_H
-#define FSL_SSCP_MU_H
 
 #include "fsl_sscp.h"
 #include "fsl_snt.h"
@@ -861,5 +853,5 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
  *@}
  */ /* end of sscp_mu */
 
-#endif /* FSL_SSCP_MU_H */
 #endif /* KW45_A0_SUPPORT */
+#endif /* FSL_SSCP_MU_H */

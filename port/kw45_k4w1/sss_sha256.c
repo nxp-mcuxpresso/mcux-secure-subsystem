@@ -1,17 +1,17 @@
 /*! *********************************************************************************
-* Copyright 2022 NXP
-* All rights reserved.
-*
-* \file
-*
-* SPDX-License-Identifier: BSD-3-Clause
-********************************************************************************** */
+ * Copyright 2022 NXP
+ * All rights reserved.
+ *
+ * \file
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ ********************************************************************************** */
 /*
  *  FIPS-180-2 compliant SHA-256 implementation
  *
  *  The SHA-256 Secure Hash Standard was published by NIST in 2002.
  *
- *  http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf
+ *  csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf
  */
 
 #include <string.h>
@@ -20,8 +20,6 @@
 #include <assert.h>
 
 #include "sss_crypto.h"
-
-
 
 void SSS_sha256_init(sss_sha256_context_t *p_ctx)
 {
@@ -34,7 +32,7 @@ void SSS_sha256_free(sss_sha256_context_t *p_ctx)
 {
     if (p_ctx != NULL)
     {
-       (void)memset(p_ctx, 0, sizeof(sss_sha256_context_t));
+        (void)memset(p_ctx, 0, sizeof(sss_sha256_context_t));
     }
 }
 
@@ -53,7 +51,8 @@ status_t SSS_sha256_starts_ret(sss_sha256_context_t *ctx, bool is_sha224)
 {
     status_t status;
     sss_algorithm_t alg = is_sha224 ? kAlgorithm_SSS_SHA224 : kAlgorithm_SSS_SHA256;
-    do {
+    do
+    {
         if (ctx == NULL)
         {
             RAISE_ERROR(status, kStatus_InvalidArgument);
@@ -62,18 +61,15 @@ status_t SSS_sha256_starts_ret(sss_sha256_context_t *ctx, bool is_sha224)
         {
             break;
         }
-    
-        if ((sss_sscp_digest_context_init(&ctx->ctx, 
-                                         &g_sssSession, 
-                                         alg, 
-                                         kMode_SSS_Digest)) != kStatus_SSS_Success)
+
+        if ((sss_sscp_digest_context_init(&ctx->ctx, &g_sssSession, alg, kMode_SSS_Digest)) != kStatus_SSS_Success)
         {
             status = kStatus_Fail;
             break;
         }
         if ((sss_sscp_digest_init(&ctx->ctx)) != kStatus_SSS_Success)
         {
-            sss_sscp_digest_context_free(&ctx->ctx);
+            (void)sss_sscp_digest_context_free(&ctx->ctx);
             status = kStatus_Fail;
             break;
         }
@@ -88,14 +84,15 @@ status_t SSS_sha256_starts_ret(sss_sha256_context_t *ctx, bool is_sha224)
 status_t SSS_sha256_update_ret(sss_sha256_context_t *ctx, const unsigned char *input, size_t ilen)
 {
     status_t status;
-    do {
+    do
+    {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
         {
             break;
         }
         if ((sss_sscp_digest_update(&ctx->ctx, (uint8_t *)(uintptr_t)input, ilen)) != kStatus_SSS_Success)
         {
-            sss_sscp_digest_context_free(&ctx->ctx);
+            (void)sss_sscp_digest_context_free(&ctx->ctx);
             status = kStatus_Fail;
             break;
         }
@@ -110,7 +107,8 @@ status_t SSS_sha256_finish_ret(sss_sha256_context_t *ctx, unsigned char output[3
 {
     status_t status;
     size_t len = ctx->ctx.digestFullLen;
-    do {
+    do
+    {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
         {
             break;
@@ -134,19 +132,18 @@ status_t SSS_sha256_finish_ret(sss_sha256_context_t *ctx, unsigned char output[3
  */
 status_t SSS_sha256_ret(const unsigned char *input, size_t ilen, unsigned char output[32], bool is_sha224)
 {
-    status_t status ;
+    status_t status;
     sss_sscp_digest_t dctx;
     sss_algorithm_t alg = is_sha224 ? kAlgorithm_SSS_SHA224 : kAlgorithm_SSS_SHA256;
 
     size_t size = 32u;
-    do {
+    do
+    {
         if ((status = CRYPTO_InitHardware()) != kStatus_Success)
         {
             break;
         }
-        if ((sss_sscp_digest_context_init(&dctx, &g_sssSession,
-                                         alg, 
-                                         kMode_SSS_Digest)) != kStatus_SSS_Success)
+        if ((sss_sscp_digest_context_init(&dctx, &g_sssSession, alg, kMode_SSS_Digest)) != kStatus_SSS_Success)
         {
             status = kStatus_Fail;
             break;
@@ -162,5 +159,3 @@ status_t SSS_sha256_ret(const unsigned char *input, size_t ilen, unsigned char o
     } while (false);
     return status;
 }
-
-
