@@ -138,12 +138,10 @@ status_t CRYPTO_InitHardware(void)
  */
 status_t CRYPTO_ReinitHardware(void)
 {
-    status_t ret;
-
+    /* Reset the init state so the hardware will be reinitialized at the next cryptographic HW acceleration operation */
     g_isCryptoHWInitialized = SSS_CRYPTOHW_NONINITIALIZED;
-    ret                     = CRYPTO_InitHardware();
 
-    return ret;
+    return kStatus_Success;
 }
 
 /*!
