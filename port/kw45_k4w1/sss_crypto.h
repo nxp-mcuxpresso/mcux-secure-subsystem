@@ -327,6 +327,8 @@ status_t SSS_md_hmac_sha256(sss_hmac_sha256_context_t *pCtx,
                             size_t ilen,
                             unsigned char *output);
 
+status_t sss_ecdh_init_key(sss_ecp256_context_t *K_ctx);
+
 /*! *********************************************************************************
 * \brief  This function performs ECDH P256 Key pair generation
 *

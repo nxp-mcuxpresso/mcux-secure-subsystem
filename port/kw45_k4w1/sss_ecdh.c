@@ -37,15 +37,12 @@ static void ecp_p256_copy(uint8_t *XY, const uint8_t *src)
  * Setup and export the client public value
  *
  */
-status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned char *wrk_buf, size_t wrk_buf_len)
+status_t sss_ecdh_init_key(sss_ecp256_context_t *K_ctx)
 {
     status_t ret = kStatus_Fail;
 
     size_t coordinateLen     = ECP256_COORDINATE_LEN;
-    size_t coordinateBitsLen = ECP256_COORDINATE_BITLEN;
-    size_t keySize           = 2u * coordinateLen; /* X and Y coordinates of EC point */
 
-    (void)memset(wrk_buf, 0, keySize);
     do
     {
         if ((CRYPTO_InitHardware()) != kStatus_Success)
@@ -72,10 +69,32 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
             break;
         }
 
+        ret = kStatus_Success;
+
+    } while(false);
+
+    return ret;
+}
+status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned char *wrk_buf, size_t wrk_buf_len)
+{
+    status_t ret = kStatus_Fail;
+
+    size_t coordinateLen     = ECP256_COORDINATE_LEN;
+    size_t coordinateBitsLen = ECP256_COORDINATE_BITLEN;
+    size_t keySize           = 2u * coordinateLen; /* X and Y coordinates of EC point */
+    (void)memset(wrk_buf, 0, keySize);
+    do
+    {
+        if ((sss_ecdh_init_key(K_ctx)) != kStatus_Success)
+        {
+            break;
+        }
+
         if ((SSS_ECP_GENERATE_KEY(&K_ctx->OwnKey, coordinateBitsLen)) != kStatus_SSS_Success)
         {
             break;
         }
+
         if ((SSS_KEY_STORE_GET_PUBKEY(&K_ctx->OwnKey, wrk_buf, &keySize, &coordinateBitsLen)) != kStatus_SSS_Success)
         {
             break;
