@@ -11,7 +11,6 @@
 
 #include "fsl_sscp.h"
 #include "fsl_snt.h"
-typedef uint32_t MU_Type;
 
 /*!
 @defgroup sscp_mu SSCP over MU
@@ -370,7 +369,7 @@ typedef struct _sscp_mu_context
     fn_sscp_invoke_command_t invoke;
 
     /*! Implementation specific part */
-    MU_Type *base;
+    ELEMU_Type *base;
 } sscp_mu_context_t;
 
 /*! @brief Initializes the SSCP link
@@ -385,7 +384,7 @@ typedef struct _sscp_mu_context
  * @retval kStatus_SSCP_Success SSCP init success
  * @retval kStatus_SSCP_Fail SSCP init failure
  */
-sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base);
+sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base);
 
 /*! @brief Close the SSCP link
  *
@@ -418,9 +417,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 
 void MU_Init(void);
 
-sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum);
+sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum);
 
-sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum);
+sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum);
 
 #if defined(__cplusplus)
 }
@@ -434,7 +433,6 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
 
 #include "fsl_sscp.h"
 #include "fsl_snt.h"
-typedef uint32_t MU_Type;
 
 /*!
 @defgroup sscp_mu SSCP over MU
@@ -793,7 +791,7 @@ typedef struct
     fn_sscp_invoke_command_t invoke;
 
     /*! Implementation specific part */
-    MU_Type *base;
+    ELEMU_Type *base;
 } sscp_mu_context_t;
 
 /*! @brief Initializes the SSCP link
@@ -808,7 +806,7 @@ typedef struct
  * @retval kStatus_SSCP_Success SSCP init success
  * @retval kStatus_SSCP_Fail SSCP init failure
  */
-sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base);
+sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base);
 
 /*! @brief Close the SSCP link
  *
@@ -841,9 +839,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 
 void MU_Init(void);
 
-sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum);
+sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum);
 
-sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum);
+sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum);
 
 #if defined(__cplusplus)
 }

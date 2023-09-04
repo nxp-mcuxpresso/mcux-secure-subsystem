@@ -20,7 +20,7 @@ void MU_Init(void)
     SNT_mu_init(ELEMUA);
 }
 
-sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
+sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
     if (SNT_mu_get_response((ELEMU_Type *)base, msg, wordNum) != kStatus_Success)
@@ -40,7 +40,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
     return ret;
 }
 
-sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
+sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
 #if (defined(FSL_FEATURE_ELEMU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_ELEMU_HAS_SEMA4_STATUS_REGISTER)
@@ -62,7 +62,7 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
     return ret;
 }
 
-sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
+sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base)
 {
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
@@ -88,9 +88,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 {
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
-    uint32_t msg[MU_TR_COUNT] = {0};
-    uint32_t wrIdx            = 1u;
-    bool done                 = false;
+    uint32_t msg[ELEMU_TR_COUNT] = {0};
+    uint32_t wrIdx               = 1u;
+    bool done                    = false;
     for (uint32_t i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
@@ -179,7 +179,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                 /* All the cases have been listed above, the default clause should not be reached. */
                 break;
         }
-        if (wrIdx >= MU_TR_COUNT - MU_MSG_HEADER_SIZE)
+        if (wrIdx >= ELEMU_TR_COUNT - MU_MSG_HEADER_SIZE)
         {
             break;
         }
@@ -198,7 +198,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     }
 
     /* poll for response */
-    if (MU_ReceiveMsg(muContext->base, msg, MU_RR_COUNT) != kStatus_SSCP_Success)
+    if (MU_ReceiveMsg(muContext->base, msg, ELEMU_RR_COUNT) != kStatus_SSCP_Success)
     {
         return kStatus_SSCP_Fail;
     }
@@ -302,7 +302,7 @@ void MU_Init(void)
     SNT_mu_init(ELEMUA);
 }
 
-sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wordNum)
+sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
@@ -321,7 +321,7 @@ sscp_status_t MU_ReceiveMsg(MU_Type *base, uint32_t msg[MU_RR_COUNT], size_t wor
     return ret;
 }
 
-sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNum)
+sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
 #if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
@@ -342,7 +342,7 @@ sscp_status_t MU_SendMsg(MU_Type *base, uint32_t msg[MU_TR_COUNT], size_t wordNu
     return ret;
 }
 
-sscp_status_t sscp_mu_init(sscp_context_t *context, MU_Type *base)
+sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base)
 {
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
@@ -361,10 +361,10 @@ void sscp_mu_deinit(sscp_context_t *context)
     MU_Deinit(muContext->base);*/
 }
 
-sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], uint32_t *wrId);
+sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT], uint32_t *wrId);
 
 /* NBOOT HIS metric Ex. 1 - HIS_CCM - Cyclomatic complexity */
-sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], uint32_t *wrId)
+sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT], uint32_t *wrId)
 {
     bool done            = false;
     uint32_t wrIdx       = MU_MSG_HEADER_SIZE;
@@ -459,7 +459,7 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[MU_TR_COUNT], ui
             break;
         }
         /* Buffer overoload, end with error. */
-        if (wrIdx > MU_TR_COUNT - 1u)
+        if (wrIdx > ELEMU_TR_COUNT - 1u)
         {
             ret = kStatus_SSCP_Fail;
             break;
@@ -482,11 +482,11 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
-    uint32_t msg[MU_TR_COUNT] = {0};
-    uint32_t wrIdx            = 0;
-    sscp_status_t ret2        = kStatus_SSCP_Fail;
-    sscp_status_t tmpRet      = kStatus_SSCP_Success;
-    *ret                      = kStatus_SSS_Fail;
+    uint32_t msg[ELEMU_TR_COUNT] = {0};
+    uint32_t wrIdx               = 0;
+    sscp_status_t ret2           = kStatus_SSCP_Fail;
+    sscp_status_t tmpRet         = kStatus_SSCP_Success;
+    *ret                         = kStatus_SSS_Fail;
     mu_hdr_t muMsgHeader;
 
     do
@@ -509,7 +509,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         }
 
         /* poll for response */
-        if (MU_ReceiveMsg(muContext->base, msg, MU_RR_COUNT) != kStatus_SSCP_Success)
+        if (MU_ReceiveMsg(muContext->base, msg, ELEMU_RR_COUNT) != kStatus_SSCP_Success)
         {
             ret2 = kStatus_SSCP_Fail;
             break;

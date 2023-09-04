@@ -79,7 +79,7 @@ status_t CRYPTO_InitHardware(void)
             break;
         }
 #endif /* SNT_HAS_LOADABLE_FW */
-        if (sscp_mu_init(&g_sscpContext, (MU_Type *)(uintptr_t)ELEMUA) != kStatus_SSCP_Success)
+        if (sscp_mu_init(&g_sscpContext, (ELEMU_Type *)(uintptr_t)ELEMUA) != kStatus_SSCP_Success)
         {
             break;
         }
