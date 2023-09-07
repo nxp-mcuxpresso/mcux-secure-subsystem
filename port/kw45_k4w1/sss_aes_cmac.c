@@ -7,7 +7,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  ********************************************************************************** */
 
-#include "fsl_debug_console.h"
 #include "sss_crypto.h"
 
 #define BITLEN2BYTELEN(x) (((x) + 7u) >> 3)
