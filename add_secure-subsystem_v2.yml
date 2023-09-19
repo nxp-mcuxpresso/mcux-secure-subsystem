@@ -95,7 +95,7 @@ middleware.secure-subsystem.snt:
   section-type: component
   meta-name: middleware.secure-subsystem.snt
   __requires__:
-  - middleware.secure-subsystem.mu driver.snt
+  - middleware.secure-subsystem.mu driver.elemu
   configuration:
     tools:
       __common__:
@@ -126,12 +126,12 @@ middleware.secure-subsystem.snt:
       project_relative_path: mgmt
   component_info:
     common:
-      description: Secure subsystem library for snt
+      description: Secure subsystem library for ELEMU
       type: middleware
       version: 0.0.1
       change_log: "./ChangeLogKSDK.txt"
-      manifest_name: secure-subsystem_snt
-      full_name: Middleware secure-subsystem snt
+      manifest_name: secure-subsystem_elemu
+      full_name: Middleware secure-subsystem ELEMU
 middleware.secure-subsystem.support:
   section-type: component_support
   __requires__:
@@ -181,12 +181,12 @@ middleware.secure-subsystem.snt.port_kw45_k4w1:
 
   component_info:
     common:
-      description: Secure subsystem helpers for snt use in KW45 K4W1
+      description: Secure subsystem helpers for ELEMU use in KW45 K4W1
       type: middleware
       version: 0.0.1
       change_log: "./ChangeLogKSDK.txt"
       manifest_name: secure-subsystem_snt.port_kw45_k4w1
-      full_name: Middleware secure-subsystem snt port kw45_k4w1
+      full_name: Middleware secure-subsystem ELEMU port kw45_k4w1
 
 middleware.secure-subsystem.unused_files:
   section-type: component

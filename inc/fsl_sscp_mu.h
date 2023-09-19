@@ -10,7 +10,7 @@
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
 #include "fsl_sscp.h"
-#include "fsl_snt.h"
+#include "fsl_elemu.h"
 
 /*!
 @defgroup sscp_mu SSCP over MU
@@ -432,7 +432,7 @@ sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t 
 #else
 
 #include "fsl_sscp.h"
-#include "fsl_snt.h"
+#include "fsl_elemu.h"
 
 /*!
 @defgroup sscp_mu SSCP over MU

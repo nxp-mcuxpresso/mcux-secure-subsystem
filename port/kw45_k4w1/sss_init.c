@@ -69,16 +69,16 @@ status_t CRYPTO_InitHardware(void)
         ret = kStatus_Fail;
 
         sss_sscp_rng_t rctx;
-        if (SNT_mu_wait_for_ready(ELEMUA, SSS_MAX_SUBSYTEM_WAIT) != kStatus_Success)
+        if (ELEMU_mu_wait_for_ready(ELEMUA, SSS_MAX_SUBSYTEM_WAIT) != kStatus_Success)
         {
             break;
         }
-#if (defined(SNT_HAS_LOADABLE_FW) && SNT_HAS_LOADABLE_FW)
-        if (SNT_loadFwLocal(ELEMUA) != kStatus_SNT_Success)
+#if (defined(ELEMU_HAS_LOADABLE_FW) && ELEMU_HAS_LOADABLE_FW)
+        if (ELEMU_loadFwLocal(ELEMUA) != kStatus_ELEMU_Success)
         {
             break;
         }
-#endif /* SNT_HAS_LOADABLE_FW */
+#endif /* ELEMU_HAS_LOADABLE_FW */
         if (sscp_mu_init(&g_sscpContext, (ELEMU_Type *)(uintptr_t)ELEMUA) != kStatus_SSCP_Success)
         {
             break;
