@@ -481,7 +481,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 {
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
-    /* parse the operaion to create message */
+    /* parse the operation to create message */
     uint32_t msg[ELEMU_TR_COUNT] = {0};
     uint32_t wrIdx               = 0;
     sscp_status_t ret2           = kStatus_SSCP_Fail;
