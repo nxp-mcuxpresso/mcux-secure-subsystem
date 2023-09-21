@@ -18,7 +18,7 @@
  */
 
 #include "sss_crypto.h"
-#include "fsl_sss_config_snt.h"
+#include "fsl_sss_config_elemu.h"
 
 /************************************************************************************
 *************************************************************************************
@@ -41,7 +41,7 @@ status_t sss_ecdh_init_key(sss_ecp256_context_t *K_ctx)
 {
     status_t ret = kStatus_Fail;
 
-    size_t coordinateLen     = ECP256_COORDINATE_LEN;
+    size_t coordinateLen = ECP256_COORDINATE_LEN;
 
     do
     {
@@ -71,7 +71,7 @@ status_t sss_ecdh_init_key(sss_ecp256_context_t *K_ctx)
 
         ret = kStatus_Success;
 
-    } while(false);
+    } while (false);
 
     return ret;
 }

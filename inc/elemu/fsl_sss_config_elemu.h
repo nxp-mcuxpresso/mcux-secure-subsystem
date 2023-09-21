@@ -4,8 +4,8 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef FSL_SSS_CONFIG_SNT_H
-#define FSL_SSS_CONFIG_SNT_H
+#ifndef FSL_SSS_CONFIG_ELEMU_H
+#define FSL_SSS_CONFIG_ELEMU_H
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 

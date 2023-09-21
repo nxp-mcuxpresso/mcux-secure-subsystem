@@ -4,8 +4,8 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef FSL_SSCP_CONFIG_SNT_H
-#define FSL_SSCP_CONFIG_SNT_H
+#ifndef FSL_SSCP_CONFIG_ELEMU_H
+#define FSL_SSCP_CONFIG_ELEMU_H
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
 
@@ -264,4 +264,4 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_ParamContextType_SSS_Rng        (0xdu)
 
 #endif /* KW45_A0_SUPPORT */
-#endif /* FSL_SSCP_CONFIG_SNT */
+#endif /* FSL_SSCP_CONFIG_ELEMU */

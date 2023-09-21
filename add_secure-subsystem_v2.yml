@@ -91,9 +91,9 @@ middleware.secure-subsystem.mu:
       user_visible: false
       manifest_name: secure-subsystem_sscp_mu
       full_name: Middleware secure-subsystem mu
-middleware.secure-subsystem.snt:
+middleware.secure-subsystem.elemu:
   section-type: component
-  meta-name: middleware.secure-subsystem.snt
+  meta-name: middleware.secure-subsystem.elemu
   __requires__:
   - middleware.secure-subsystem.mu driver.elemu
   configuration:
@@ -102,23 +102,23 @@ middleware.secure-subsystem.snt:
         config:
           __common__:
             cc-define:
-              SSS_CONFIG_FILE: '"fsl_sss_config_snt.h"'
-              SSCP_CONFIG_FILE: '"fsl_sscp_config_snt.h"'
+              SSS_CONFIG_FILE: '"fsl_sss_config_elemu.h"'
+              SSCP_CONFIG_FILE: '"fsl_sscp_config_elemu.h"'
   contents:
     cc-define:
-      SSS_CONFIG_FILE: '"fsl_sss_config_snt.h"'
-      SSCP_CONFIG_FILE: '"fsl_sscp_config_snt.h"'
+      SSS_CONFIG_FILE: '"fsl_sss_config_elemu.h"'
+      SSCP_CONFIG_FILE: '"fsl_sscp_config_elemu.h"'
     repo_base_path: middleware/secure-subsystem
     project_base_path: secure-subsystem
     cc-include:
-    - repo_relative_path: inc/snt
+    - repo_relative_path: inc/elemu
       project_relative_path: inc
     - repo_relative_path: inc
       project_relative_path: mgmt
     files:
-    - source: inc/snt/fsl_sss_config_snt.h
+    - source: inc/elemu/fsl_sss_config_elemu.h
       project_relative_path: inc
-    - source: inc/snt/fsl_sscp_config_snt.h
+    - source: inc/elemu/fsl_sscp_config_elemu.h
       project_relative_path: inc
     - source: src/sscp/fsl_sss_mgmt.c
       project_relative_path: mgmt
@@ -143,11 +143,11 @@ middleware.secure-subsystem.support:
   - board.k32w148evk
   - board.kw45b41zloc
   - board.mcxw34xevk
-middleware.secure-subsystem.snt.port_kw45_k4w1:
+middleware.secure-subsystem.elemu.port_kw45_k4w1:
   section-type: component
   meta-name: middleware.secure-subsystem.port_kw45_k4w1
   __requires__:
-  - middleware.secure-subsystem.snt
+  - middleware.secure-subsystem.elemu
   configuration:
     tools:
       __common__:
@@ -185,7 +185,7 @@ middleware.secure-subsystem.snt.port_kw45_k4w1:
       type: middleware
       version: 0.0.1
       change_log: "./ChangeLogKSDK.txt"
-      manifest_name: secure-subsystem_snt.port_kw45_k4w1
+      manifest_name: secure-subsystem_elemu.port_kw45_k4w1
       full_name: Middleware secure-subsystem ELEMU port kw45_k4w1
 
 middleware.secure-subsystem.unused_files:

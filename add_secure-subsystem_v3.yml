@@ -48,7 +48,7 @@ middleware.secure-subsystem:
   dependency:
     allOf:
     - middleware.secure-subsystem.mu
-    - middleware.secure-subsystem.snt
+    - middleware.secure-subsystem.elemu
 middleware.secure-subsystem.mu:
   section-type: component
   meta-name: middleware.secure-subsystem.mu
@@ -74,21 +74,21 @@ middleware.secure-subsystem.mu:
   dependency:
     allOf:
     - middleware.secure-subsystem
-middleware.secure-subsystem.snt:
+middleware.secure-subsystem.elemu:
   section-type: component
-  meta-name: middleware.secure-subsystem.snt
+  meta-name: middleware.secure-subsystem.elemu
   contents:
     repo_base_path: middleware/secure-subsystem
     project_base_path: secure-subsystem
     cc-include:
-    - repo_relative_path: inc/snt
+    - repo_relative_path: inc/elemu
       project_relative_path: inc
     - repo_relative_path: inc
       project_relative_path: mgmt
     files:
-    - source: inc/snt/fsl_sss_config_snt.h
+    - source: inc/elemu/fsl_sss_config_elemu.h
       project_relative_path: inc
-    - source: inc/snt/fsl_sscp_config_snt.h
+    - source: inc/elemu/fsl_sscp_config_elemu.h
       project_relative_path: inc
     - source: src/sscp/fsl_sss_mgmt.c
       project_relative_path: mgmt
@@ -96,20 +96,20 @@ middleware.secure-subsystem.snt:
       project_relative_path: mgmt
     configuration:
       cc-define:
-        SSS_CONFIG_FILE: '"fsl_sss_config_snt.h"'
-        SSCP_CONFIG_FILE: '"fsl_sscp_config_snt.h"'
+        SSS_CONFIG_FILE: '"fsl_sss_config_elemu.h"'
+        SSCP_CONFIG_FILE: '"fsl_sscp_config_elemu.h"'
   belong_to: set.middleware.secure-subsystem
   section_info:
-    description: Secure subsystem library for snt
+    description: Secure subsystem library for elemu
     type: middleware
     version: 0.0.1
-    full_name: Middleware secure-subsystem snt
-    display_name: secure-subsystem_snt
+    full_name: Middleware secure-subsystem elemu
+    display_name: secure-subsystem_elemu
   dependency:
     allOf:
     - middleware.secure-subsystem.mu
-    - driver.snt
-middleware.secure-subsystem.snt.port_kw45_k4w1:
+    - driver.elemu
+middleware.secure-subsystem.elemu.port_kw45_k4w1:
   section-type: component
   meta-name: middleware.secure-subsystem.port_kw45_k4w1
   contents:
@@ -137,14 +137,14 @@ middleware.secure-subsystem.snt.port_kw45_k4w1:
       project_relative_path: port
   belong_to: set.middleware.secure-subsystem
   section_info:
-    description: Secure subsystem helpers for snt use in KW45 K4W1
+    description: Secure subsystem helpers for ELEMU use in KW45 K4W1
     type: middleware
     version: 0.0.1
-    full_name: Middleware secure-subsystem snt port kw45_k4w1
-    display_name: secure-subsystem_snt.port_kw45_k4w1
+    full_name: Middleware secure-subsystem elemu port kw45_k4w1
+    display_name: secure-subsystem_elemu.port_kw45_k4w1
   dependency:
     allOf:
-    - middleware.secure-subsystem.snt
+    - middleware.secure-subsystem.elemu
 middleware.secure-subsystem.unused_files:
   section-type: component
   meta-name: middleware.secure-subsystem.unused_files
