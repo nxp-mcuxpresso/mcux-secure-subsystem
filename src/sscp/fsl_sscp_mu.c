@@ -11,9 +11,9 @@
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
 
-#define MU_Deinit        (void)
-#define SENTINEL_SUCCESS ((uint8_t)0x3C)
-#define SENTINEL_FAIL    ((uint8_t)0xC3)
+#define MU_Deinit   (void)
+#define ELE_SUCCESS ((uint8_t)0x3C)
+#define ELE_FAIL    ((uint8_t)0xC3)
 
 void MU_Init(void)
 {
@@ -269,7 +269,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         }
     }
 
-    if (muReplyHeader->tag_sts == SENTINEL_SUCCESS)
+    if (muReplyHeader->tag_sts == ELE_SUCCESS)
     {
         *ret = kStatus_SSS_Success;
     }
@@ -293,9 +293,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
 
-#define MU_Deinit        (void)
-#define SENTINEL_SUCCESS ((uint8_t)0x3C)
-#define SENTINEL_FAIL    ((uint8_t)0xC3)
+#define MU_Deinit   (void)
+#define ELE_SUCCESS ((uint8_t)0x3C)
+#define ELE_FAIL    ((uint8_t)0xC3)
 
 void MU_Init(void)
 {
@@ -310,7 +310,7 @@ sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size
     {
     }
 #if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
-    else if (ELEMU_mu_release_ownership((S3MU_Type *)base) != kStatus_Success)
+    else if (ELEMU_mu_release_ownership((ELEMU_Type *)base) != kStatus_Success)
     {
     }
 #endif /* FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER */
@@ -326,7 +326,7 @@ sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t 
     sscp_status_t ret = kStatus_SSCP_Fail;
 #if (defined(FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_S3MU_HAS_SEMA4_STATUS_REGISTER)
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
-    if (ELEMU_mu_get_ownership((S3MU_Type *)base) != kStatus_Success)
+    if (ELEMU_mu_get_ownership((ELEMU_Type *)base) != kStatus_Success)
     {
         ret = kStatus_SSCP_ResourceBusy;
     }
@@ -590,7 +590,7 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
             ret2 = kStatus_SSCP_Fail;
             break;
         }
-        if (muReplyHeader->tag_sts == SENTINEL_SUCCESS)
+        if (muReplyHeader->tag_sts == ELE_SUCCESS)
         {
             *ret = kStatus_SSS_Success;
             ret2 = kStatus_SSCP_Success;

@@ -108,10 +108,10 @@ typedef enum _sss_type
 {
     kType_SSS_Software      = SAB_SE_TYPE_Software,
     kType_SSS_SECO          = SAB_SE_TYPE_SECO,
-    kType_SSS_Sentinel200   = SAB_SE_TYPE_S200,
-    kType_SSS_Sentinel300   = SAB_SE_TYPE_S300,
-    kType_SSS_Sentinel400   = SAB_SE_TYPE_S400,
-    kType_SSS_Sentinel500   = SAB_SE_TYPE_S500,
+    kType_SSS_Ele200        = SAB_SE_TYPE_S200,
+    kType_SSS_Ele300        = SAB_SE_TYPE_S300,
+    kType_SSS_Ele400        = SAB_SE_TYPE_S400,
+    kType_SSS_Ele500        = SAB_SE_TYPE_S500,
     kType_SSS_SecureElement = SAB_SE_TYPE_SECURE_ELEMENT,
 } sss_type_t;
 
@@ -245,10 +245,10 @@ typedef enum
 typedef uint32_t sss_type_t;
 #define kType_SSS_Software      ((sss_type_t)0x00u)
 #define kType_SSS_SECO          ((sss_type_t)0x01u)
-#define kType_SSS_Sentinel200   ((sss_type_t)0x02u)
-#define kType_SSS_Sentinel300   ((sss_type_t)0x03u)
-#define kType_SSS_Sentinel400   ((sss_type_t)0x04u)
-#define kType_SSS_Sentinel500   ((sss_type_t)0x05u)
+#define kType_SSS_Ele200        ((sss_type_t)0x02u)
+#define kType_SSS_Ele300        ((sss_type_t)0x03u)
+#define kType_SSS_Ele400        ((sss_type_t)0x04u)
+#define kType_SSS_Ele500        ((sss_type_t)0x05u)
 #define kType_SSS_SecureElement ((sss_type_t)0x06u)
 
 #define SSS_MODE_ENUM_ALT

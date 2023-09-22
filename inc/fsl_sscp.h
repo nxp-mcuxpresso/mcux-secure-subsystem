@@ -92,7 +92,7 @@
       CMD    |paramTypes | params[0].a | params[0].b | ... | params[n-1].b
 
     where the n value is CMD specific and it is present in the CMD word.
-    Passing this message through ELEMU to the Sentinel sub-system is done by simply moving the 16 words into ELEMU Tx A
+    Passing this message through ELEMU to the ELE sub-system is done by simply moving the 16 words into ELEMU Tx A
     registers.
 
     # Example with the SSS API
@@ -519,9 +519,9 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
       sscp_deinit(ctx)
     @endcode
 
-    # Example for SSCP protocol implementation with S3MU
+    # Example for SSCP protocol implementation with ELEMU
 
-    The ::sscp_invoke_command() implementation for the S3MU (Sentinel), ::sscp_mu_invoke_command(),
+    The ::sscp_invoke_command() implementation for the ELEMU (Sentinel), ::sscp_mu_invoke_command(),
     builds up the serial message as follows:
 
       word 0 | word 1    | word 2      | word 3      | ... | word (n*2 + 1)
@@ -529,7 +529,7 @@ sscp_status_t sscp_invoke_command(sscp_context_t *context, uint32_t commandID, s
       CMD    |paramTypes | params[0].a | params[0].b | ... | params[n-1].b
 
     where the n value is CMD specific and it is present in the CMD word.
-    Passing this message through S3MU to the Sentinel sub-system is done by simply moving the 16 words into S3MU Tx A
+    Passing this message through ELEMU to the ELE sub-system is done by simply moving the 16 words into ELEMU Tx A
     registers.
 
     # Example with the SSS API

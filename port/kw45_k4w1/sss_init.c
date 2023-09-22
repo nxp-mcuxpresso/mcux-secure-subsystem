@@ -107,7 +107,7 @@ status_t CRYPTO_InitHardware(void)
         }
 #endif
 
-        /* RNG call used to init Sentinel TRNG required e.g. by sss_sscp_key_store_generate_key service
+        /* RNG call used to init ELE TRNG required e.g. by sss_sscp_key_store_generate_key service
         if TRNG initialization is no needed for used operations, the following code can be removed
         to increase the perfomance.*/
         if (sss_sscp_rng_context_init(&g_sssSession, &rctx, SSS_HIGH_QUALITY_RNG) != kStatus_SSS_Success)

@@ -72,11 +72,11 @@ typedef enum _sss_type
     kType_SSS_SECO = SSS_ENUM(kType_SSS_HW, 0x01),
     /** Isolated HW */
     kType_SSS_Isolated_HW = SSS_ENUM(0x04 < 8, 0x00),
-    kType_SSS_Sentinel    = SSS_ENUM(kType_SSS_Isolated_HW, 0x01),
-    kType_SSS_Sentinel200 = SSS_ENUM(kType_SSS_Isolated_HW, 0x02),
-    kType_SSS_Sentinel300 = SSS_ENUM(kType_SSS_Isolated_HW, 0x03),
-    kType_SSS_Sentinel400 = SSS_ENUM(kType_SSS_Isolated_HW, 0x04),
-    kType_SSS_Sentinel500 = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
+    kType_SSS_Ele         = SSS_ENUM(kType_SSS_Isolated_HW, 0x01),
+    kType_SSS_Ele200      = SSS_ENUM(kType_SSS_Isolated_HW, 0x02),
+    kType_SSS_Ele300      = SSS_ENUM(kType_SSS_Isolated_HW, 0x03),
+    kType_SSS_Ele400      = SSS_ENUM(kType_SSS_Isolated_HW, 0x04),
+    kType_SSS_Ele500      = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
     /** Secure Eleemnt */
     kType_SSS_SecureElement = SSS_ENUM(0x08 < 8, 0x00),
     /** To connect to www.nxp.com/products/:A71CH */
@@ -1806,11 +1806,11 @@ typedef enum
     kType_SSS_SECO = SSS_ENUM(kType_SSS_HW, 0x01),
     /** Isolated HW */
     kType_SSS_Isolated_HW = SSS_ENUM(0x04 < 8, 0x00),
-    kType_SSS_Sentinel    = SSS_ENUM(kType_SSS_Isolated_HW, 0x01),
-    kType_SSS_Sentinel200 = SSS_ENUM(kType_SSS_Isolated_HW, 0x02),
-    kType_SSS_Sentinel300 = SSS_ENUM(kType_SSS_Isolated_HW, 0x03),
-    kType_SSS_Sentinel400 = SSS_ENUM(kType_SSS_Isolated_HW, 0x04),
-    kType_SSS_Sentinel500 = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
+    kType_SSS_Ele         = SSS_ENUM(kType_SSS_Isolated_HW, 0x01),
+    kType_SSS_Ele200      = SSS_ENUM(kType_SSS_Isolated_HW, 0x02),
+    kType_SSS_Ele300      = SSS_ENUM(kType_SSS_Isolated_HW, 0x03),
+    kType_SSS_Ele400      = SSS_ENUM(kType_SSS_Isolated_HW, 0x04),
+    kType_SSS_Ele500      = SSS_ENUM(kType_SSS_Isolated_HW, 0x05),
     /** Secure Eleemnt */
     kType_SSS_SecureElement = SSS_ENUM(0x08 < 8, 0x00),
     /** To connect to www.nxp.com/products/:A71CH */
