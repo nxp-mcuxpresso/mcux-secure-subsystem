@@ -153,6 +153,31 @@ void CRYPTO_DeinitHardware(void)
     g_isCryptoHWInitialized = SSS_CRYPTOHW_NONINITIALIZED;
 }
 
+void CRYPTO_ELEMU_reset(void)
+{
+    CRYPTO_DeinitHardware();
+    *(uint32_t *)0x5001C090 = 0x0;        /*reset sentinel*/
+    *(uint32_t *)0x5001C090 = 0x40000001; /*enable sentinel*/
+
+    uint32_t msg[2] = {0};
+    do
+    {
+        if (kStatus_Success != ELEMU_mu_wait_for_data(ELEMUA, msg, 2u, 0xFFFFFFFFU))
+        {
+        }
+        else if (msg[0] != 0x1700D03Cu) /* Reset started */
+        {
+        }
+        else if (msg[1] != 0x1B00803Cu) /* Reset completed */
+        {
+        }
+        else
+        {
+            break;
+        }
+    } while (true);
+}
+
 /******************************************************************************/
 /*************************** Mutex ********************************************/
 /******************************************************************************/

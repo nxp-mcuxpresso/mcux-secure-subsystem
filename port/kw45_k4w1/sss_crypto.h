@@ -16,11 +16,13 @@
 
 #define SSS_HIGH_QUALITY_RNG 1
 
+#ifndef RAISE_ERROR
 #define RAISE_ERROR(x, code) \
     {                        \
         (x) = (code);        \
         break;               \
     }
+#endif
 
 #define SSS_MAX_SUBSYTEM_WAIT (0xFFFFFFFFu)
 
@@ -137,6 +139,8 @@ status_t CRYPTO_InitHardware(void);
 status_t CRYPTO_ReinitHardware(void);
 
 void CRYPTO_DeinitHardware(void);
+
+void CRYPTO_ELEMU_reset(void);
 
 status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
 
