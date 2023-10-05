@@ -161,7 +161,7 @@ enum _sscp_context_type
 #else
 
 #if !defined(SSCP_CONFIG_FILE)
-#include "fsl_sscp_config.h"
+#include "fsl_sscp_config_elemu.h"
 #else
 #include SSCP_CONFIG_FILE
 #endif
