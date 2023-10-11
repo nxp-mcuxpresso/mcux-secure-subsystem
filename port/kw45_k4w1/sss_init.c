@@ -156,12 +156,7 @@ void CRYPTO_DeinitHardware(void)
 void CRYPTO_ELEMU_reset(void)
 {
     CRYPTO_DeinitHardware();
-    /*reset sentinel*/
-    MRCC->MRCC_SECSUBSYS = 0x0UL;
-    /*enable sentinel with all peripheral clocks enabled */
-    MRCC->MRCC_SECSUBSYS = MRCC_MRCC_SECSUBSYS_RSTB_MASK | MRCC_MRCC_SECSUBSYS_CC(1u);
-    /* No use to wait now : CRYPTO_InitHardware will be called at next operation
-     * so as to ensure readiness */
+    (void)ELEMU_LP_WakeupPathInit(ELEMUA);
 }
 
 /******************************************************************************/
