@@ -19,6 +19,7 @@
  ******************************************************************************/
 #define ELE_MAX_SUBSYSTEM_WAIT (0xFFFFFFFFu)
 #define ELE_SUBSYSTEM          (kType_SSS_Ele200)
+#define KEY_ID                 (0u)
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -100,7 +101,7 @@ sss_status_t test_symmetric(void)
             break;
         }
         /* Allocate keystore handle */
-        status = sss_sscp_key_object_allocate_handle(&sssKey, 1u, /* key id */
+        status = sss_sscp_key_object_allocate_handle(&sssKey, KEY_ID, /* key id */
                                                      kSSS_KeyPart_Default, kSSS_CipherType_AES, 16u,
                                                      kSSS_KeyProp_CryptoAlgo_AES);
         if (status != kStatus_SSS_Success)
@@ -185,7 +186,7 @@ int main(void)
     test_symmetric();
 
     PRINTF("Example end\r\n");
-    
+
     while (1)
     {
         ch = GETCHAR();
