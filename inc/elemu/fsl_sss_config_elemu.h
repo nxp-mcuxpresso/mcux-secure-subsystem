@@ -405,7 +405,7 @@ typedef uint32_t sss_sscp_key_property_t;
 #define kSSS_KeyProp_CryptoAlgo_MAC                  ((sss_sscp_key_property_t)0x00000002u)
 #define kSSS_KeyProp_CryptoAlgo_AES                  ((sss_sscp_key_property_t)0x00000001u)
 
-typedef uint32_t sss_keyObjFree_options_t;
+typedef uint32_t sss_sscp_keyObjFree_options_t;
 #define kSSS_keyObjFree_KeysStoreNoDefragment        ((sss_sscp_keyObjFree_options_t)0x0u)
 #define kSSS_keyObjFree_KeysStoreDefragment          ((sss_sscp_keyObjFree_options_t)0x1u)
 

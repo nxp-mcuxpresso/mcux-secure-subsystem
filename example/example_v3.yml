@@ -15,12 +15,12 @@ __hierarchy__:
               __common__: {}
               debug:
                 cc-define:
-                  DEBUG: 
+                  DEBUG:
                 cx-define:
-                  DEBUG: 
+                  DEBUG:
           iar:
             config:
-              __common__: 
+              __common__:
               release: {}
           mdk:
             config:
@@ -172,3 +172,56 @@ secure-subsystem_se_asymmetric:
         - source: boards/${board}/secure-subsystem_examples/secure-subsystem_se_asymmetric/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/secure-subsystem_se_asymmetric/${multicore_foldername}"
+ele_symmetric:
+  section-type: application
+  belong_to: set.board.${board}
+  dependency:
+  - driver.port
+  - middleware.secure-subsystem
+  - middleware.secure-subsystem.elemu
+  - driver.elemu
+  contents:
+    document:
+      name: ele_symmetric
+      readme:
+      - boards/${board}/secure-subsystem_examples/ele_symmetric/board.readme
+      - middleware/secure-subsystem/example/ele_symmetric/ele_symmetric.readme
+      category: secure-subsystem_examples
+      brief: The secure-subsystem demo application performs AES CBC symmetric operation
+        with SSS APIs using EdgeLock Secure Enclave.
+    project-root-path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_symmetric
+          package_path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+          project_path: board
+        files:
+        - source: middleware/secure-subsystem/example/ele_symmetric/ele_symmetric.c
+          merge-to-main: main
+          package_path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/secure-subsystem_examples/ele_symmetric/pin_mux.c
+          package_path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/secure-subsystem_examples/ele_symmetric/pin_mux.h
+          package_path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}
+          project_path: "${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}"
+        files:
+        - source: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}"
+        - source: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}"
