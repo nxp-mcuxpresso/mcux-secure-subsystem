@@ -19,7 +19,7 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define FUSE_MAX_LEN (64u) /* Biggest fuse is 512bits so length 64bye */
+#define FUSE_MAX_LEN (64u) /* Biggest fuse is 512bits so length 64byte */
 
 #define TUNNEL_SUCCESS            (0x0a0b0c0d)
 #define TUNNEL_TYPE_SB3_FILE_AUTH (0x21u)
