@@ -225,3 +225,56 @@ ele_symmetric:
         - source: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}"
+ele_decrypt_sb3:
+  section-type: application
+  belong_to: set.board.${board}
+  dependency:
+  - driver.port
+  - middleware.secure-subsystem
+  - middleware.secure-subsystem.elemu
+  - driver.elemu
+  - driver.romapi
+  contents:
+    document:
+      name: ele_decrypt_sb3
+      readme:
+      - boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/board.readme
+      - middleware/secure-subsystem/example/ele_decrypt_sb3/ele_decrypt_sb3.readme
+      category: secure-subsystem_examples
+      brief: This example showing how to read fuse, check it value and if its match expected value decrypt SB3 file.
+    project-root-path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3
+          package_path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+          project_path: board
+        files:
+        - source: middleware/secure-subsystem/example/ele_decrypt_sb3/ele_decrypt_sb3.c
+          merge-to-main: main
+          package_path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/pin_mux.c
+          package_path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/pin_mux.h
+          package_path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}
+          project_path: "${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}"
+        files:
+        - source: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}"
+        - source: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}"
