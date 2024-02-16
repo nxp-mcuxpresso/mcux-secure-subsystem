@@ -21,7 +21,7 @@
  ******************************************************************************/
 #define FUSE_MAX_LEN (64u) /* Biggest fuse is 512bits so length 64byte */
 
-#define TUNNEL_SUCCESS            (0x0a0b0c0d)
+#define TUNNEL_SUCCESS            (0x0a0b0c0du)
 #define TUNNEL_TYPE_SB3_FILE_AUTH (0x21u)
 
 /* Example SB3 file created with values
@@ -128,20 +128,20 @@ uint8_t expected_fuse[32] = {0x65, 0x0d, 0x80, 0x97, 0x07, 0x9f, 0xf2, 0x7a, 0x3
 /*******************************************************************************
  * Code
  ******************************************************************************/
-sss_status_t read_fuse(ELEMU_Type *mu, uint32_t fuse, uint32_t *fuseData, uint32_t fuseLen)
+status_t read_fuse(ELEMU_Type *mu, uint32_t fuse, uint32_t *fuseData, size_t fuseLen)
 {
-    sscp_context_t sscpContext;
-    sss_mgmt_t mgmtContext;
-    sss_sscp_session_t sssSession;
-    status_t status = kStatus_Fail;
+    sscp_context_t sscpContext    = {0u};
+    sss_mgmt_t mgmtContext        = {0u};
+    sss_sscp_session_t sssSession = {0u};
+    status_t status               = kStatus_Fail;
 
     /* Core Freq in MHz */
     mgmtContext.clockFrequency = CORE_CLK_FREQ / 1000000U;
-    uint32_t optLen            = 4u;
+    size_t optLen              = 4u;
 
     do
     {
-        if (sscp_mu_init(&sscpContext, (ELEMU_Type *)mu) != kStatus_SSCP_Success)
+        if (sscp_mu_init(&sscpContext, mu) != kStatus_SSCP_Success)
         {
             break;
         }
@@ -163,6 +163,9 @@ sss_status_t read_fuse(ELEMU_Type *mu, uint32_t fuse, uint32_t *fuseData, uint32
             break;
         }
 
+        /* If all steps before passes without break, then consider it as success*/
+        status = kStatus_Success;
+
     } while (false);
 
     /* FREE TUNNEL CONTEXT */
@@ -173,20 +176,20 @@ sss_status_t read_fuse(ELEMU_Type *mu, uint32_t fuse, uint32_t *fuseData, uint32
     return status;
 }
 
-sss_status_t load_and_decrypt(ELEMU_Type *mu, uint32_t image[])
+status_t load_and_decrypt(ELEMU_Type *mu, uint32_t image[])
 {
     uint32_t i, j = 0;
-    uint32_t resultState = 0u;
-    sss_sscp_tunnel_t tunnelCtx;
-    sss_sscp_session_t sssSession;
-    sscp_context_t sscpContext;
-    status_t status = kStatus_Fail;
+    uint32_t resultState          = 0u;
+    sss_sscp_tunnel_t tunnelCtx   = {0u};
+    sss_sscp_session_t sssSession = {0u};
+    sscp_context_t sscpContext    = {0u};
+    status_t status               = kStatus_Fail;
 
     nboot_sb3_header_t *block0 = (nboot_sb3_header_t *)image;
 
     do
     {
-        if (sscp_mu_init(&sscpContext, (ELEMU_Type *)mu) != kStatus_SSCP_Success)
+        if (sscp_mu_init(&sscpContext, mu) != kStatus_SSCP_Success)
         {
             break;
         }
@@ -217,7 +220,7 @@ sss_status_t load_and_decrypt(ELEMU_Type *mu, uint32_t image[])
         /* UPLOAD OTHER BLOCKS */
         for (i = 0; i < block0->blockCount; i++)
         {
-            PRINTF("Encrypted SB3 block %d: \r\n", i + 1);
+            PRINTF("Encrypted SB3 block %d: \r\n", i + 1u);
             /* Print data*/
             PRINT_DATA;
             PRINTF("\r\n");
@@ -232,7 +235,7 @@ sss_status_t load_and_decrypt(ELEMU_Type *mu, uint32_t image[])
                 break;
             }
 
-            PRINTF("Decrypted SB3 block %d: \r\n", i + 1);
+            PRINTF("Decrypted SB3 block %d: \r\n", i + 1u);
 
             /* Print data*/
 
@@ -259,16 +262,18 @@ sss_status_t load_and_decrypt(ELEMU_Type *mu, uint32_t image[])
 int main(void)
 {
     char ch;
+    status_t status = kStatus_Fail;
 
     /* Init board hardware. */
     BOARD_InitHardware();
 
     PRINTF("ELE SSSAPI Example\r\n");
-    
-    PRINTF("This example showing how to read fuse, check it value and if its match expected value decrypt SB3 file\r\n");
+
+    PRINTF(
+        "This example showing how to read fuse, check it value and if its match expected value decrypt SB3 file\r\n");
 
     uint8_t fuseData[FUSE_MAX_LEN];
-    uint32_t fuseLength = FUSE_MAX_LEN;
+    size_t fuseLength = FUSE_MAX_LEN;
 
     /* Fuses can be also readout via NBOOT API */
     //    nboot_context_t context;
@@ -277,19 +282,35 @@ int main(void)
     //    NBOOT_FuseRead(&context, NBOOT_FUSEID_CUST_PROD_OEMFW_AUTH_PUK, (uint32_t *)fuseData, coreFreqInMHz);
     //    NBOOT_ContextFree(&context);
 
-    read_fuse(ELEMUA, NBOOT_FUSEID_CUST_PROD_OEMFW_AUTH_PUK, (uint32_t *)fuseData, fuseLength);
-
-    /* memcmp readed fuse with expected*/
-    if (memcmp(expected_fuse, fuseData, sizeof(expected_fuse)))
+    status = read_fuse(ELEMUA, NBOOT_FUSEID_CUST_PROD_OEMFW_AUTH_PUK, (uint32_t *)fuseData, fuseLength);
+    if (status != kStatus_Success)
     {
-        PRINTF(
-            "ERROR: Expected fuse doesnt match fuse readed out of Security Subsystem, Decryption of SB3 file will not "
-            "pass because img has been created with different keys !\r\n");
+        PRINTF("ERROR: Reading fuse failed!\r\n");
     }
     else
     {
-        PRINTF("SUCCESS: Expected fuse match fuse readed out of Security Subsystem, going to decrypt SB3 file!!\r\n");
-        load_and_decrypt(ELEMUA, (uint32_t *)img);
+        PRINTF("SUCCESS: Readed fuse succesfully!!\r\n");
+        /* Compare readed fuse with expected*/
+        if (memcmp(expected_fuse, fuseData, sizeof(expected_fuse)))
+        {
+            PRINTF(
+                "ERROR: Expected fuse doesnt match fuse readed out of Security Subsystem, Decryption of SB3 file will "
+                "not pass because img has been created with different keys !\r\n");
+        }
+        else
+        {
+            PRINTF(
+                "SUCCESS: Expected fuse match fuse readed out of Security Subsystem, going to decrypt SB3 file!!\r\n");
+            status = load_and_decrypt(ELEMUA, (uint32_t *)img);
+            if (status != kStatus_Success)
+            {
+                PRINTF("ERROR: Decrypting SB3 file failed!\r\n");
+            }
+            else
+            {
+                PRINTF("SUCCESS: Decrypted SB3 file succesfully!!\r\n");
+            }
+        }
     }
 
     PRINTF("Example end\r\n");
