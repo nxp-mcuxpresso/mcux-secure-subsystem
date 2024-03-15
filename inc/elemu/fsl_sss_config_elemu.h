@@ -8,7 +8,6 @@
 #define FSL_SSS_CONFIG_ELEMU_H
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-
 #include <stdint.h>
 
 /*SAB Security Enclave Type definitions*/
@@ -416,9 +415,9 @@ typedef uint32_t sss_sscp_blob_type_t;
 #define kSSS_blobType_NBU_EIRK_blob                  ((sss_sscp_blob_type_t)0x4u)
 
 typedef uint32_t sss_internal_keyID_t;
-#define kSSS_internalKey_NPX                         ((sss_sscp_internal_keyID_t)0x80000007u)
-#define kSSS_internalKey_NBU_DKEY_SK                 ((sss_sscp_internal_keyID_t)0x80000009u)
-#define kSSS_internalKey_NBU_DKEY_IRK                ((sss_sscp_internal_keyID_t)0x8000000Au)
+#define kSSS_internalKey_NPX                         ((sss_internal_keyID_t)0x80000007u)
+#define kSSS_internalKey_NBU_DKEY_SK                 ((sss_internal_keyID_t)0x80000009u)
+#define kSSS_internalKey_NBU_DKEY_IRK                ((sss_internal_keyID_t)0x8000000Au)
 
 #endif /* KW45_A0_SUPPORT */
 #endif /* FSL_SSS_CONFIG_H */
