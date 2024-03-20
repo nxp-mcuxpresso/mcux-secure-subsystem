@@ -1,11 +1,7 @@
-NXP Software Content Register
-
---------------------------------------------
-
-Package:                   NBOOT_RC3.2.1_2cd877e.zip
-Outgoing License:          BSD_CLEAR
-License File:              COPYING
-Type of content:           Binary
-Description and comments:  SSHOST SDK API
+Release Name:              secure subsystem
+Outgoing License:          BSD-3-Clause
+License File:              COPYING-BSD-3
+Type of content:           source code
+Description and comments:  SSHOST SDK API for ELE200
 Release Location:          NXP Bitbucket
 Origin:                    NXP (proprietary)
