@@ -1,6 +1,6 @@
 Release Name:              secure subsystem
 Outgoing License:          BSD-3-Clause
-License File:              COPYING-BSD-3
+License File:              LICENSE
 Type of content:           source code
 Description and comments:  SSHOST SDK API for ELE200
 Release Location:          NXP Bitbucket
