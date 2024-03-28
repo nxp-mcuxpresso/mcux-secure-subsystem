@@ -1,0 +1,10 @@
+/*
+
+Change Log SSS APIs:
+
+  The current SSS APIs version is 2.0.0.
+
+  - 2.0.0
+    - Initial version.
+
+*/

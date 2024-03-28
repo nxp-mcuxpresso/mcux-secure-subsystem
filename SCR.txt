@@ -1,7 +1,8 @@
 Release Name:              secure subsystem
+Version:                   2.0.0
 Outgoing License:          BSD-3-Clause
 License File:              LICENSE
 Type of content:           source code
 Description and comments:  SSHOST SDK API for ELE200
-Release Location:          NXP Bitbucket
-Origin:                    NXP (proprietary)
+Release Location:          https://github.com/nxp-mcuxpresso/secure-subsystem
+Origin:                    NXP
