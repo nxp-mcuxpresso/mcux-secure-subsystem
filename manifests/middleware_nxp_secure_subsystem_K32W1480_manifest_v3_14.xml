@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ksdk:manifest xmlns:ksdk="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="SDK_2.x_middleware_nxp_secure_subsystem_K32W1480_manifest_v3_14" name="EdgeLock SE050 Plug and Trust Middleware" brief="Secure subsystem library - SSS APIs" format_version="3.14" api_version="2.0.0" xsi:schemaLocation="http://nxp.com/ksdk/2.0/ksdk_manifest_v3.0.xsd http://nxp.com/mcuxpresso/sdk/sdk_manifest_v3.14.xsd">
+
+  <externalDefinitions>
+    <definition extID="K32W1480xxxA"/>
+    <definition extID="armgcc"/>
+    <definition extID="platform.drivers.elemu.K32W1480"/>
+  </externalDefinitions>
+  <ksdk id="MCUXpressoSDK215000_middleware_nxp_secure_subsystem_K32W1480_manifest_v3_14" name="MCUXpressoSDK215000_middleware_nxp_secure_subsystem_K32W1480_manifest_v3_14" version="2.15.000" revision="2.15.000"/>
+  <components>
+    <component id="middleware.secure-subsystem.unused_files.K32W1480" name="unused_files" brief="Secure subsytem files unused by projects" version="0.0.1" full_name="Middleware secure-subsystem unused_files" category="Security/Secure subsystem library" user_visible="false" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+      <dependencies>
+        <device_dependency value="K32W1480xxxA"/>
+      </dependencies>
+      <source exclude="true" relative_path="./" type="other">
+        <files mask=".clang-format" hidden="true"/>
+      </source>
+      <source relative_path="./" type="doc">
+        <files mask="ChangeLogKSDK.txt"/>
+      </source>
+      <source exclude="true" relative_path="./" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+        <files mask="SW-Content-Register-sshost.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./inc" project_relative_path="inc" type="c_include">
+        <files mask="fsl_sss_sscp_types.h" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst" project_relative_path="tst" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/asymmetric" project_relative_path="tst/asymmetric" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/asymmetric" project_relative_path="tst/asymmetric" type="src">
+        <files mask="test_asymmetric.c" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/inc" project_relative_path="tst/inc" type="c_include">
+        <files mask="sss_tst.h" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/keyobject" project_relative_path="tst/keyobject" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/keyobject" project_relative_path="tst/keyobject" type="src">
+        <files mask="test_keyobject.c" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/keystore" project_relative_path="tst/keystore" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/keystore" project_relative_path="tst/keystore" type="src">
+        <files mask="test_keystore.c" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/session" project_relative_path="tst/session" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/session" project_relative_path="tst/session" type="src">
+        <files mask="test_session.c" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/src" project_relative_path="tst/src" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/src" project_relative_path="tst/src" type="src">
+        <files mask="sss_tst_fixture.c" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/symmetric" project_relative_path="tst/symmetric" type="doc">
+        <files mask="CMakeLists.txt" hidden="true"/>
+      </source>
+      <source exclude="true" relative_path="./tst/symmetric" project_relative_path="tst/symmetric" type="src">
+        <files mask="test_symm.c" hidden="true"/>
+      </source>
+      <source toolchain="armgcc" relative_path="./" type="workspace">
+        <files mask="middleware_secure-subsystem_unused_files.K32W1480.cmake" hidden="true"/>
+      </source>
+    </component>
+    <component id="middleware.secure-subsystem.K32W1480" name="secure-subsystem" brief="Secure subsystem library" version="0.0.1" full_name="Middleware secure-subsystem" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+      <dependencies>
+        <all>
+          <component_dependency value="middleware.secure-subsystem.mu.K32W1480"/>
+          <component_dependency value="middleware.secure-subsystem.port_kw45_k4w1.K32W1480"/>
+          <component_dependency value="middleware.secure-subsystem.elemu.K32W1480"/>
+          <device_dependency value="K32W1480xxxA"/>
+        </all>
+      </dependencies>
+      <source relative_path="./inc" project_relative_path="inc" type="c_include">
+        <files mask="fsl_sss_api.h"/>
+        <files mask="fsl_sss_config.h"/>
+        <files mask="fsl_sss_sscp.h"/>
+        <files mask="fsl_sscp.h"/>
+        <files mask="fsl_sscp_commands.h"/>
+        <files mask="fsl_sscp_config.h"/>
+      </source>
+      <source relative_path="./src/sscp" project_relative_path="sscp" type="src">
+        <files mask="fsl_sss_sscp.c"/>
+      </source>
+      <source relative_path="./inc" project_relative_path="sscp" type="c_include">
+        <files mask="fsl_sss_sscp_config.h"/>
+      </source>
+      <source toolchain="armgcc" relative_path="./" type="workspace">
+        <files mask="middleware_secure-subsystem.K32W1480.cmake" hidden="true"/>
+      </source>
+      <include_paths>
+        <include_path relative_path="./inc" project_relative_path="inc" type="c_include"/>
+        <include_path relative_path="./inc" project_relative_path="sscp" type="c_include"/>
+        <include_path relative_path="./port/ksdk" project_relative_path="port" type="c_include"/>
+      </include_paths>
+    </component>
+    <component id="middleware.secure-subsystem.mu.K32W1480" name="secure-subsystem_sscp_mu" brief="SSCP_MU" version="0.0.1" full_name="Middleware secure-subsystem mu" category="Security/Secure subsystem library" user_visible="false" type="other" package_base_path=".././" project_base_path="secure-subsystem">
+      <dependencies>
+        <all>
+          <component_dependency value="middleware.secure-subsystem.K32W1480"/>
+          <device_dependency value="K32W1480xxxA"/>
+        </all>
+      </dependencies>
+      <source relative_path="./inc" project_relative_path="sscp" type="c_include">
+        <files mask="fsl_sscp_mu.h"/>
+      </source>
+      <source relative_path="./src/sscp" project_relative_path="sscp" type="src">
+        <files mask="fsl_sscp_mu.c"/>
+      </source>
+      <source toolchain="armgcc" relative_path="./" type="workspace">
+        <files mask="middleware_secure-subsystem_mu.K32W1480.cmake" hidden="true"/>
+      </source>
+      <include_paths>
+        <include_path relative_path="./inc" project_relative_path="sscp" type="c_include"/>
+      </include_paths>
+    </component>
+    <component id="middleware.secure-subsystem.elemu.K32W1480" name="secure-subsystem_elemu" brief="Secure subsystem library for elemu" version="0.0.1" full_name="Middleware secure-subsystem elemu" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+      <defines>
+        <define name="SSS_CONFIG_FILE" value="'&quot;fsl_sss_config_elemu.h&quot;'"/>
+        <define name="SSCP_CONFIG_FILE" value="'&quot;fsl_sscp_config_elemu.h&quot;'"/>
+      </defines>
+      <dependencies>
+        <all>
+          <component_dependency value="middleware.secure-subsystem.mu.K32W1480"/>
+          <component_dependency value="platform.drivers.elemu.K32W1480"/>
+          <device_dependency value="K32W1480xxxA"/>
+        </all>
+      </dependencies>
+      <source relative_path="./inc/elemu" project_relative_path="inc" type="c_include">
+        <files mask="fsl_sss_config_elemu.h"/>
+        <files mask="fsl_sscp_config_elemu.h"/>
+      </source>
+      <source relative_path="./src/sscp" project_relative_path="mgmt" type="src">
+        <files mask="fsl_sss_mgmt.c"/>
+      </source>
+      <source relative_path="./inc" project_relative_path="mgmt" type="c_include">
+        <files mask="fsl_sss_mgmt.h"/>
+      </source>
+      <source toolchain="armgcc" relative_path="./" type="workspace">
+        <files mask="middleware_secure-subsystem_elemu.K32W1480.cmake" hidden="true"/>
+      </source>
+      <include_paths>
+        <include_path relative_path="./inc/elemu" project_relative_path="inc" type="c_include"/>
+        <include_path relative_path="./inc" project_relative_path="mgmt" type="c_include"/>
+      </include_paths>
+    </component>
+    <component id="middleware.secure-subsystem.port_kw45_k4w1.K32W1480" name="secure-subsystem_elemu.port_kw45_k4w1" brief="Secure subsystem helpers for ELEMU use in KW45 K4W1" version="0.0.1" full_name="Middleware secure-subsystem elemu port kw45_k4w1" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+      <dependencies>
+        <all>
+          <component_dependency value="middleware.secure-subsystem.elemu.K32W1480"/>
+          <device_dependency value="K32W1480xxxA"/>
+        </all>
+      </dependencies>
+      <source relative_path="./port/kw45_k4w1" project_relative_path="port" type="src">
+        <files mask="sss_aes.c"/>
+        <files mask="sss_aes_cmac.c"/>
+        <files mask="sss_ccm.c"/>
+        <files mask="sss_ecdh.c"/>
+        <files mask="sss_hmac_sha256.c"/>
+        <files mask="sss_init.c"/>
+        <files mask="sss_sha256.c"/>
+      </source>
+      <source relative_path="./port/kw45_k4w1" project_relative_path="port" type="c_include">
+        <files mask="sss_crypto.h"/>
+      </source>
+      <source toolchain="armgcc" relative_path="./" type="workspace">
+        <files mask="middleware_secure-subsystem_elemu_port_kw45_k4w1.K32W1480.cmake" hidden="true"/>
+      </source>
+      <include_paths>
+        <include_path relative_path="./port/kw45_k4w1" project_relative_path="port" type="c_include"/>
+      </include_paths>
+    </component>
+  </components>
+</ksdk:manifest>
