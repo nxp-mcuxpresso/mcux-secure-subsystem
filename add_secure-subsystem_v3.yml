@@ -257,6 +257,7 @@ set.middleware.secure-subsystem:
       - kw45b41zloc
       - mcxw34xevk
       - kw47evk
+      - frdmmcxw7x
 scr.middleware.secure-subsystem:
   belong_to: set.middleware.secure-subsystem
   section-type: scr
