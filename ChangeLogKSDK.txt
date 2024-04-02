@@ -1,9 +1,0 @@
-
-/*!
-
-Change Log SSS APIs:
-
-    - [SIMW-123] Upstream from SIMW to SSHOST 
-    - [SIMW-209] Updated Symmetric APIs tests
-
-*/
