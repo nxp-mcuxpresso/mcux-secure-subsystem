@@ -109,6 +109,41 @@ middleware.secure-subsystem.elemu:
     allOf:
     - middleware.secure-subsystem.mu
     - driver.elemu
+middleware.secure-subsystem.firmware:
+  section-type: component
+  meta-name: middleware.secure-subsystem.firmware
+  contents:
+    repo_base_path: middleware/secure-subsystem
+    project_base_path: secure-subsystem
+    cc-include:
+    - repo_relative_path: firmware
+      project_relative_path: firmware
+    files:
+    - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0.h
+      project_relative_path: firmware
+    - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0.sb3
+      hidden: true
+      exclude: true
+    - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0.sb3.sha256
+      hidden: true
+      exclude: true
+    - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0_readme.txt
+      hidden: true
+      exclude: true
+    configuration:
+      cc-define:
+        ELEMU_HAS_LOADABLE_FW:
+  belong_to: set.middleware.secure-subsystem
+  section_info:
+    description: Loadable FW for ELE S200
+    type: middleware
+    version: 0.0.1
+    full_name: Loadable FW for ELE S200
+    display_name: secure-subsystem_firmware
+  dependency:
+    allOf:
+    - middleware.secure-subsystem.mu
+    - driver.elemu
 middleware.secure-subsystem.elemu.port_kw45_k4w1:
   section-type: component
   meta-name: middleware.secure-subsystem.port_kw45_k4w1
