@@ -107,11 +107,11 @@ int main(void)
     /* Check if FW is loaded*/
     if (memcmp(no_fw_loaded, ele_version, sizeof(ele_version)))
     {
-        PRINTF("FW not loaded in ELE\r\n");
+        PRINTF("FW loaded in ELE\r\n");
     }
     else
     {
-        PRINTF("FW is not loaded in ELE\r\n");
+        PRINTF("FW not loaded in ELE\r\n");
     }
 
     PRINTF("Load ELE FW\r\n");
@@ -128,11 +128,11 @@ int main(void)
     /* Check if FW is loaded*/
     if (memcmp(no_fw_loaded, ele_version, sizeof(ele_version)))
     {
-        PRINTF("FW is loaded in ELE\r\n");
+        PRINTF("FW loaded in ELE\r\n");
     }
     else
     {
-        PRINTF("FW is not loaded in ELE\r\n");
+        PRINTF("FW not loaded in ELE\r\n");
     }
 
     PRINTF("Example end\r\n");
