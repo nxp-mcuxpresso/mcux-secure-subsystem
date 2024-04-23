@@ -82,7 +82,6 @@ status_t get_ele_fw_version(ELEMU_Type *mu, uint8_t *ele_fw_version)
 int main(void)
 {
     char ch;
-    size_t img_len;
     status_t status = kStatus_Fail;
     uint32_t ele_version[2];
 
@@ -115,8 +114,7 @@ int main(void)
     }
 
     PRINTF("Load ELE FW\r\n");
-    img_len = sizeof(fw);
-    status  = ELEMU_loadFw(ELEMUA, (uint32_t *)fw, img_len);
+    status  = ELEMU_loadFw(ELEMUA, (uint32_t *)fw);
     if (status != kStatus_Success)
     {
         PRINTF("ERROR: EdgeLock FW loading failed!\r\n");
