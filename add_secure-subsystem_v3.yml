@@ -119,7 +119,7 @@ middleware.secure-subsystem.firmware:
     - repo_relative_path: firmware
       project_relative_path: firmware
     files:
-    - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0.h
+    - source: firmware/ele_200_fw.h
       project_relative_path: firmware
     - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0.sb3
       hidden: true

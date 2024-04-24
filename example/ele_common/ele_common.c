@@ -14,7 +14,7 @@
 #include "fsl_sss_sscp.h"
 #include "fsl_sscp_mu.h"
 
-#include "KW45_A1_A2_SDK_FW_1_1_0_0.h" /* ELE FW */
+#include "ele_200_fw.h" /* ELE FW */
 
 /*******************************************************************************
  * Definitions
@@ -114,7 +114,7 @@ int main(void)
     }
 
     PRINTF("Load ELE FW\r\n");
-    status  = ELEMU_loadFw(ELEMUA, (uint32_t *)fw);
+    status = ELEMU_loadFw(ELEMUA, (uint32_t *)fw);
     if (status != kStatus_Success)
     {
         PRINTF("ERROR: EdgeLock FW loading failed!\r\n");
