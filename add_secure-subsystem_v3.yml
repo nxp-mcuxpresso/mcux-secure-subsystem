@@ -130,6 +130,9 @@ middleware.secure-subsystem.firmware:
     - source: firmware/KW45_A1_A2_SDK_FW_1_1_0_0_readme.txt
       hidden: true
       exclude: true
+    - source: firmware/SCR.txt
+      hidden: true
+      exclude: true
     configuration:
       cc-define:
         ELEMU_HAS_LOADABLE_FW:
