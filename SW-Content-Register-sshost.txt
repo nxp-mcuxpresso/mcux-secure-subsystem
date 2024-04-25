@@ -1,0 +1,11 @@
+NXP Software Content Register
+
+--------------------------------------------
+
+Package:                   NBOOT_RC3.2.1_2cd877e.zip
+Outgoing License:          BSD_CLEAR
+License File:              COPYING
+Type of content:           Binary
+Description and comments:  SSHOST SDK API
+Release Location:          NXP Bitbucket
+Origin:                    NXP (proprietary)
