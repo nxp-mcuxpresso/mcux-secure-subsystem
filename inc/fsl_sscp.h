@@ -7,9 +7,7 @@
 #ifndef FSL_SSCP_H
 #define FSL_SSCP_H
 
-#include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include "fsl_sscp_commands.h"
 
 /*!

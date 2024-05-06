@@ -14,7 +14,6 @@
 #include SSS_CONFIG_FILE
 #endif
 
-#include <stdint.h>
 #include <stddef.h>
 
 /** Version of the SSS API */

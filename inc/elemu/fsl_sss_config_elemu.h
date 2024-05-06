@@ -8,7 +8,6 @@
 #define FSL_SSS_CONFIG_ELEMU_H
 
 #if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-#include <stdint.h>
 
 /*SAB Security Enclave Type definitions*/
 typedef uint32_t sab_se_type_t;

@@ -7,8 +7,7 @@
 #ifndef FSL_SSS_SSCP_H
 #define FSL_SSS_SSCP_H
 
-#include <stdbool.h> /* tbd check */
-#include <stddef.h>
+//#include <stddef.h>
 #include <stdint.h>
 #include "fsl_sscp.h"
 #include "fsl_sss_api.h"
