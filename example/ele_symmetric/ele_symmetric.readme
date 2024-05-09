@@ -1,3 +1,3 @@
 Overview
 ========
-The ELE symmetric application provides example how to use SSSAPI to encrypt data via AES CBC.
+The ELE symmetric application provides example how to use SSSAPI to encrypt/decrypt data via AES.
