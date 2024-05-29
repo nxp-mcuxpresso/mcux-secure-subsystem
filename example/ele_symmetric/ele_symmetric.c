@@ -28,9 +28,9 @@
  ******************************************************************************/
 
 /* Variables used by example */
-sscp_context_t sscpContext    = {0};
-sss_sscp_session_t sssSession = {0};
-sss_sscp_key_store_t keyStore = {0};
+static sscp_context_t sscpContext    = {0};
+static sss_sscp_session_t sssSession = {0};
+static sss_sscp_key_store_t keyStore = {0};
 
 /*******************************************************************************
  * Code
