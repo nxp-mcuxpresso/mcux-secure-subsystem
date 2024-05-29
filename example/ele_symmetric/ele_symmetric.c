@@ -27,10 +27,10 @@
  * Variables
  ******************************************************************************/
 
-/* Global variables used by SSSAPI */
-sscp_context_t g_sscpContext    = {0};
-sss_sscp_session_t g_sssSession = {0};
-sss_sscp_key_store_t g_keyStore = {0};
+/* Variables used by example */
+sscp_context_t sscpContext    = {0};
+sss_sscp_session_t sssSession = {0};
+sss_sscp_key_store_t keyStore = {0};
 
 /*******************************************************************************
  * Code
@@ -98,7 +98,7 @@ status_t test_aes_cbc(void)
     do
     {
         /* Init key object  */
-        status = sss_sscp_key_object_init(&sssKey, &g_keyStore);
+        status = sss_sscp_key_object_init(&sssKey, &keyStore);
         if (status != kStatus_SSS_Success)
         {
             break;
@@ -114,7 +114,7 @@ status_t test_aes_cbc(void)
         }
 
         /* Set key into key object*/
-        status = sss_sscp_key_store_set_key(&g_keyStore, &sssKey, s_CbcKey128, sizeof(s_CbcKey128),
+        status = sss_sscp_key_store_set_key(&keyStore, &sssKey, s_CbcKey128, sizeof(s_CbcKey128),
                                             (sizeof(s_CbcKey128) * 8U), kSSS_KeyPart_Default);
         if (status != kStatus_SSS_Success)
         {
@@ -123,8 +123,7 @@ status_t test_aes_cbc(void)
         }
 
         /* Init symmetric context */
-        status =
-            sss_sscp_symmetric_context_init(&ctx, &g_sssSession, &sssKey, kAlgorithm_SSS_AES_CBC, kMode_SSS_Encrypt);
+        status = sss_sscp_symmetric_context_init(&ctx, &sssSession, &sssKey, kAlgorithm_SSS_AES_CBC, kMode_SSS_Encrypt);
         if (status != kStatus_SSS_Success)
         {
             (void)sss_sscp_key_object_free(&sssKey, kSSS_keyObjFree_KeysStoreDefragment);
@@ -158,8 +157,7 @@ status_t test_aes_cbc(void)
         status = sss_sscp_symmetric_context_free(&ctx);
 
         /* Init symmetric context */
-        status =
-            sss_sscp_symmetric_context_init(&ctx, &g_sssSession, &sssKey, kAlgorithm_SSS_AES_CBC, kMode_SSS_Decrypt);
+        status = sss_sscp_symmetric_context_init(&ctx, &sssSession, &sssKey, kAlgorithm_SSS_AES_CBC, kMode_SSS_Decrypt);
         if (status != kStatus_SSS_Success)
         {
             (void)sss_sscp_key_object_free(&sssKey, kSSS_keyObjFree_KeysStoreDefragment);
@@ -254,7 +252,7 @@ status_t test_aes_gcm(void)
     do
     {
         /* Init key object  */
-        status = sss_sscp_key_object_init(&sssKey, &g_keyStore);
+        status = sss_sscp_key_object_init(&sssKey, &keyStore);
         if (status != kStatus_SSS_Success)
         {
             break;
@@ -270,7 +268,7 @@ status_t test_aes_gcm(void)
         }
 
         /* Set key into key object*/
-        status = sss_sscp_key_store_set_key(&g_keyStore, &sssKey, s_GcmKey, sizeof(s_GcmKey), (sizeof(s_GcmKey) * 8U),
+        status = sss_sscp_key_store_set_key(&keyStore, &sssKey, s_GcmKey, sizeof(s_GcmKey), (sizeof(s_GcmKey) * 8U),
                                             kSSS_KeyPart_Default);
         if (status != kStatus_SSS_Success)
         {
@@ -279,7 +277,7 @@ status_t test_aes_gcm(void)
         }
 
         /* Init aead context */
-        status = sss_sscp_aead_context_init(&ctx, &g_sssSession, &sssKey, kAlgorithm_SSS_AES_GCM, kMode_SSS_Encrypt);
+        status = sss_sscp_aead_context_init(&ctx, &sssSession, &sssKey, kAlgorithm_SSS_AES_GCM, kMode_SSS_Encrypt);
         if (status != kStatus_SSS_Success)
         {
             (void)sss_sscp_key_object_free(&sssKey, kSSS_keyObjFree_KeysStoreDefragment);
@@ -360,20 +358,20 @@ int main(void)
         }
 
         /****************** Start   ***********************/
-        status = sscp_mu_init(&g_sscpContext, (ELEMU_Type *)(uintptr_t)ELEMUA);
+        status = sscp_mu_init(&sscpContext, (ELEMU_Type *)(uintptr_t)ELEMUA);
         if (status != kStatus_SSCP_Success)
         {
             break;
         }
         /* open session to specific security subsystem */
-        status = sss_sscp_open_session(&g_sssSession, 0u, ELE_SUBSYSTEM, &g_sscpContext);
+        status = sss_sscp_open_session(&sssSession, 0u, ELE_SUBSYSTEM, &sscpContext);
         if (status != kStatus_SSS_Success)
         {
             return status;
         }
 
         /* Init keystore  */
-        status = sss_sscp_key_store_init(&g_keyStore, &g_sssSession);
+        status = sss_sscp_key_store_init(&keyStore, &sssSession);
         if (status != kStatus_SSS_Success)
         {
             break;
@@ -403,9 +401,9 @@ int main(void)
     }
 
     /* Close keystore*/
-    status = sss_sscp_key_store_free(&g_keyStore);
+    status = sss_sscp_key_store_free(&keyStore);
     /* Close session */
-    status = sss_sscp_close_session(&g_sssSession);
+    status = sss_sscp_close_session(&sssSession);
 
     PRINTF("Example end\r\n");
 
