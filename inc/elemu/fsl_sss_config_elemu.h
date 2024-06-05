@@ -89,11 +89,12 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_RSASSA_PKCS1_PSS_MGF1_SHA384 ((sss_algorithm_t)0x1cu)
 #define kAlgorithm_SSS_RSASSA_PKCS1_PSS_MGF1_SHA512 ((sss_algorithm_t)0x1du)
 /* ECDSA */
-#define kAlgorithm_SSS_ECDSA_SHA1   ((sss_algorithm_t)0x1eu)
-#define kAlgorithm_SSS_ECDSA_SHA224 ((sss_algorithm_t)0x1fu)
-#define kAlgorithm_SSS_ECDSA_SHA256 ((sss_algorithm_t)0x20u)
-#define kAlgorithm_SSS_ECDSA_SHA384 ((sss_algorithm_t)0x21u)
-#define kAlgorithm_SSS_ECDSA_SHA512 ((sss_algorithm_t)0x22u)
+#define kAlgorithm_SSS_ECDSA_SHA1                   ((sss_algorithm_t)0x1eu)
+#define kAlgorithm_SSS_ECDSA_SHA224                 ((sss_algorithm_t)0x1fu)
+#define kAlgorithm_SSS_ECDSA_SHA256                 ((sss_algorithm_t)0x20u)
+#define kAlgorithm_SSS_ECDSA_SHA384                 ((sss_algorithm_t)0x21u)
+#define kAlgorithm_SSS_ECDSA_SHA512                 ((sss_algorithm_t)0x22u)
+#define kAlgorithm_SSS_EdDSA_Ed25519                ((sss_algorithm_t)0x31u)
 /* KDF */
 #define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
 #define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)

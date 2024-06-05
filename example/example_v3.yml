@@ -331,3 +331,57 @@ ele_common:
         - source: boards/${board}/secure-subsystem_examples/ele_common/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_common/${multicore_foldername}"
+
+ele_asymmetric:
+  section-type: application
+  belong_to: set.board.${board}
+  dependency:
+  - driver.port
+  - middleware.secure-subsystem
+  - middleware.secure-subsystem.elemu
+  - driver.elemu
+  - middleware.secure-subsystem.firmware
+  contents:
+    document:
+      name: ele_asymmetric
+      readme:
+      - boards/${board}/secure-subsystem_examples/ele_asymmetric/board.readme
+      - middleware/secure-subsystem/example/ele_asymmetric/ele_asymmetric.readme
+      category: secure-subsystem_examples
+      brief: The ELE asymmetric application provides example how to use SSSAPI to perform asymmetric cryptographic operations.
+    project-root-path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_asymmetric
+          package_path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+          project_path: board
+        files:
+        - source: middleware/secure-subsystem/example/ele_asymmetric/ele_asymmetric.c
+          merge-to-main: main
+          package_path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/secure-subsystem_examples/ele_asymmetric/pin_mux.c
+          package_path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/secure-subsystem_examples/ele_asymmetric/pin_mux.h
+          package_path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}
+          project_path: "${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}"
+        files:
+        - source: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}"
+        - source: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}"
