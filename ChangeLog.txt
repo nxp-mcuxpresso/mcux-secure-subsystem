@@ -8,6 +8,6 @@ Change Log SSS APIs:
     - Initial version.
 
   - 2.1.0
-    - Remove support for A0 chip version.
+    - Remove unsupported chip version.
 	
 */
