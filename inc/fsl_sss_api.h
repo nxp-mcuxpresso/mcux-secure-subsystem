@@ -14,10 +14,13 @@
 #include SSS_CONFIG_FILE
 #endif
 
+
+#include "fsl_common.h"
+
 #include <stddef.h>
 
 /** Version of the SSS API */
-#define SSS_API_VERSION (0x00000001u)
+#define SSS_API_VERSION (MAKE_VERSION(2, 10, 0))
 
 /** Size of an AES Block, in bytes */
 #define SSS_AES_BLOCK_SIZE (16u)
