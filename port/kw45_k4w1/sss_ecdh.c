@@ -57,12 +57,7 @@ status_t sss_ecdh_init_key(sss_ecp256_context_t *K_ctx)
         /* Allocate key handle */
         if ((sss_sscp_key_object_allocate_handle(&K_ctx->OwnKey, K_ctx->keyId, kSSS_KeyPart_Pair,
                                                  kSSS_CipherType_EC_NIST_P, 3u * coordinateLen,
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                                                 SSS_PUBLIC_KEY_PART_EXPORTABLE
-#else
-                                                 SSS_KEYPROP_OPERATION_KDF
-#endif
-                                                 )) != kStatus_SSS_Success)
+                                                 SSS_KEYPROP_OPERATION_KDF)) != kStatus_SSS_Success)
 
         {
             (void)SSS_KEY_OBJ_FREE(&K_ctx->OwnKey);
@@ -101,9 +96,6 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
         }
 
         ecp_p256_copy((uint8_t *)&K_ctx->OwnPublicKey[0], &wrk_buf[0]);
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-        memcpy(&K_ctx->PrivateKey, &wrk_buf[2u * coordinateLen], ECP256_COORDINATE_LEN);
-#endif
 
         ret = kStatus_Success;
 
@@ -137,16 +129,9 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
         {
             break;
         }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-        key_sz += coordinateLen;
-        if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->peerPublicKey, 1u, kSSS_KeyPart_Pair,
-                                                 kSSS_CipherType_EC_NIST_P, key_sz, SSS_PUBLIC_KEY_PART_EXPORTABLE)) !=
-            kStatus_SSS_Success)
-#else
         if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->peerPublicKey, 1u, kSSS_KeyPart_Public,
                                                  kSSS_CipherType_EC_NIST_P, key_sz, SSS_KEYPROP_OPERATION_KDF)) !=
             kStatus_SSS_Success)
-#endif
         {
             ret = kStatus_Fail;
             break;
@@ -169,13 +154,8 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
             break;
         }
         if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->sharedSecret, 2u, kSSS_KeyPart_Default,
-                                                 kSSS_CipherType_AES, coordinateLen,
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                                                 SSS_FULL_KEY_EXPORTABLE
-#else
-                                                 kSSS_KeyProp_CryptoAlgo_KDF
-#endif
-                                                 )) != kStatus_SSS_Success)
+                                                 kSSS_CipherType_AES, coordinateLen, kSSS_KeyProp_CryptoAlgo_KDF)) !=
+            kStatus_SSS_Success)
         {
             ret = kStatus_Fail;
             break;
@@ -225,12 +205,6 @@ status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_
     return ret;
 }
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-
-/* Not in KW45 A0*/
-
-#else
-
 /*
  * Derive the E2E key
  */
@@ -240,12 +214,12 @@ status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *w
 
     sss_sscp_derive_key_t dCtx;
     sss_sscp_derive_key_t *pderivCtx = NULL;
-    size_t coordinateLen = ECP256_COORDINATE_LEN;
-    size_t coordinateBitsLen = ECP256_COORDINATE_BITLEN;
-    size_t key_sz = 2u * coordinateLen;
+    size_t coordinateLen             = ECP256_COORDINATE_LEN;
+    size_t coordinateBitsLen         = ECP256_COORDINATE_BITLEN;
+    size_t key_sz                    = 2u * coordinateLen;
     assert(wrk_buf != NULL);
     assert(wrk_buf_lg >= coordinateLen * 3u);
-    sss_sscp_object_t *pPubKey = NULL;
+    sss_sscp_object_t *pPubKey       = NULL;
     sss_sscp_object_t *pSharedSecret = NULL;
     do
     {
@@ -257,16 +231,9 @@ status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *w
         {
             break;
         }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-        key_sz += coordinateLen;
-        if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->peerPublicKey, 1u, kSSS_KeyPart_Pair,
-                                                 kSSS_CipherType_EC_NIST_P, key_sz, SSS_PUBLIC_KEY_PART_EXPORTABLE)) !=
-            kStatus_SSS_Success)
-#else
         if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->peerPublicKey, 1u, kSSS_KeyPart_Public,
                                                  kSSS_CipherType_EC_NIST_P, key_sz, SSS_KEYPROP_OPERATION_KDF)) !=
             kStatus_SSS_Success)
-#endif
         {
             ret = kStatus_Fail;
             break;
@@ -289,13 +256,7 @@ status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *w
             break;
         }
         if ((sss_sscp_key_object_allocate_handle(&pEcdh_ctx->sharedSecret, 0, kSSS_KeyPart_Default, kSSS_CipherType_AES,
-                                                 coordinateLen,
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                                                 SSS_FULL_KEY_EXPORTABLE
-#else
-                                                 SSS_KEYPROP_OPERATION_NONE
-#endif
-                                                 )) != kStatus_SSS_Success)
+                                                 coordinateLen, SSS_KEYPROP_OPERATION_NONE)) != kStatus_SSS_Success)
         {
             ret = kStatus_Fail;
             break;
@@ -337,4 +298,3 @@ status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *w
 
     return ret;
 }
-#endif /* KW45_A0_SUPPORT */

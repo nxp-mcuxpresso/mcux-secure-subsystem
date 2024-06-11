@@ -2,9 +2,12 @@
 
 Change Log SSS APIs:
 
-  The current SSS APIs version is 2.0.0.
+  The current SSS APIs version is 2.1.0.
 
   - 2.0.0
     - Initial version.
 
+  - 2.1.0
+    - Remove support for A0 chip version.
+	
 */

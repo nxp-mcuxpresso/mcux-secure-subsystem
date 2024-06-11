@@ -113,11 +113,6 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
                     case kSSCP_ParamContextType_SSS_Object:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_object_t *)op->params[i].context.ptr)->ctx;
                         break;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-                    case kSSCP_ParamContextType_SSS_KeyStoreCtx:
-                        msg[wrIdx++] = (uint32_t)((sss_sscp_key_store_t *)op->params[i].context.ptr)->keyStoreCtx;
-                        break;
-#endif /* KW45_A0_SUPPORT */
                     case kSSCP_ParamContextType_SSS_KeyStore:
                         msg[wrIdx++] = (uint32_t)((sss_sscp_key_store_t *)op->params[i].context.ptr)->ctx;
                         break;

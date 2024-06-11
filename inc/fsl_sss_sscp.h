@@ -7,7 +7,7 @@
 #ifndef FSL_SSS_SSCP_H
 #define FSL_SSS_SSCP_H
 
-//#include <stddef.h>
+// #include <stddef.h>
 #include <stdint.h>
 #include "fsl_sscp.h"
 #include "fsl_sss_api.h"
@@ -39,9 +39,6 @@ typedef struct
     {
         uint8_t data[SSS_SSCP_KEY_STORE_CONTEXT_SIZE];
     } context;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-    uint32_t keyStoreCtx;
-#endif /* KW45_A0_SUPPORT */
     uint32_t ctx;
 } sss_sscp_key_store_t;
 
@@ -108,9 +105,6 @@ typedef struct
     sss_mode_t mode;           /*!  */
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-    sss_sha_ctx_t shaCtx;
-#endif /* KW45_A0_SUPPORT */
     /*! Implementation specific part */
     struct
     {
@@ -155,12 +149,8 @@ typedef struct
 
     /*! Implementation specific part */
     uint32_t ctx;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-/* Nothing */
-#else
     uint8_t *buffer;
     size_t bufferSize;
-#endif /* KW45_A0_SUPPORT */
 } sss_sscp_tunnel_t;
 
 typedef struct
@@ -187,18 +177,10 @@ typedef struct
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
-                                   sss_type_t subsystem,
-                                   sscp_context_t *sscpctx,
-                                   uint32_t connectionMethod,
-                                   const void *connectionData);
-#else
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
                                    uint32_t sessionId,
                                    sss_type_t subsystem,
                                    sscp_context_t *sscpctx);
-#endif /* KW45_A0_SUPPORT */
 
 sss_status_t sss_sscp_close_session(sss_sscp_session_t *session);
 
@@ -347,51 +329,6 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
 
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context);
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-/*******************************KEYSTORE***************************************/
-sss_status_t sss_sscp_key_store_context_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
-sss_status_t sss_sscp_key_store_allocate(sss_sscp_key_store_t *keyStore, uint32_t keyStoreId);
-
-sss_status_t sss_sscp_key_store_set_key(sss_sscp_key_store_t *keyStore,
-                                        sss_sscp_object_t *keyObject,
-                                        const uint8_t *data,
-                                        size_t dataLen,
-                                        uint32_t keyBitLen,
-                                        void *options);
-sss_status_t sss_sscp_key_store_get_key(sss_sscp_key_store_t *keyStore,
-                                        sss_sscp_object_t *keyObject,
-                                        uint8_t *data,
-                                        size_t *dataLen,
-                                        size_t *pKeyBitLen,
-                                        void *options);
-sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
-                                             sss_sscp_object_t *keyObject,
-                                             size_t keyBitLen,
-                                             void *options);
-
-sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
-sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
-sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);
-
-sss_status_t sss_sscp_key_store_context_free(sss_sscp_key_store_t *keyStore);
-/******************************KEYOBJECT***************************************/
-sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
-
-sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
-
-sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
-
-sss_status_t sss_sscp_key_object_allocate_handle(sss_sscp_object_t *keyObject,
-                                                 uint32_t keyId,
-                                                 sss_key_part_t keyPart,
-                                                 sss_cipher_type_t cipherType,
-                                                 uint32_t keyByteLenMax,
-                                                 uint32_t options);
-
-sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32_t keyId);
-sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject);
-
-#else
 /*******************************KEYSTORE***************************************/
 sss_status_t sss_sscp_key_store_init(sss_sscp_key_store_t *keyStore, sss_sscp_session_t *session);
 
@@ -459,7 +396,6 @@ sss_status_t sss_sscp_key_object_get_handle(sss_sscp_object_t *keyObject, uint32
 #define SSS_SSCP_KEY_OBJECT_FREE_DYNAMIC (0x1u)
 sss_status_t sss_sscp_key_object_free(sss_sscp_object_t *keyObject, uint32_t options);
 
-#endif /* KW45_A0_SUPPORT */
 /*******************************TUNNEL*****************************************/
 sss_status_t sss_sscp_tunnel_context_init(sss_sscp_tunnel_t *context, sss_sscp_session_t *session, uint32_t tunnelType);
 

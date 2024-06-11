@@ -124,75 +124,6 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
     return (sss_status_t)ret;
 }
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-sss_status_t sss_mgmt_fuse_read(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen)
-{
-    sscp_operation_t op  = {0};
-    sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret         = 0u;
-    size_t optLen        = (optionsLen != NULL) ? *optionsLen : 0u;
-
-    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefOutputNoSize, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
-
-    op.params[0].context.ptr  = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
-
-    op.params[1].value.a = fuseId;
-
-    op.params[2].memref.buffer = (uintptr_t)destData;
-
-    op.params[3].memref.buffer = (uintptr_t)options;
-    op.params[3].memref.size   = (uintptr_t)optLen;
-
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0u;
-
-    sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_FuseRead, &op, &ret);
-    if (status != kStatus_SSCP_Success)
-    {
-        return kStatus_SSS_Fail;
-    }
-    return (sss_status_t)ret;
-}
-
-sss_status_t sss_mgmt_fuse_program(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, void *options, size_t *optionsLen)
-{
-    sscp_operation_t op  = {0};
-    sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret         = 0u;
-
-    size_t optLen = (optionsLen != NULL) ? *optionsLen : 0u;
-
-    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
-                                      kSSCP_ParamType_MemrefInputNoSize, kSSCP_ParamType_MemrefInput,
-                                      kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
-
-    op.params[0].context.ptr  = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
-
-    op.params[1].value.a       = fuseId;
-    op.params[2].memref.buffer = (uintptr_t)srcData;
-
-    op.params[3].memref.buffer = (uintptr_t)options;
-    op.params[3].memref.size   = optLen;
-
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0u;
-
-    sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_FuseProgram, &op, &ret);
-    if (status != kStatus_SSCP_Success)
-    {
-        return kStatus_SSS_Fail;
-    }
-    return (sss_status_t)ret;
-}
-#else
 sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
                                 uint32_t fuseId,
                                 uint32_t *destData,
@@ -268,7 +199,6 @@ sss_status_t sss_mgmt_fuse_program(
     }
     return (sss_status_t)ret;
 }
-#endif /* KW45_A0_SUPPORT */
 
 sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData)
 {
@@ -613,35 +543,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
     }
     return (sss_status_t)ret;
 }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen)
-{
-    sscp_operation_t op  = {0};
-    sscp_status_t status = kStatus_SSCP_Fail;
-    uint32_t ret         = 0u;
 
-    op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
-                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
-
-    op.params[0].context.ptr  = context;
-    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
-
-    op.params[1].memref.buffer = (uintptr_t)srcData;
-    op.params[1].memref.size   = dataLen;
-
-    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
-    op.resultCount = 0u;
-
-    sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_HostAccessPermissionSet, &op, &ret);
-    if (status != kStatus_SSCP_Success)
-    {
-        return kStatus_SSS_Fail;
-    }
-    return (sss_status_t)ret;
-}
-#else
 sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const sss_mgmt_security_level_t secLvl)
 {
     sscp_operation_t op  = {0};
@@ -665,7 +567,6 @@ sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const sss_
     }
     return (sss_status_t)ret;
 }
-#endif /* KW45_A0_SUPPORT */
 
 sss_status_t sss_mgmt_integrity_check_enable(sss_mgmt_t *context)
 {
@@ -710,9 +611,6 @@ sss_status_t sss_mgmt_ping(sss_mgmt_t *context)
     }
     return (sss_status_t)ret;
 }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-/* sss_mgmt_clear_all_keys is not supported on A0*/
-#else
 sss_status_t sss_mgmt_clear_all_keys(sss_mgmt_t *context)
 {
     sscp_operation_t op  = {0};
@@ -737,7 +635,6 @@ sss_status_t sss_mgmt_clear_all_keys(sss_mgmt_t *context)
     }
     return (sss_status_t)ret;
 }
-#endif /* KW45_A0_SUPPORT */
 
 sss_status_t sss_mgmt_context_free(sss_mgmt_t *context)
 {

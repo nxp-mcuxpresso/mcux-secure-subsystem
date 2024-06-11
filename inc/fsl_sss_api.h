@@ -552,14 +552,6 @@ typedef struct
     } extension;
 } sss_aead_t;
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-typedef struct _sss_sha_ctx
-{
-    uint8_t ctx[SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE];
-    uint32_t pHashFcnInfo;
-} sss_sha_ctx_t;
-#endif /* KW45_A0_SUPPORT */
-
 typedef struct
 {
     /*! Virtual connection between application (user context) and specific
@@ -571,9 +563,6 @@ typedef struct
     sss_mode_t mode;
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-    sss_sha_ctx_t shaCtx;
-#endif /* KW45_A0_SUPPORT */
     /*! Implementation specific part */
     struct
     {

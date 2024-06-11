@@ -34,11 +34,6 @@
 #endif
 #define SSS_SUBSYSTEM (kType_SSS_Ele200)
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-
-#define SSS_PUBLIC_KEY_PART_EXPORTABLE (0xF0u)
-#define SSS_FULL_KEY_EXPORTABLE        (0xFFu)
-#else
 #define SSS_KEYPROP_OPERATION_NONE (0x00000000u)
 #define SSS_KEYPROP_OPERATION_AES  (0x00000001u)
 #define SSS_KEYPROP_OPERATION_MAC  (0x00000002u)
@@ -46,7 +41,6 @@
 #define SSS_KEYPROP_OPERATION_ASYM (0x00000008u)
 #define SSS_KEYPROP_OPERATION_KDF  (0x00000010u)
 #define SSS_KEYPROP_NO_PLAIN_READ  (0x00008000u)
-#endif
 
 #define ECP256_COORDINATE_BITLEN 256u
 #define ECP256_COORDINATE_LEN    (ECP256_COORDINATE_BITLEN >> 3)
@@ -370,28 +364,6 @@ status_t sss_ecdh_make_public_ecp256_key(sss_ecp256_context_t *K_ctx, unsigned c
 status_t sss_ecdh_calc_secret(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
 status_t sss_ecdh_calc_EL2EL_key(sss_ecdh_context_t *pEcdh_ctx, unsigned char *wrk_buf, size_t wrk_buf_lg);
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-#define SSS_KEY_OBJ_FREE(_KEY_OBJ_) sss_sscp_key_object_free(_KEY_OBJ_)
-
-#define SSS_KEY_STORE_SET_KEY(_KEY_OBJ_, _KEY_, _KEY_BYTE_LEN_, _KEY_BITLEN_, _KEY_PART) \
-    sss_sscp_key_store_set_key(&g_keyStore, _KEY_OBJ_, _KEY_, _KEY_BYTE_LEN_, _KEY_BITLEN_, NULL)
-
-#define SSS_ECP_KEY_SZ(_KEYLEN_) (3u * (_KEYLEN_))
-
-static inline int SSS_ECP_GENERATE_KEY(sss_sscp_object_t *key_obj, size_t key_bitlen)
-{
-    uint32_t keyOpt = (uint32_t)kSSS_KeyGenMode_Ecc;
-    return sss_sscp_key_store_generate_key(&g_keyStore, key_obj, key_bitlen, &keyOpt);
-}
-
-#define SSS_KEY_STORE_GET_PUBKEY(_KEY_OBJ_, _KEY_BUF_, _KEY_BYTELEN_, _KEY_BITLEN_) \
-    sss_sscp_key_store_get_key(&g_keyStore, _KEY_OBJ_, _KEY_BUF_, _KEY_BYTELEN_, _KEY_BITLEN_, NULL)
-
-#define SSS_KEY_ALLOCATE_HANDLE(_KEY_OBJ_, _KEY_ID_, _KEY_PART_, _TYPE_, _BYTE_LEN_, _OPT_) \
-    sss_sscp_key_object_allocate_handle(_KEY_OBJ_, _KEY_ID_, _KEY_PART_, _TYPE_, _BYTE_LEN_, 1u)
-
-#else /* KW45_A0_SUPPORT */
-
 #define SSS_KEY_OBJ_FREE(_KEY_OBJ_) sss_sscp_key_object_free(_KEY_OBJ_, SSS_SSCP_KEY_OBJECT_FREE_DYNAMIC)
 
 #define SSS_KEY_STORE_SET_KEY(_KEY_OBJ_, _KEY_, _KEY_BYTE_LEN_, _KEY_BITLEN_, _KEY_PART_) \
@@ -407,8 +379,6 @@ static inline int SSS_ECP_GENERATE_KEY(sss_sscp_object_t *key_obj, size_t key_bi
 
 #define SSS_KEY_ALLOCATE_HANDLE(_KEY_OBJ_, _KEY_ID_, _KEY_PART_, _TYPE_, _BYTE_LEN_, _OPT_) \
     sss_sscp_key_object_allocate_handle(_KEY_OBJ_, _KEY_ID_, _KEY_PART_, _TYPE_, _BYTE_LEN_, _OPT_)
-
-#endif /* KW45_A0_SUPPORT */
 
 #ifdef __cplusplus
 }
