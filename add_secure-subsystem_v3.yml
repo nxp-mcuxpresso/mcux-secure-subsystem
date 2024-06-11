@@ -1,7 +1,7 @@
 ---
 
 __variable__:
-  secure-subsystem_version: 2.1.0
+  secure-subsystem_version: 2.1.1
 
 __hierarchy__:
   tmp_common_secure-subsystem_component:

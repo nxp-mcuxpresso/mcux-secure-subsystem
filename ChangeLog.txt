@@ -2,12 +2,15 @@
 
 Change Log SSS APIs:
 
-  The current SSS APIs version is 2.1.0.
+  The current SSS APIs version is 2.1.1.
 
   - 2.0.0
     - Initial version.
 
   - 2.1.0
     - Remove unsupported chip version.
+
+  -2.1.1
+    - Add EdDSA_Ed25519 to sss_algorithm_t.
 	
 */
