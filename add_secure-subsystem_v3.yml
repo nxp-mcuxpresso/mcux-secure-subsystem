@@ -300,6 +300,7 @@ set.middleware.secure-subsystem:
       - mcxw34xevk
       - kw47evk
       - frdmmcxw7x
+      - mcxw72evk
 scr.middleware.secure-subsystem:
   belong_to: set.middleware.secure-subsystem
   section-type: scr
