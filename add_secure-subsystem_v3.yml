@@ -1,7 +1,7 @@
 ---
 
 __variable__:
-  secure-subsystem_version: 2.1.1
+  secure_subsystem_version: 2.1.1
 
 __hierarchy__:
   tmp_common_secure-subsystem_component:
@@ -11,7 +11,7 @@ __hierarchy__:
       full_name: Tmp_common_secure-subsystem_component
       description: Tmp_common_secure-subsystem_component
       type: other
-      version: "${secure-subsystem_version}"
+      version: ${secure_subsystem_version}
       taxonomy:
         csub: tmp_common_secure-subsystem_component
         belong_to: secure-subsystem
@@ -43,7 +43,7 @@ middleware.secure-subsystem:
   section_info:
     description: Secure subsystem library
     type: middleware
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     full_name: Middleware secure-subsystem
     taxonomy:
       csub: secure-subsystem
@@ -71,7 +71,7 @@ middleware.secure-subsystem.mu:
   section_info:
     description: SSCP_MU
     type: other
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     user_visible: never
     full_name: Middleware secure-subsystem mu
     display_name: secure-subsystem_sscp_mu
@@ -106,7 +106,7 @@ middleware.secure-subsystem.elemu:
   section_info:
     description: Secure subsystem library for elemu
     type: middleware
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     full_name: Middleware secure-subsystem elemu
     display_name: secure-subsystem_elemu
   dependency:
@@ -144,7 +144,7 @@ middleware.secure-subsystem.firmware:
   section_info:
     description: Loadable FW for ELE S200
     type: middleware
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     full_name: Loadable FW for ELE S200
     display_name: secure-subsystem_firmware
   dependency:
@@ -181,7 +181,7 @@ middleware.secure-subsystem.elemu.port_kw45_k4w1:
   section_info:
     description: Secure subsystem helpers for ELEMU use in KW45 K4W1
     type: middleware
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     full_name: Middleware secure-subsystem elemu port kw45_k4w1
     display_name: secure-subsystem_elemu.port_kw45_k4w1
   dependency:
@@ -252,7 +252,7 @@ middleware.secure-subsystem.unused_files:
   belong_to: set.middleware.secure-subsystem
   section_info:
     description: Secure subsytem files unused by projects
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     user_visible: never
     full_name: Middleware secure-subsystem unused_files
     type: middleware
@@ -262,7 +262,7 @@ set.middleware.secure-subsystem:
   belong_to: set.middleware.secure-subsystem
   section_info:
     fixed_id: nxp_secure_subsystem
-    version: "${secure-subsystem_version}"
+    version: ${secure_subsystem_version}
     display_name: secure-subsystem
     description: Secure subsystem library - SSS APIs
     set_location:
@@ -308,7 +308,7 @@ scr.middleware.secure-subsystem:
     license:
     - license.bsd-3
     Name: secure subsystem
-    Version: "${secure-subsystem_version}"
+    Version: ${secure_subsystem_version}
     Format: source code
     Description: Add secure peripherals control.
     Location: middleware/secure-subsystem
