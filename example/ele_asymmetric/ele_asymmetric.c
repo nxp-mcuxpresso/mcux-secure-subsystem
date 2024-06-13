@@ -7,9 +7,8 @@
 
 #include "fsl_device_registers.h"
 #include "fsl_debug_console.h"
-#include "pin_mux.h"
-#include "clock_config.h"
 #include "board.h"
+#include "app.h"
 
 #include "fsl_sss_mgmt.h"
 #include "fsl_sss_sscp.h"
@@ -289,9 +288,7 @@ int main(void)
     status_t status = kStatus_Fail;
 
     /* Init board hardware. */
-    BOARD_InitPins();
-    BOARD_BootClockRUN();
-    BOARD_InitDebugConsole();
+    BOARD_InitHardware();
 
     PRINTF("ELE Asymmetric via SSSAPI Example\r\n\r\n");
 
