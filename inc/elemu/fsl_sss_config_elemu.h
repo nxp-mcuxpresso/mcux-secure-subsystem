@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 NXP
+ * Copyright 2018-2021, 2024 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -8,6 +8,42 @@
 #define FSL_SSS_CONFIG_ELEMU_H
 
 #include <stdint.h>
+#include "fsl_common.h"
+
+#if defined(K32W1480_SERIES) || defined(KW45B41Z52_SERIES) || defined(KW45B41Z53_SERIES) ||   \
+    defined(KW45B41Z82_SERIES) || defined(KW45B41Z83_SERIES) || defined(KW45Z41052_SERIES) || \
+    defined(KW45Z41053_SERIES) || defined(KW45Z41082_SERIES) || defined(KW45Z41083_SERIES) || \
+    defined(MCXW716A_SERIES) || defined(MCXW716C_SERIES)
+
+#define ELE200_BASELINE
+
+#elif defined(KW47B42Z83_cm33_core0_SERIES) || defined(KW47B42Z83_cm33_core1_SERIES) ||                             \
+    defined(KW47B42Z96_cm33_core0_SERIES) || defined(KW47B42Z96_cm33_core1_SERIES) ||                               \
+    defined(KW47B42Z97_cm33_core0_SERIES) || defined(KW47B42Z97_cm33_core1_SERIES) ||                               \
+    defined(KW47B42ZB2_cm33_core0_SERIES) || defined(KW47B42ZB2_cm33_core1_SERIES) ||                               \
+    defined(KW47B42ZB3_cm33_core0_SERIES) || defined(KW47B42ZB3_cm33_core1_SERIES) ||                               \
+    defined(KW47B42ZB6_cm33_core0_SERIES) || defined(KW47B42ZB6_cm33_core1_SERIES) ||                               \
+    defined(KW47B42ZB7_cm33_core0_SERIES) || defined(KW47B42ZB7_cm33_core1_SERIES) || defined(KW47Z420B2_SERIES) || \
+    defined(KW47Z420B3_SERIES) || defined(KW47Z42082_SERIES) || defined(KW47Z42092_SERIES) ||                       \
+    defined(MCXW727A_cm33_core0_SERIES) || defined(MCXW727A_cm33_core1_SERIES) ||                                   \
+    defined(MCXW727C_cm33_core0_SERIES) || defined(MCXW727C_cm33_core1_SERIES) ||                                   \
+    defined(MCXW727D_cm33_core0_SERIES) || defined(MCXW727D_cm33_core1_SERIES) ||                                   \
+    defined(MCXW728A_cm33_core0_SERIES) || defined(MCXW728A_cm33_core1_SERIES) ||                                   \
+    defined(MCXW728D_cm33_core0_SERIES) || defined(MCXW728D_cm33_core1_SERIES) ||                                   \
+    defined(MCXW72B1_cm33_core0_SERIES) || defined(MCXW72B1_cm33_core1_SERIES) ||                                   \
+    defined(MCXW72BD_cm33_core0_SERIES) || defined(MCXW72BD_cm33_core1_SERIES)
+
+#define ELE200_EXTENDED_FEATURES
+
+/* DIGEST */
+#define ELE_HAVE_SHA3
+#define ELE_FEATURE_DIGEST_CLONE
+#define ELE_FEATURE_DIGEST_IMPORT
+#define ELE_FEATURE_DIGEST_EXPORT
+
+#else
+#error "No valid SoC defined"
+#endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
 
 #define SSS_SESSION_MAX_CONTEXT_SIZE      (16)
 #define SSS_KEY_STORE_MAX_CONTEXT_SIZE    (16 + 80)
@@ -89,12 +125,12 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_RSASSA_PKCS1_PSS_MGF1_SHA384 ((sss_algorithm_t)0x1cu)
 #define kAlgorithm_SSS_RSASSA_PKCS1_PSS_MGF1_SHA512 ((sss_algorithm_t)0x1du)
 /* ECDSA */
-#define kAlgorithm_SSS_ECDSA_SHA1                   ((sss_algorithm_t)0x1eu)
-#define kAlgorithm_SSS_ECDSA_SHA224                 ((sss_algorithm_t)0x1fu)
-#define kAlgorithm_SSS_ECDSA_SHA256                 ((sss_algorithm_t)0x20u)
-#define kAlgorithm_SSS_ECDSA_SHA384                 ((sss_algorithm_t)0x21u)
-#define kAlgorithm_SSS_ECDSA_SHA512                 ((sss_algorithm_t)0x22u)
-#define kAlgorithm_SSS_EdDSA_Ed25519                ((sss_algorithm_t)0x31u)
+#define kAlgorithm_SSS_ECDSA_SHA1    ((sss_algorithm_t)0x1eu)
+#define kAlgorithm_SSS_ECDSA_SHA224  ((sss_algorithm_t)0x1fu)
+#define kAlgorithm_SSS_ECDSA_SHA256  ((sss_algorithm_t)0x20u)
+#define kAlgorithm_SSS_ECDSA_SHA384  ((sss_algorithm_t)0x21u)
+#define kAlgorithm_SSS_ECDSA_SHA512  ((sss_algorithm_t)0x22u)
+#define kAlgorithm_SSS_EdDSA_Ed25519 ((sss_algorithm_t)0x31u)
 /* KDF */
 #define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
 #define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)
