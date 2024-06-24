@@ -385,3 +385,57 @@ ele_asymmetric:
         - source: boards/${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_asymmetric/${multicore_foldername}"
+
+ele_digest:
+  section-type: application
+  belong_to: set.board.${board}
+  dependency:
+  - driver.port
+  - middleware.secure-subsystem
+  - middleware.secure-subsystem.elemu
+  - driver.elemu
+  - middleware.secure-subsystem.firmware
+  contents:
+    document:
+      name: ele_digest
+      readme:
+      - boards/${board}/secure-subsystem_examples/ele_digest/board.readme
+      - middleware/secure-subsystem/example/ele_digest/ele_digest.readme
+      category: secure-subsystem_examples
+      brief: The ELE digest application provides example how to use SSSAPI to perform digest cryptographic operations.
+    project-root-path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_digest
+          package_path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+          project_path: board
+        files:
+        - source: middleware/secure-subsystem/example/ele_digest/ele_digest.c
+          merge-to-main: main
+          package_path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/secure-subsystem_examples/ele_digest/pin_mux.c
+          package_path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/secure-subsystem_examples/ele_digest/pin_mux.h
+          package_path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}
+          project_path: "${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}"
+        files:
+        - source: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}"
+        - source: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}"
