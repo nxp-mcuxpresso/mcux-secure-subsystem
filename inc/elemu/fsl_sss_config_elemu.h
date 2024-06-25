@@ -98,11 +98,17 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_DES3_ECB ((sss_algorithm_t)0x06u)
 #define kAlgorithm_SSS_DES3_CBC ((sss_algorithm_t)0x07u)
 /* digest */
-#define kAlgorithm_SSS_SHA1   ((sss_algorithm_t)0x08u)
-#define kAlgorithm_SSS_SHA224 ((sss_algorithm_t)0x09u)
-#define kAlgorithm_SSS_SHA256 ((sss_algorithm_t)0x0au)
-#define kAlgorithm_SSS_SHA384 ((sss_algorithm_t)0x0bu)
-#define kAlgorithm_SSS_SHA512 ((sss_algorithm_t)0x0cu)
+#define kAlgorithm_SSS_SHA1     ((sss_algorithm_t)0x08u)
+#define kAlgorithm_SSS_SHA224   ((sss_algorithm_t)0x09u)
+#define kAlgorithm_SSS_SHA256   ((sss_algorithm_t)0x0au)
+#define kAlgorithm_SSS_SHA384   ((sss_algorithm_t)0x0bu)
+#define kAlgorithm_SSS_SHA512   ((sss_algorithm_t)0x0cu)
+#if defined(ELE_HAVE_SHA3)
+#define kAlgorithm_SSS_SHA3_224 ((sss_algorithm_t)0x70u)
+#define kAlgorithm_SSS_SHA3_256 ((sss_algorithm_t)0x71u)
+#define kAlgorithm_SSS_SHA3_384 ((sss_algorithm_t)0x72u)
+#define kAlgorithm_SSS_SHA3_512 ((sss_algorithm_t)0x73u)
+#endif /* ELE_HAVE_SHA3 */
 /* MAC */
 #define kAlgorithm_SSS_CMAC_AES    ((sss_algorithm_t)0x0du)
 #define kAlgorithm_SSS_HMAC_SHA256 ((sss_algorithm_t)0x0eu)

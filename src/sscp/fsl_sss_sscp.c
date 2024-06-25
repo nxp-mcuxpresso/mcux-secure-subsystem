@@ -510,15 +510,27 @@ sss_status_t sss_sscp_digest_context_init(sss_sscp_digest_t *context,
             context->digestFullLen = 20u;
             break;
         case kAlgorithm_SSS_SHA224:
+#if defined(ELE_HAVE_SHA3)
+        case kAlgorithm_SSS_SHA3_224:
+#endif
             context->digestFullLen = 28u;
             break;
         case kAlgorithm_SSS_SHA256:
+#if defined(ELE_HAVE_SHA3)
+        case kAlgorithm_SSS_SHA3_256:
+#endif
             context->digestFullLen = 32u;
             break;
         case kAlgorithm_SSS_SHA384:
+#if defined(ELE_HAVE_SHA3)
+        case kAlgorithm_SSS_SHA3_384:
+#endif
             context->digestFullLen = 48u;
             break;
         case kAlgorithm_SSS_SHA512:
+#if defined(ELE_HAVE_SHA3)
+        case kAlgorithm_SSS_SHA3_512:
+#endif
             context->digestFullLen = 64u;
             break;
         default:
