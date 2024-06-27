@@ -10,10 +10,11 @@
 #include <stdint.h>
 #include "fsl_common.h"
 
-#if defined(K32W1480_SERIES) || defined(KW45B41Z52_SERIES) || defined(KW45B41Z53_SERIES) ||   \
-    defined(KW45B41Z82_SERIES) || defined(KW45B41Z83_SERIES) || defined(KW45Z41052_SERIES) || \
-    defined(KW45Z41053_SERIES) || defined(KW45Z41082_SERIES) || defined(KW45Z41083_SERIES) || \
-    defined(MCXW716A_SERIES) || defined(MCXW716C_SERIES)
+#if defined(K32W1480_SERIES) || defined(KW45B41Z52_SERIES) || defined(KW45B41Z53_SERIES) ||         \
+    defined(KW45B41Z82_SERIES) || defined(KW45B41Z83_SERIES) || defined(KW45Z41052_SERIES) ||       \
+    defined(KW45Z41053_SERIES) || defined(KW45Z41082_SERIES) || defined(KW45Z41083_SERIES) ||       \
+    defined(KW45B41Z82_NBU_SERIES) || defined(KW45B41Z83_NBU_SERIES) || defined(MCXW716A_SERIES) || \
+    defined(MCXW716C_SERIES)
 
 #define ELE200_BASELINE
 
