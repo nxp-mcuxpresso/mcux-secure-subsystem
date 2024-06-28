@@ -820,6 +820,7 @@ sss_status_t sss_sscp_mac_one_go(
     return (sss_status_t)ret;
 }
 
+#if defined(ELE_FEATURE_MAC_MULTIPART)
 sss_status_t sss_sscp_mac_init(sss_sscp_mac_t *context)
 {
     sscp_operation_t op  = {0};
@@ -902,6 +903,7 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
     }
     return (sss_status_t)ret;
 }
+#endif /* ELE_FEATURE_MAC_MULTIPART */
 
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context)
 {

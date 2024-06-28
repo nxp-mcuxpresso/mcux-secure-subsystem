@@ -321,11 +321,13 @@ sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
 sss_status_t sss_sscp_mac_one_go(
     sss_sscp_mac_t *context, const uint8_t *message, size_t messageLen, uint8_t *mac, size_t *macLen);
 
+#if defined(ELE_FEATURE_MAC_MULTIPART)
 sss_status_t sss_sscp_mac_init(sss_sscp_mac_t *context);
 
 sss_status_t sss_sscp_mac_update(sss_sscp_mac_t *context, const uint8_t *message, size_t messageLen);
 
 sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *macLen);
+#endif /* ELE_FEATURE_MAC_MULTIPART */
 
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context);
 

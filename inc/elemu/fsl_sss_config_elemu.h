@@ -18,6 +18,9 @@
 
 #define ELE200_BASELINE
 
+/* MAC */
+#define ELE_FEATURE_HMAC_SHA256_ONLY
+
 #elif defined(KW47B42Z83_cm33_core0_SERIES) || defined(KW47B42Z83_cm33_core1_SERIES) ||                             \
     defined(KW47B42Z96_cm33_core0_SERIES) || defined(KW47B42Z96_cm33_core1_SERIES) ||                               \
     defined(KW47B42Z97_cm33_core0_SERIES) || defined(KW47B42Z97_cm33_core1_SERIES) ||                               \
@@ -41,6 +44,9 @@
 #define ELE_FEATURE_DIGEST_CLONE
 #define ELE_FEATURE_DIGEST_IMPORT
 #define ELE_FEATURE_DIGEST_EXPORT
+
+/* MAC */
+#define ELE_FEATURE_MAC_MULTIPART
 
 #else
 #error "No valid SoC defined"
@@ -98,11 +104,11 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_DES3_ECB ((sss_algorithm_t)0x06u)
 #define kAlgorithm_SSS_DES3_CBC ((sss_algorithm_t)0x07u)
 /* digest */
-#define kAlgorithm_SSS_SHA1     ((sss_algorithm_t)0x08u)
-#define kAlgorithm_SSS_SHA224   ((sss_algorithm_t)0x09u)
-#define kAlgorithm_SSS_SHA256   ((sss_algorithm_t)0x0au)
-#define kAlgorithm_SSS_SHA384   ((sss_algorithm_t)0x0bu)
-#define kAlgorithm_SSS_SHA512   ((sss_algorithm_t)0x0cu)
+#define kAlgorithm_SSS_SHA1   ((sss_algorithm_t)0x08u)
+#define kAlgorithm_SSS_SHA224 ((sss_algorithm_t)0x09u)
+#define kAlgorithm_SSS_SHA256 ((sss_algorithm_t)0x0au)
+#define kAlgorithm_SSS_SHA384 ((sss_algorithm_t)0x0bu)
+#define kAlgorithm_SSS_SHA512 ((sss_algorithm_t)0x0cu)
 #if defined(ELE_HAVE_SHA3)
 #define kAlgorithm_SSS_SHA3_224 ((sss_algorithm_t)0x70u)
 #define kAlgorithm_SSS_SHA3_256 ((sss_algorithm_t)0x71u)
@@ -112,6 +118,12 @@ typedef uint32_t sss_algorithm_t;
 /* MAC */
 #define kAlgorithm_SSS_CMAC_AES    ((sss_algorithm_t)0x0du)
 #define kAlgorithm_SSS_HMAC_SHA256 ((sss_algorithm_t)0x0eu)
+#if !defined(ELE_FEATURE_HMAC_SHA256_ONLY)
+#define kAlgorithm_SSS_HMAC_SHA1     ((sss_algorithm_t)0x60u)
+#define kAlgorithm_SSS_HMAC_SHA224   ((sss_algorithm_t)0x61u)
+#define kAlgorithm_SSS_HMAC_SHA384   ((sss_algorithm_t)0x63u)
+#define kAlgorithm_SSS_HMAC_SHA512   ((sss_algorithm_t)0x64u)
+#endif /* !ELE_FEATURE_HMAC_SHA256_ONLY */
 /* Diffie-Helmann */
 #define kAlgorithm_SSS_DH   ((sss_algorithm_t)0x0fu)
 #define kAlgorithm_SSS_ECDH ((sss_algorithm_t)0x10u)
