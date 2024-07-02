@@ -14,10 +14,13 @@
 #include SSS_CONFIG_FILE
 #endif
 
+
+#include "fsl_common.h"
+
 #include <stddef.h>
 
 /** Version of the SSS API */
-#define SSS_API_VERSION (0x00000001u)
+#define SSS_API_VERSION (MAKE_VERSION(2, 10, 0))
 
 /** Size of an AES Block, in bytes */
 #define SSS_AES_BLOCK_SIZE (16u)
@@ -552,14 +555,6 @@ typedef struct
     } extension;
 } sss_aead_t;
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-typedef struct _sss_sha_ctx
-{
-    uint8_t ctx[SSS_PH_CLSHA_CTX_MAX_CONTEXT_SIZE];
-    uint32_t pHashFcnInfo;
-} sss_sha_ctx_t;
-#endif /* KW45_A0_SUPPORT */
-
 typedef struct
 {
     /*! Virtual connection between application (user context) and specific
@@ -571,9 +566,6 @@ typedef struct
     sss_mode_t mode;
     /*! Full digest length per algorithm definition. This field is initialized along with algorithm. */
     size_t digestFullLen;
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-    sss_sha_ctx_t shaCtx;
-#endif /* KW45_A0_SUPPORT */
     /*! Implementation specific part */
     struct
     {

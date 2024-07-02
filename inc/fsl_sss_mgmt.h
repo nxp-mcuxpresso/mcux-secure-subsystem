@@ -92,42 +92,6 @@ sss_status_t sss_mgmt_set_property(sss_mgmt_t *context, uint32_t propertyId, con
  */
 sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t shadowRegisterId, uint32_t *destData);
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-
-/*! @brief Read fuse
- *  The function provides read fuse service
- *
- * @param context Pointer to mgmt crypto context.
- * @param fuseId Id of the fuse to read
- * @param destData Destination address of the read value
- *
- * @returns Status of the operation
- * @retval kStatus_SSS_Success The operation has completed successfully.
- * @retval kStatus_SSS_Fail The operation has failed.
- * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
- */
-sss_status_t sss_mgmt_fuse_read(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *destData, void *options, size_t *optionsLen);
-
-/*! @brief Program fuse
- *  The function provides program fuse service
- *
- * @param context Pointer to mgmt crypto context.
- * @param fuseId Id of the fuse to write
- * @param srcData Fuse write value
- * @param options Address of the implementation specific data buffer
- * @param optionsLen Input length of the options buffer in bytes, actual number of output bytes written to options
- *
- * @returns Status of the operation
- * @retval kStatus_SSS_Success The operation has completed successfully.
- * @retval kStatus_SSS_Fail The operation has failed.
- * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
- */
-sss_status_t sss_mgmt_fuse_program(
-    sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, void *options, size_t *optionsLen);
-
-#else
-
 /*! @brief Read fuse
  *  The function provides read fuse service
  *
@@ -167,8 +131,6 @@ sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
  */
 sss_status_t sss_mgmt_fuse_program(
     sss_mgmt_t *context, uint32_t fuseId, uint32_t *srcData, size_t *srcDataLen, uintptr_t options, size_t *optionsLen);
-
-#endif /* KW45_A0_SUPPORT */
 
 /*! @brief Get lifecycle
  *  The function provides read lifecycle service
@@ -340,23 +302,6 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
                                     size_t *optionsLen,
                                     uint32_t *resultState);
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-
-/*! @brief Configure host access permissions
- *
- * @param context Pointer to mgmt crypto context.
- * @param srcData Address of the input data buffer
- * @param dataLen Lenght of the input data buffer in bytes
- *
- * @returns Status of the operation
- * @retval kStatus_SSS_Success The operation has completed successfully.
- * @retval kStatus_SSS_Fail The operation has failed.
- * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
- */
-sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint8_t *srcData, size_t dataLen);
-
-#else
-
 /*! @brief Configure host access permissions
  *
  * @param context Pointer to mgmt crypto context.
@@ -369,7 +314,6 @@ sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const uint
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_set_host_access_permission(sss_mgmt_t *context, const sss_mgmt_security_level_t secLvl);
-#endif /* KW45_A0_SUPPORT */
 
 /*! @brief Enable runtime integrity checks
  *  The function sends a request to enable runtime integrity checks within security sub-system
@@ -399,10 +343,6 @@ sss_status_t sss_mgmt_integrity_check_enable(sss_mgmt_t *context);
  */
 sss_status_t sss_mgmt_ping(sss_mgmt_t *context);
 
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-/* sss_mgmt_clear_all_keys is not supported on A0*/
-#else
-
 /*! @brief Removes all keys in SSS
  *  The function sends a request to remove all keys within security sub-system
  *
@@ -414,7 +354,6 @@ sss_status_t sss_mgmt_ping(sss_mgmt_t *context);
  * @retval kStatus_SSS_InvalidArgument One of the arguments is invalid for the function to execute.
  */
 sss_status_t sss_mgmt_clear_all_keys(sss_mgmt_t *context);
-#endif /* KW45_A0_SUPPORT */
 
 /*! @brief Mgmt context release.
  *  The function frees Mgmt context.

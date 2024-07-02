@@ -83,20 +83,6 @@ status_t CRYPTO_InitHardware(void)
         {
             break;
         }
-#if (defined(KW45_A0_SUPPORT) && KW45_A0_SUPPORT)
-        if (sss_sscp_open_session(&g_sssSession, SSS_SUBSYSTEM, &g_sscpContext, 0u, NULL) != kStatus_SSS_Success)
-        {
-            break;
-        }
-        if (sss_sscp_key_store_context_init(&g_keyStore, &g_sssSession) != kStatus_SSS_Success)
-        {
-            break;
-        }
-        if (sss_sscp_key_store_allocate(&g_keyStore, 0u) != kStatus_SSS_Success)
-        {
-            break;
-        }
-#else
         if (sss_sscp_open_session(&g_sssSession, 0u, SSS_SUBSYSTEM, &g_sscpContext) != kStatus_SSS_Success)
         {
             break;
@@ -105,7 +91,6 @@ status_t CRYPTO_InitHardware(void)
         {
             break;
         }
-#endif
 
         /* RNG call used to init ELE TRNG required e.g. by sss_sscp_key_store_generate_key service
         if TRNG initialization is no needed for used operations, the following code can be removed

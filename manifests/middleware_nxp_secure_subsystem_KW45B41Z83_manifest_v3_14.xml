@@ -8,7 +8,7 @@
   </externalDefinitions>
   <ksdk id="MCUXpressoSDK216000_middleware_nxp_secure_subsystem_KW45B41Z83_manifest_v3_14" name="MCUXpressoSDK216000_middleware_nxp_secure_subsystem_KW45B41Z83_manifest_v3_14" version="2.16.000" revision="2.16.000"/>
   <components>
-    <component id="middleware.secure-subsystem.unused_files.KW45B41Z83" name="unused_files" brief="Secure subsytem files unused by projects" version="0.0.1" full_name="Middleware secure-subsystem unused_files" category="Security/Secure subsystem library" user_visible="false" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.unused_files.KW45B41Z83" name="unused_files" brief="Secure subsytem files unused by projects" version="2.1.0" full_name="Middleware secure-subsystem unused_files" category="Security/Secure subsystem library" user_visible="false" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
       <dependencies>
         <device_dependency value="KW45B41Z83xxxA"/>
       </dependencies>
@@ -67,7 +67,7 @@
         <files mask="middleware_secure-subsystem_unused_files.KW45B41Z83.cmake" hidden="true"/>
       </source>
     </component>
-    <component id="middleware.secure-subsystem.KW45B41Z83" name="secure-subsystem" brief="Secure subsystem library" version="0.0.1" full_name="Middleware secure-subsystem" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.KW45B41Z83" name="secure-subsystem" brief="Secure subsystem library" version="2.1.0" full_name="Middleware secure-subsystem" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
       <dependencies>
         <all>
           <component_dependency value="middleware.secure-subsystem.mu.KW45B41Z83"/>
@@ -98,7 +98,7 @@
         <include_path relative_path="./port/ksdk" project_relative_path="port" type="c_include"/>
       </include_paths>
     </component>
-    <component id="middleware.secure-subsystem.mu.KW45B41Z83" name="secure-subsystem_sscp_mu" brief="SSCP_MU" version="0.0.1" full_name="Middleware secure-subsystem mu" category="Security/Secure subsystem library" user_visible="false" type="other" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.mu.KW45B41Z83" name="secure-subsystem_sscp_mu" brief="SSCP_MU" version="2.1.0" full_name="Middleware secure-subsystem mu" category="Security/Secure subsystem library" user_visible="false" type="other" package_base_path=".././" project_base_path="secure-subsystem">
       <dependencies>
         <all>
           <component_dependency value="middleware.secure-subsystem.KW45B41Z83"/>
@@ -118,7 +118,7 @@
         <include_path relative_path="./inc" project_relative_path="sscp" type="c_include"/>
       </include_paths>
     </component>
-    <component id="middleware.secure-subsystem.elemu.KW45B41Z83" name="secure-subsystem_elemu" brief="Secure subsystem library for elemu" version="0.0.1" full_name="Middleware secure-subsystem elemu" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.elemu.KW45B41Z83" name="secure-subsystem_elemu" brief="Secure subsystem library for elemu" version="2.1.0" full_name="Middleware secure-subsystem elemu" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
       <defines>
         <define name="SSS_CONFIG_FILE" value="'&quot;fsl_sss_config_elemu.h&quot;'"/>
         <define name="SSCP_CONFIG_FILE" value="'&quot;fsl_sscp_config_elemu.h&quot;'"/>
@@ -148,7 +148,7 @@
         <include_path relative_path="./inc" project_relative_path="mgmt" type="c_include"/>
       </include_paths>
     </component>
-    <component id="middleware.secure-subsystem.firmware.KW45B41Z83" name="secure-subsystem_firmware" brief="Loadable FW for ELE S200" version="0.0.1" full_name="Loadable FW for ELE S200" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.firmware.KW45B41Z83" name="secure-subsystem_firmware" brief="Loadable FW for ELE S200" version="2.1.0" full_name="Loadable FW for ELE S200" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
       <defines>
         <define name="ELEMU_HAS_LOADABLE_FW" value=""/>
       </defines>
@@ -176,7 +176,7 @@
         <include_path relative_path="./firmware" project_relative_path="firmware" type="c_include"/>
       </include_paths>
     </component>
-    <component id="middleware.secure-subsystem.port_kw45_k4w1.KW45B41Z83" name="secure-subsystem_elemu.port_kw45_k4w1" brief="Secure subsystem helpers for ELEMU use in KW45 K4W1" version="0.0.1" full_name="Middleware secure-subsystem elemu port kw45_k4w1" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
+    <component id="middleware.secure-subsystem.port_kw45_k4w1.KW45B41Z83" name="secure-subsystem_elemu.port_kw45_k4w1" brief="Secure subsystem helpers for ELEMU use in KW45 K4W1" version="2.1.0" full_name="Middleware secure-subsystem elemu port kw45_k4w1" category="Security/Secure subsystem library" user_visible="true" type="middleware" package_base_path=".././" project_base_path="secure-subsystem">
       <dependencies>
         <all>
           <component_dependency value="middleware.secure-subsystem.elemu.KW45B41Z83"/>
