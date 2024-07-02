@@ -58,7 +58,7 @@ status_t test_ecdsa(void)
 
     do
     {
-        PRINTF("==== ECDSA with P-521 [opaque key] ====\r\n");
+        PRINTF("**** ECDSA with P-521 [opaque key] ****\r\n");
 
         /* Init key object */
         PRINTF("Init key object...");
@@ -183,7 +183,7 @@ status_t test_eddsa(void)
 
     do
     {
-        PRINTF("==== EdDSA with Curve25519 [transparent key] ====\r\n");
+        PRINTF("**** EdDSA with Curve25519 [transparent key] ****\r\n");
 
         /* Init key object */
         PRINTF("Init key object...");

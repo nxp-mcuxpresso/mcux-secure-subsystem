@@ -8,7 +8,7 @@ The following lines are printed to the serial terminal when the demo program is 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ELE Asymmetric via SSSAPI Example
 
-==== ECDSA with P-521 [opaque key] ====
+**** ECDSA with P-521 [opaque key] ****
 Init key object...OK
 Allocate key object handle...OK
 Initialize RNG before key generation...OK
@@ -19,7 +19,7 @@ Init asymmetric context for verification...OK
 Verify signature...OK
 Clean up...OK
 
-==== EdDSA with Curve25519 [transparent key] ====
+**** EdDSA with Curve25519 [transparent key] ****
 Init key object...OK
 Allocate key object handle...OK
 Set Curve25519 key pair...OK
