@@ -1,3 +1,23 @@
 Overview
 ========
 The ELE symmetric application provides example how to use SSSAPI to encrypt/decrypt data via AES.
+
+Running the demo
+================
+The following lines are printed to the serial terminal when the demo program is executed.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ELE Symmetric via SSSAPI Example
+
+****************** Crypto AES-CBC ******************
+AES-CBC crypto encryption success and output matches expected result.
+
+AES-CBC crypto decryption success and output matches expected result.
+
+****************** Crypto AES-GCM ******************
+AES-GCM crypto encryption success and output matches expected result.
+
+End of Example with SUCCESS!!
+
+Example end
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

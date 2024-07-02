@@ -1,3 +1,36 @@
 Overview
 ========
 The ELE asymmetric application provides example how to use SSSAPI to perform asymmetric cryptographic operations.
+
+Running the demo
+================
+The following lines are printed to the serial terminal when the demo program is executed.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ELE Asymmetric via SSSAPI Example
+
+==== ECDSA with P-521 [opaque key] ====
+Init key object...OK
+Allocate key object handle...OK
+Initialize RNG before key generation...OK
+Generate P-521 opaque key pair...OK
+Init asymmetric context for signing...OK
+Sign message digest...OK
+Init asymmetric context for verification...OK
+Verify signature...OK
+Clean up...OK
+
+==== EdDSA with Curve25519 [transparent key] ====
+Init key object...OK
+Allocate key object handle...OK
+Set Curve25519 key pair...OK
+Init asymmetric context for signing...OK
+Sign message...OK
+Init asymmetric context for verification...OK
+Verify signature...OK
+Clean up...OK
+
+End of Example with SUCCESS!!
+
+Example end
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
