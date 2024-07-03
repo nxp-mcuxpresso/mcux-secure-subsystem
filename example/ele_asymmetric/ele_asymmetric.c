@@ -331,7 +331,7 @@ int main(void)
         status = sss_sscp_open_session(&sssSession, 0u, ELE_SUBSYSTEM, &sscpContext);
         if (status != kStatus_SSS_Success)
         {
-            return status;
+            break;
         }
         /* Init keystore  */
         status = sss_sscp_key_store_init(&keyStore, &sssSession);
@@ -352,6 +352,20 @@ int main(void)
             break;
         }
 
+        /* Close keystore*/
+        status = sss_sscp_key_store_free(&keyStore);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+
+        /* Close session */
+        status = sss_sscp_close_session(&sssSession);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+
         status = kStatus_Success;
     } while (0);
 
@@ -363,11 +377,6 @@ int main(void)
     {
         PRINTF("ERROR: execution of commands on Security Sub-System failed!\r\n\r\n");
     }
-
-    /* Close keystore*/
-    status = sss_sscp_key_store_free(&keyStore);
-    /* Close session */
-    status = sss_sscp_close_session(&sssSession);
 
     PRINTF("Example end\r\n");
 

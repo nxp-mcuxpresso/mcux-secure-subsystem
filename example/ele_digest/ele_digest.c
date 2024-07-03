@@ -729,24 +729,24 @@ int main(void)
      * This code example demonstrates EdgeLock usage of one-go hashing and MAC and multi-part hashing operations via
      * SSSAPI. The example is performed in following steps:
      * 1.  Open an EdgeLock session
-     * 2.  Open a key store
-     * 3.  Initialize a SHA256 digest context
-     * 4.  Hash a message with SHA256 via a one-go operation and check digest correctness
-     * 5.  Free the SHA256 context
-     * 6.  Initialize four separate hash contexts (SHA1, SHA256, SHA384, SHA512)
-     * 7.  Initialize the multi-part hashing operations for all four hashes
-     * 8.  Update the four digests with the first half of the message
-     * 9.  Update the four digests with the second half of the message
-     * 10. Finish the multi-part hash operations and check digest correctness
-     * 11. Free the four separate hash contexts
+     * 2.  Initialize a SHA256 digest context
+     * 3.  Hash a message with SHA256 via a one-go operation and check digest correctness
+     * 4.  Free the SHA256 context
+     * 5.  Initialize four separate hash contexts (SHA1, SHA256, SHA384, SHA512)
+     * 6.  Initialize the multi-part hashing operations for all four hashes
+     * 7.  Update the four digests with the first half of the message
+     * 8.  Update the four digests with the second half of the message
+     * 9. Finish the multi-part hash operations and check digest correctness
+     * 10. Free the four separate hash contexts
+     * 11. Open a key store
      * 12. Prepare opaque and transparent MAC key objects and initialize RNG
      * 13. Set transparent keys for two of the MACs and initialize two MAC contexts
      * 14. Generate and check MACs
-     * 13. Generate opaque keys for two MACs and initialize two additional MAC contexts
-     * 14. Generate MACs
-     * 15. Close all four MAC contexts, free key objects and close the RNG context
-     * 14. Close the key store
-     * 15. Close the EdgeLock session
+     * 15. Generate opaque keys for two MACs and initialize two additional MAC contexts
+     * 16. Generate MACs
+     * 17. Close all four MAC contexts, free key objects and close the RNG context
+     * 18. Close the key store
+     * 19. Close the EdgeLock session
      * Note: This example does not close already opened contexts or objects in case of failed command.
      */
 
@@ -764,14 +764,9 @@ int main(void)
         {
             break;
         }
-        /* open session to specific security subsystem */
-        status = sss_sscp_open_session(&sssSession, 0u, ELE_SUBSYSTEM, &sscpContext);
-        if (status != kStatus_SSS_Success)
-        {
-            return status;
-        }
 
-        status = sss_sscp_key_store_init(&keyStore, &sssSession);
+        /* Open session to specific security subsystem */
+        status = sss_sscp_open_session(&sssSession, 0u, ELE_SUBSYSTEM, &sscpContext);
         if (status != kStatus_SSS_Success)
         {
             break;
@@ -791,12 +786,35 @@ int main(void)
             break;
         }
 
+        /* Initialize key store */
+        status = sss_sscp_key_store_init(&keyStore, &sssSession);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+
+        /* Showcase One-Go MAC with 4 contexts */
         status = test_mac_one_go_many_contexts();
         if (status != kStatus_Success)
         {
             break;
         }
 
+        /* Close keystore*/
+        status = sss_sscp_key_store_free(&keyStore);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+
+        /* Close session */
+        status = sss_sscp_close_session(&sssSession);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+
+        status = kStatus_Success;
     } while (0);
 
     if (status == kStatus_Success)
@@ -807,11 +825,6 @@ int main(void)
     {
         PRINTF("ERROR: execution of commands on Security Sub-System failed!\r\n\r\n");
     }
-
-    /* Close keystore*/
-    status = sss_sscp_key_store_free(&keyStore);
-    /* Close session */
-    status = sss_sscp_close_session(&sssSession);
 
     PRINTF("Example end\r\n");
 
