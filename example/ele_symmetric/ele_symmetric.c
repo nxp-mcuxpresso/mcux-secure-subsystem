@@ -132,7 +132,7 @@ status_t test_aes_cbc(void)
 
         /* RUN AES-CBC Encryption */
         status = sss_sscp_cipher_one_go(&ctx, s_CbcIv, sizeof(s_CbcIv), s_GenericAesPlain, s_CbcCipher,
-                                        sizeof(s_GenericAesPlain));
+                                        sizeof(s_GenericAesPlain) - 1U);
         if (status != kStatus_SSS_Success)
         {
             (void)sss_sscp_symmetric_context_free(&ctx);
@@ -166,7 +166,7 @@ status_t test_aes_cbc(void)
 
         /* RUN AES-CBC Decryption */
         status = sss_sscp_cipher_one_go(&ctx, s_CbcIv, sizeof(s_CbcIv), s_CbcCipher, s_CbcPlainDecrypted,
-                                        sizeof(s_GenericAesPlain));
+                                        sizeof(s_GenericAesPlain) - 1U);
         if (status != kStatus_SSS_Success)
         {
             (void)sss_sscp_symmetric_context_free(&ctx);
