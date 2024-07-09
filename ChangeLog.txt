@@ -13,5 +13,6 @@ Change Log SSS APIs:
   -2.1.1
     - Add EdDSA_Ed25519 to sss_algorithm_t.
     - Add SHA3 definitions, expand HMAC definitions.
+    - Add block size alignment check to sss_sscp_cipher_one_go()
 
 */

@@ -127,6 +127,12 @@ sss_status_t sss_sscp_cipher_one_go(
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
+    if ((kAlgorithm_SSS_AES_CBC == context->algorithm || kAlgorithm_SSS_AES_ECB == context->algorithm) &&
+        (dataLen % 16u != 0))
+    {
+        return kStatus_SSS_InvalidArgument;
+    }
+
     op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
                                       kSSCP_ParamType_MemrefInputNoSize, kSSCP_ParamType_MemrefInOut,
                                       kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
