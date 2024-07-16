@@ -119,10 +119,10 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_CMAC_AES    ((sss_algorithm_t)0x0du)
 #define kAlgorithm_SSS_HMAC_SHA256 ((sss_algorithm_t)0x0eu)
 #if !defined(ELE_FEATURE_HMAC_SHA256_ONLY)
-#define kAlgorithm_SSS_HMAC_SHA1     ((sss_algorithm_t)0x60u)
-#define kAlgorithm_SSS_HMAC_SHA224   ((sss_algorithm_t)0x61u)
-#define kAlgorithm_SSS_HMAC_SHA384   ((sss_algorithm_t)0x63u)
-#define kAlgorithm_SSS_HMAC_SHA512   ((sss_algorithm_t)0x64u)
+#define kAlgorithm_SSS_HMAC_SHA1   ((sss_algorithm_t)0x60u)
+#define kAlgorithm_SSS_HMAC_SHA224 ((sss_algorithm_t)0x61u)
+#define kAlgorithm_SSS_HMAC_SHA384 ((sss_algorithm_t)0x63u)
+#define kAlgorithm_SSS_HMAC_SHA512 ((sss_algorithm_t)0x64u)
 #endif /* !ELE_FEATURE_HMAC_SHA256_ONLY */
 /* Diffie-Helmann */
 #define kAlgorithm_SSS_DH   ((sss_algorithm_t)0x0fu)
@@ -165,8 +165,6 @@ typedef uint32_t sss_cipher_type_t;
 #define kSSS_CipherType_HMAC      ((sss_cipher_type_t)0x10u)
 #define kSSS_CipherType_MAC       ((sss_cipher_type_t)0x10u)
 #define kSSS_CipherType_SYMMETRIC ((sss_cipher_type_t)0x10u)
-#define kSSS_CipherType_RSA       ((sss_cipher_type_t)0x1u) /*! RSA RAW format      */
-#define kSSS_CipherType_RSA_CRT   ((sss_cipher_type_t)0x1u) /*! RSA CRT format      */
 /* The following keys can be identified
  * solely by the *Family* and bit length */
 #define kSSS_CipherType_EC_NIST_P ((sss_cipher_type_t)0x40u) /*! Keys Part of NIST-P Family */
@@ -176,8 +174,23 @@ typedef uint32_t sss_cipher_type_t;
 #define kSSS_CipherType_EC_MONTGOMERY ((sss_cipher_type_t)0x50u)
 /*! twisted Edwards form elliptic curve public key */
 #define kSSS_CipherType_EC_TWISTED_ED ((sss_cipher_type_t)0x51u)
+#if defined(ELE200_EXTENDED_FEATURES)
+/*! RSA */
+#define kSSS_CipherType_RSA             ((sss_cipher_type_t)0x1u)  /*! RSA RAW format         */
+#define kSSS_CipherType_RSA_CRT         ((sss_cipher_type_t)0x32u) /*! RSA CRT format         */
+#define kSSS_CipherType_RSA_CRT_COMPACT ((sss_cipher_type_t)0x33u) /*! RSA CRT compact format */
 /*! Brainpool form elliptic curve public key */
-#define kSSS_CipherType_EC_BRAINPOOL ((sss_cipher_type_t)0x1u)
+#define kSSS_CipherType_EC_BRAINPOOL_R1 ((sss_cipher_type_t)0x42u)
+#define kSSS_CipherType_EC_BRAINPOOL_T1 ((sss_cipher_type_t)0x43u)
+/*! OSCCA SM2 */
+#define kSSS_CipherType_EC_OSCCA_SM2 ((sss_cipher_type_t)0x60u)
+/*! GF(2^m) Koblitz curves */
+#define kSSS_CipherType_EC_KOBLITZ ((sss_cipher_type_t)0x70u)
+/*! Dilithium */
+#define kSSS_CipherType_DILITHIUM2 ((sss_cipher_type_t)0x80u)
+#define kSSS_CipherType_DILITHIUM3 ((sss_cipher_type_t)0x81u)
+#define kSSS_CipherType_DILITHIUM5 ((sss_cipher_type_t)0x82u)
+#endif /* ELE200_EXTENDED_FEATURES */
 /*! Barreto Naehrig curve */
 #define kSSS_CipherType_EC_BARRETO_NAEHRIG ((sss_cipher_type_t)0x1u)
 #define kSSS_CipherType_UserID             ((sss_cipher_type_t)0x1u)
