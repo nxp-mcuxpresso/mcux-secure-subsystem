@@ -128,7 +128,7 @@ sss_status_t sss_sscp_cipher_one_go(
     uint32_t ret         = 0u;
 
     if ((kAlgorithm_SSS_AES_CBC == context->algorithm || kAlgorithm_SSS_AES_ECB == context->algorithm) &&
-        (dataLen % 16u != 0))
+        (dataLen % 16u != 0u))
     {
         return kStatus_SSS_InvalidArgument;
     }

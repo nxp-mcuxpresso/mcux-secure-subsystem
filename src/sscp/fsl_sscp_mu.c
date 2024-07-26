@@ -67,7 +67,7 @@ sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base)
     MU_Init();
 
     /* assign MU implementation of ::sscp_invoke_command() */
-    muContext->invoke = sscp_mu_invoke_command;
+    muContext->invoke = &sscp_mu_invoke_command;
     return kStatus_SSCP_Success;
 }
 
