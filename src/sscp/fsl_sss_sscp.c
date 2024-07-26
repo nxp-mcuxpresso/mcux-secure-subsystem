@@ -1388,7 +1388,7 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
     op.resultCount = 1u;
 
     sscp_context_t *sscpCtx = context->session->sscp;
-    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDeriveKey, &op, &ret);
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricDhDeriveKey, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
         return kStatus_SSS_Fail;
@@ -1396,6 +1396,73 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
 
     return (sss_status_t)ret;
 }
+
+#if defined(ELE_FEATURE_SPAKE2PLUS)
+sss_status_t sss_sscp_asymmetric_spake2plus_derive_key(sss_sscp_derive_key_t *context,
+                                                       sss_sscp_object_t *pA,
+                                                       sss_sscp_object_t *w0,
+                                                       sss_sscp_object_t *L,
+                                                       uint8_t *contextData,
+                                                       size_t contextDataLength,
+                                                       sss_sscp_object_t *pB,
+                                                       sss_sscp_object_t *cA,
+                                                       sss_sscp_object_t *cB,
+                                                       sss_sscp_object_t *Ke)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_derive_key_t) >= sizeof(sss_sscp_derive_key_t), _sss_sscp_derive_key_size);
+    sscp_operation_t op    = {0};
+    sscp_operation_t opAgg = {0};
+    sscp_status_t status   = kStatus_SSCP_Fail;
+    uint32_t ret           = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                          kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                          kSSCP_ParamType_MemrefInput, kSSCP_ParamType_ContextReference, kSSCP_ParamType_Aggregate);
+    opAgg.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                                         kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                         kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_DeriveKey;
+
+    op.params[1].context.ptr  = pA;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[2].context.ptr  = w0;
+    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[3].context.ptr  = L;
+    op.params[3].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[4].memref.buffer = (uintptr_t)contextData;
+    op.params[4].memref.size   = contextDataLength;
+
+    op.params[5].context.ptr  = pB;
+    op.params[5].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[6].aggregate.op = &opAgg;
+
+    /* Command doesn't fit, so use an aggregate */
+    opAgg.params[0].context.ptr  = cA;
+    opAgg.params[0].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    opAgg.params[1].context.ptr  = cB;
+    opAgg.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    opAgg.params[2].context.ptr  = Ke;
+    opAgg.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSpake2PlusDeriveKey, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_SPAKE2PLUS */
 
 sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context)
 {

@@ -310,6 +310,19 @@ sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
                                                sss_sscp_object_t *otherPartyKeyObject,
                                                sss_sscp_object_t *derivedKeyObject);
 
+#if defined(ELE_FEATURE_SPAKE2PLUS)
+sss_status_t sss_sscp_asymmetric_spake2plus_derive_key(sss_sscp_derive_key_t *context,
+                                                       sss_sscp_object_t *pA,
+                                                       sss_sscp_object_t *w0,
+                                                       sss_sscp_object_t *L,
+                                                       uint8_t *contextData,
+                                                       size_t contextDataLength,
+                                                       sss_sscp_object_t *pB,
+                                                       sss_sscp_object_t *cA,
+                                                       sss_sscp_object_t *cB,
+                                                       sss_sscp_object_t *Ke);
+#endif /* ELE_FEATURE_SPAKE2PLUS */
+
 sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context);
 /*********************************MAC******************************************/
 sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,

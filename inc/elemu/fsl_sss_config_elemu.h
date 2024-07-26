@@ -48,6 +48,9 @@
 /* MAC */
 #define ELE_FEATURE_MAC_MULTIPART
 
+/* Key Derivation */
+#define ELE_FEATURE_SPAKE2PLUS
+
 #else
 #error "No valid SoC defined"
 #endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
@@ -151,6 +154,9 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_ECDSA_SHA512  ((sss_algorithm_t)0x22u)
 #define kAlgorithm_SSS_EdDSA_Ed25519 ((sss_algorithm_t)0x31u)
 /* KDF */
+#if defined(ELE_FEATURE_SPAKE2PLUS)
+#define kAlgorithm_SSS_SPAKE2PLUS ((sss_algorithm_t)0x23u)
+#endif /* ELE_FEATURE_SPAKE2PLUS */
 #define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
 #define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)
 
