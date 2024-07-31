@@ -88,11 +88,7 @@ typedef uint32_t sss_mode_t;
 #define kMode_SSS_ComputeSharedSecret ((sss_mode_t)0x04u)
 #define kMode_SSS_Digest              ((sss_mode_t)0x05u)
 #define kMode_SSS_Mac                 ((sss_mode_t)0x06u)
-#if (defined(KW47) && KW47)
-#define kMode_SSS_SymmetricKDF ((sss_mode_t)0x07u)
-#else
-#define kMode_SSS_SymmetricKDF ((sss_mode_t)0x04u)
-#endif /* KW47 */
+#define kMode_SSS_SymmetricKDF        ((sss_mode_t)0x07u)
 
 #define SSS_ALGORITHM_ENUM_ALT
 typedef uint32_t sss_algorithm_t;

@@ -2,7 +2,7 @@
 
 Change Log SSS APIs:
 
-  The current SSS APIs version is 2.1.1.
+  The current SSS APIs version is 2.1.2.
 
   - 2.0.0
     - Initial version.
@@ -10,11 +10,14 @@ Change Log SSS APIs:
   - 2.1.0
     - Remove unsupported chip version.
 
-  -2.1.1
+  - 2.1.1
     - Add EdDSA_Ed25519 to sss_algorithm_t.
     - Add SHA3 definitions, expand HMAC definitions.
     - Add block size alignment check to sss_sscp_cipher_one_go()
     - Add asymmetric key types (RSA CRT, OSCCA, Dilithium, Brainpool, Koblitz)
     - Add support for SPAKE2+
+
+  - 2.1.2
+    - Add other version of sss_sscp_derive_key() API for devices with HKDF and CKDF
 
 */
