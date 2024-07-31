@@ -301,10 +301,18 @@ sss_status_t sss_sscp_derive_key_context_init(sss_sscp_derive_key_t *context,
                                               sss_algorithm_t algorithm,
                                               sss_mode_t mode);
 
+#if defined(ELE_FEATURE_MAC_KDF)
+sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
+                                 const uint8_t *saltData,
+                                 size_t saltLen,
+                                 sss_sscp_object_t *derivedKeyObject,
+                                 size_t derivedKeyBitLength);
+#else /* ELE_FEATURE_MAC_KDF */
 sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
                                  const uint8_t *saltData,
                                  size_t saltLen,
                                  sss_sscp_object_t *derivedKeyObject);
+#endif /* ELE_FEATURE_MAC_KDF */
 
 sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
                                                sss_sscp_object_t *otherPartyKeyObject,
