@@ -48,6 +48,10 @@
 /* MAC */
 #define ELE_FEATURE_MAC_MULTIPART
 
+/* Key Derivation */
+#define ELE_FEATURE_SPAKE2PLUS
+#define ELE_FEATURE_MAC_KDF
+
 #else
 #error "No valid SoC defined"
 #endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
@@ -153,6 +157,19 @@ typedef uint32_t sss_algorithm_t;
 /* KDF */
 #define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
 #define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)
+#if defined(ELE_FEATURE_MAC_KDF)
+#define kAlgorithm_SSS_CKDF                ((sss_algorithm_t)0x51u)
+#define kAlgorithm_SSS_HKDF_SHA1_EXTRACT   ((sss_algorithm_t)0x52u)
+#define kAlgorithm_SSS_HKDF_SHA224_EXTRACT ((sss_algorithm_t)0x53u)
+#define kAlgorithm_SSS_HKDF_SHA256_EXTRACT ((sss_algorithm_t)0x54u)
+#define kAlgorithm_SSS_HKDF_SHA384_EXTRACT ((sss_algorithm_t)0x55u)
+#define kAlgorithm_SSS_HKDF_SHA512_EXTRACT ((sss_algorithm_t)0x56u)
+#define kAlgorithm_SSS_HKDF_SHA1_EXPAND    ((sss_algorithm_t)0x57u)
+#define kAlgorithm_SSS_HKDF_SHA224_EXPAND  ((sss_algorithm_t)0x58u)
+#define kAlgorithm_SSS_HKDF_SHA256_EXPAND  ((sss_algorithm_t)0x59u)
+#define kAlgorithm_SSS_HKDF_SHA384_EXPAND  ((sss_algorithm_t)0x5au)
+#define kAlgorithm_SSS_HKDF_SHA512_EXPAND  ((sss_algorithm_t)0x5bu)
+#endif /* ELE_FEATURE_MAC_KDF */
 
 #define SAB_KEY_TYPE_SYMMETRIC  (0x00)
 #define SAB_KEY_TYPE_ASYMMETRIC (0x01)
