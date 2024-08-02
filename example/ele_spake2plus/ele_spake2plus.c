@@ -35,7 +35,7 @@ static sss_sscp_session_t sssSession = {0};
 static sss_sscp_key_store_t keyStore = {0};
 
 /*
- * The S200 SPAKE2+ service is aligned with the Matter SPAKE2+ scpecification
+ * The S200 SPAKE2+ service is aligned with the Matter SPAKE2+ specification
  * based on draft 02 of RFC9383. For this reason, the test vector values
  * showcased here are taken from the mentioned RFC draft.
  * https://datatracker.ietf.org/doc/draft-bar-cfrg-spake2plus/02/
