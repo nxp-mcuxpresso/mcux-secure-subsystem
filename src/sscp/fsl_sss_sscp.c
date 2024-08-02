@@ -1327,23 +1327,17 @@ sss_status_t sss_sscp_derive_key_context_init(sss_sscp_derive_key_t *context,
     return (sss_status_t)ret;
 }
 
-#if defined(ELE_FEATURE_MAC_KDF)
 sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
                                  const uint8_t *saltData,
                                  size_t saltLen,
                                  sss_sscp_object_t *derivedKeyObject,
                                  size_t derivedKeyBitLength)
-#else
-sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
-                                 const uint8_t *saltData,
-                                 size_t saltLen,
-                                 sss_sscp_object_t *derivedKeyObject)
-#endif /* ELE_FEATURE_MAC_KDF */
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
+    (void)derivedKeyBitLength;
 #if defined(ELE_FEATURE_MAC_KDF)
     if (kAlgorithm_SSS_CKDF == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA1_EXTRACT == context->algorithm ||
