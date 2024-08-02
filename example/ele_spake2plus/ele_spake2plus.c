@@ -42,8 +42,12 @@ static sss_sscp_key_store_t keyStore = {0};
  */
 
 /*
- * Context data contains the ciphersuit context information,
- * client and server IDs, and the M and N values.
+ * Context data format follows SPAKE2+ transcript specification:
+ * contextData = len(Context) || Context
+ *            || len(A) || A
+ *            || len(B) || B
+ *            || len(M) || M
+ *            || len(N) || N
  */
 static uint8_t contextData[] = {
     0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x53, 0x50, 0x41, 0x4b, 0x45, 0x32, 0x2b, 0x2d, 0x50, 0x32,
