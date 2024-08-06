@@ -48,7 +48,7 @@ status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, 
     return ret;
 }
 
-#ifdef SSS_CMAC_UPDATE_SUPPORTED
+#if defined ELE_FEATURE_MAC_MULTIPART
 
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen)
 {
@@ -76,12 +76,10 @@ status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
         if (ctx == NULL || output == NULL)
         {
             RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
-            break;
         }
         if ((sss_sscp_mac_finish(&ctx->sscp_mac, output, &olen)) != kStatus_SSS_Success)
         {
-            ret = kStatus_Fail;
-            break;
+            RAISE_ERROR(ret, kStatus_Fail);
         }
 
     } while (false);
@@ -89,7 +87,7 @@ status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
     return (ret);
 }
 
-#endif /* SSS_CMAC_UPDATE_SUPPORTED */
+#endif /* ELE_FEATURE_MAC_MULTIPART */
 
 void SSS_aes_cmac_free(cmac_aes_context_t *ctx)
 {

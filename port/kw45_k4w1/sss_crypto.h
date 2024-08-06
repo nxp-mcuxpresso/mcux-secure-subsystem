@@ -138,13 +138,13 @@ void CRYPTO_ELEMU_reset(void);
 
 status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
 
-#ifdef SSS_CMAC_UPDATE_SUPPORTED
+#if defined ELE_FEATURE_MAC_MULTIPART
 
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen);
 
 status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output);
 
-#endif /* SSS_CMAC_UPDATE_SUPPORTED */
+#endif /* ELE_FEATURE_MAC_MULTIPART */
 
 status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
                       const unsigned char *key,
