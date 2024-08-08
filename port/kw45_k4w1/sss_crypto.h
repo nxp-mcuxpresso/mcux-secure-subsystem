@@ -138,7 +138,9 @@ void CRYPTO_ELEMU_reset(void);
 
 status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, size_t key_bytelen);
 
-#if defined ELE_FEATURE_MAC_MULTIPART
+#if defined(ELE_FEATURE_MAC_MULTIPART) && (ELE_FEATURE_MAC_MULTIPART != 0)
+
+status_t SSS_aes_cmac_init(cmac_aes_context_t *ctx);
 
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen);
 

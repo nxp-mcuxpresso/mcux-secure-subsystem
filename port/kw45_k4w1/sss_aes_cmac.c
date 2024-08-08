@@ -48,7 +48,24 @@ status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, 
     return ret;
 }
 
-#if defined ELE_FEATURE_MAC_MULTIPART
+#if defined(ELE_FEATURE_MAC_MULTIPART) && (ELE_FEATURE_MAC_MULTIPART != 0)
+
+status_t SSS_aes_cmac_init(cmac_aes_context_t *ctx)
+{
+    status_t ret;
+    do
+    {
+        if (ctx == NULL)
+        {
+            RAISE_ERROR(ret, kStatus_InvalidArgument);
+        }
+
+        ret = sss_sscp_mac_init(&ctx->sscp_mac);
+
+    } while (0);
+
+    return (ret);
+}
 
 status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input, size_t ilen)
 {
