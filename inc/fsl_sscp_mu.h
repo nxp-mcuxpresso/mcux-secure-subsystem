@@ -277,7 +277,7 @@ TX  <th class="markdownTableHeadNone" width="60%"> MU TXn register value
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone" width="30%"> Asymmetric Derive Key <th class="markdownTableHeadNone" width="10%"> TX
 <th class="markdownTableHeadNone" width="60%"> MU TXn register value
-<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_AsymmetricDeriveKey
+<tr><td> Command     <td> 0  <td> kSSCP_CMD_SSS_AsymmetricDhDeriveKey
 <tr><td> paramTypes  <td> 1  <td> Context, Context, Context
 <tr><td> word        <td> 2  <td> Pointer to ::_sss_sscp_derive_key
 <tr><td> word        <td> 3  <td> Pointer to ::_sss_sscp_object

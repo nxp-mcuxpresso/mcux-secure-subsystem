@@ -88,11 +88,11 @@ typedef uint32_t sss_mode_t;
 #define kMode_SSS_ComputeSharedSecret ((sss_mode_t)0x04u)
 #define kMode_SSS_Digest              ((sss_mode_t)0x05u)
 #define kMode_SSS_Mac                 ((sss_mode_t)0x06u)
-#if (defined(KW47) && KW47)
+#if defined(ELE200_EXTENDED_FEATURES)
 #define kMode_SSS_SymmetricKDF ((sss_mode_t)0x07u)
 #else
 #define kMode_SSS_SymmetricKDF ((sss_mode_t)0x04u)
-#endif /* KW47 */
+#endif /* ELE200_EXTENDED_FEATURES */
 
 #define SSS_ALGORITHM_ENUM_ALT
 typedef uint32_t sss_algorithm_t;
@@ -155,6 +155,9 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_ECDSA_SHA512  ((sss_algorithm_t)0x22u)
 #define kAlgorithm_SSS_EdDSA_Ed25519 ((sss_algorithm_t)0x31u)
 /* KDF */
+#if defined(ELE_FEATURE_SPAKE2PLUS)
+#define kAlgorithm_SSS_SPAKE2PLUS ((sss_algorithm_t)0x23u)
+#endif /* ELE_FEATURE_SPAKE2PLUS */
 #define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
 #define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)
 #if defined(ELE_FEATURE_MAC_KDF)

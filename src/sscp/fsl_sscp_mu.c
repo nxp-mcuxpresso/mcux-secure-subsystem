@@ -67,7 +67,7 @@ sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base)
     MU_Init();
 
     /* assign MU implementation of ::sscp_invoke_command() */
-    muContext->invoke = sscp_mu_invoke_command;
+    muContext->invoke = &sscp_mu_invoke_command;
     return kStatus_SSCP_Success;
 }
 
@@ -87,8 +87,8 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
     uint32_t wrIdx       = MU_MSG_HEADER_SIZE;
     sscp_status_t ret    = kStatus_SSCP_Fail;
     sscp_status_t tmpRet = kStatus_SSCP_Success;
-    uint32_t i;
-    for (i = 0u; (!done) && (i < SSCP_OPERATION_PARAM_COUNT); i++)
+    uint32_t i           = 0u;
+    while ((!done) && (i < SSCP_OPERATION_PARAM_COUNT))
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
         {
@@ -135,36 +135,46 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
                         tmpRet = kStatus_SSCP_Fail;
                         break;
                 }
+                i++;
                 break;
 
             case kSSCP_ParamType_Aggregate:
+                op = op->params[i].aggregate.op;
+                i  = 0u;
                 break;
             case kSSCP_ParamType_MemrefInput:
             case kSSCP_ParamType_MemrefInOut:
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.buffer);
                 msg[wrIdx++] = op->params[i].memref.size;
+                i++;
                 break;
             case kSSCP_ParamType_MemrefOutputNoSize:
             case kSSCP_ParamType_MemrefInputNoSize:
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.buffer);
+                i++;
                 break;
             case kSSCP_ParamType_MemrefOutput:
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.buffer);
                 msg[wrIdx++] = (uint32_t)(op->params[i].memref.size);
+                i++;
                 break;
             case kSSCP_ParamType_ValueInputTuple:
                 msg[wrIdx++] = op->params[i].value.a;
                 msg[wrIdx++] = op->params[i].value.b;
+                i++;
                 break;
             case kSSCP_ParamType_ValueInputSingle:
                 msg[wrIdx++] = op->params[i].value.a;
+                i++;
                 break;
             case kSSCP_ParamType_None:
                 done = true; /* break the for loop */
                 ret  = kStatus_SSCP_Success;
+                i++;
                 break;
             default:
                 tmpRet = kStatus_SSCP_Fail;
+                i++;
                 break;
         }
         if (tmpRet == kStatus_SSCP_Fail)

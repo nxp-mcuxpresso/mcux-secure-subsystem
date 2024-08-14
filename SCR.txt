@@ -1,5 +1,5 @@
 Release Name:              secure subsystem
-Version:                   2.1.1
+Version:                   2.1.2
 Outgoing License:          BSD-3-Clause
 License File:              LICENSE
 Type of content:           source code

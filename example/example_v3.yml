@@ -121,6 +121,7 @@ secure-subsystem_digest:
         - source: boards/${board}/secure-subsystem_examples/secure-subsystem_digest/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/secure-subsystem_digest/${multicore_foldername}"
+
 secure-subsystem_se_asymmetric:
   section-type: application
   belong_to: set.board.${board}
@@ -172,6 +173,7 @@ secure-subsystem_se_asymmetric:
         - source: boards/${board}/secure-subsystem_examples/secure-subsystem_se_asymmetric/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/secure-subsystem_se_asymmetric/${multicore_foldername}"
+
 ele_symmetric:
   section-type: application
   belong_to: set.board.${board}
@@ -225,6 +227,7 @@ ele_symmetric:
         - source: boards/${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_symmetric/${multicore_foldername}"
+
 ele_decrypt_sb3:
   section-type: application
   belong_to: set.board.${board}
@@ -278,6 +281,7 @@ ele_decrypt_sb3:
         - source: boards/${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_decrypt_sb3/${multicore_foldername}"
+
 ele_common:
   section-type: application
   belong_to: set.board.${board}
@@ -439,3 +443,57 @@ ele_digest:
         - source: boards/${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}/app.h
           merge-to-main: sub
           project_path: "${board}/secure-subsystem_examples/ele_digest/${multicore_foldername}"
+
+ele_spake2plus:
+  section-type: application
+  belong_to: set.board.${board}
+  dependency:
+  - driver.port
+  - middleware.secure-subsystem
+  - middleware.secure-subsystem.elemu
+  - driver.elemu
+  - middleware.secure-subsystem.firmware
+  contents:
+    document:
+      name: ele_spake2plus
+      readme:
+      - boards/${board}/secure-subsystem_examples/ele_spake2plus/board.readme
+      - middleware/secure-subsystem/example/ele_spake2plus/ele_spake2plus.readme
+      category: secure-subsystem_examples
+      brief: The ELE SPAKE2+ application provides an example how to use SSSAPI to derive a shared secret using the SPAKE2+ protocol.
+    project-root-path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_spake2plus
+          package_path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+          project_path: board
+        files:
+        - source: middleware/secure-subsystem/example/ele_spake2plus/ele_spake2plus.c
+          merge-to-main: main
+          package_path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/secure-subsystem_examples/ele_spake2plus/pin_mux.c
+          package_path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/secure-subsystem_examples/ele_spake2plus/pin_mux.h
+          package_path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}
+          project_path: "${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}"
+        files:
+        - source: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}"
+        - source: boards/${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/secure-subsystem_examples/ele_spake2plus/${multicore_foldername}"
