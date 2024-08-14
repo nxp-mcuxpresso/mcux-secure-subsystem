@@ -16,10 +16,10 @@
     defined(KW45B41Z82_NBU_SERIES) || defined(KW45B41Z83_NBU_SERIES) || defined(MCXW716A_SERIES) || \
     defined(MCXW716C_SERIES)
 
-#define ELE200_BASELINE
+#define ELE200_BASELINE (1)
 
 /* MAC */
-#define ELE_FEATURE_HMAC_SHA256_ONLY
+#define ELE_FEATURE_HMAC_SHA256_ONLY (1)
 
 #elif defined(KW47B42Z83_cm33_core0_SERIES) || defined(KW47B42Z83_cm33_core1_SERIES) ||                             \
     defined(KW47B42Z96_cm33_core0_SERIES) || defined(KW47B42Z96_cm33_core1_SERIES) ||                               \
@@ -37,20 +37,20 @@
     defined(MCXW72B1_cm33_core0_SERIES) || defined(MCXW72B1_cm33_core1_SERIES) ||                                   \
     defined(MCXW72BD_cm33_core0_SERIES) || defined(MCXW72BD_cm33_core1_SERIES)
 
-#define ELE200_EXTENDED_FEATURES
+#define ELE200_EXTENDED_FEATURES  (1)
 
 /* DIGEST */
-#define ELE_HAVE_SHA3
-#define ELE_FEATURE_DIGEST_CLONE
-#define ELE_FEATURE_DIGEST_IMPORT
-#define ELE_FEATURE_DIGEST_EXPORT
+#define ELE_HAVE_SHA3             (1)
+#define ELE_FEATURE_DIGEST_CLONE  (1)
+#define ELE_FEATURE_DIGEST_IMPORT (1)
+#define ELE_FEATURE_DIGEST_EXPORT (1)
 
 /* MAC */
-#define ELE_FEATURE_MAC_MULTIPART
+#define ELE_FEATURE_MAC_MULTIPART (1)
 
 /* Key Derivation */
-#define ELE_FEATURE_SPAKE2PLUS
-#define ELE_FEATURE_MAC_KDF
+#define ELE_FEATURE_SPAKE2PLUS    (1)
+#define ELE_FEATURE_MAC_KDF       (1)
 
 #else
 #error "No valid SoC defined"
