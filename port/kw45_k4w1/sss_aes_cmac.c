@@ -40,11 +40,13 @@ status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, 
         if ((sss_sscp_mac_context_init(&ctx->sscp_mac, &g_sssSession, &ctx->sssKey, kAlgorithm_SSS_CMAC_AES,
                                        kMode_SSS_Mac)) != kStatus_SSS_Success)
         {
-            ret = kStatus_Fail;
-            break;
+            RAISE_ERROR(ret, kStatus_Fail);
         }
 
+        ret = kStatus_Success;
+
     } while (false);
+
     return ret;
 }
 
@@ -60,7 +62,12 @@ status_t SSS_aes_cmac_init(cmac_aes_context_t *ctx)
             RAISE_ERROR(ret, kStatus_InvalidArgument);
         }
 
-        ret = sss_sscp_mac_init(&ctx->sscp_mac);
+        if ((sss_sscp_mac_init(&ctx->sscp_mac)) != kStatus_SSS_Success)
+        {
+            RAISE_ERROR(ret, kStatus_Fail);
+        }
+
+        ret = kStatus_Success;
 
     } while (0);
 
@@ -77,7 +84,12 @@ status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input
             RAISE_ERROR(ret, kStatus_InvalidArgument);
         }
 
-        ret = sss_sscp_mac_update(&ctx->sscp_mac, input, ilen);
+        if (sss_sscp_mac_update(&ctx->sscp_mac, input, ilen) != kStatus_SSS_Success)
+        {
+            RAISE_ERROR(ret, kStatus_Fail);
+        }
+
+        ret = kStatus_Success;
 
     } while (0);
 
@@ -87,7 +99,7 @@ status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input
 status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
 {
     status_t ret;
-    size_t olen = 0;
+    size_t olen = 16u;
     do
     {
         if (ctx == NULL || output == NULL)
@@ -98,6 +110,8 @@ status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
         {
             RAISE_ERROR(ret, kStatus_Fail);
         }
+
+        ret = kStatus_Success;
 
     } while (false);
 
