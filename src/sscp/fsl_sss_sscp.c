@@ -398,6 +398,18 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
+    /* Supported lengths
+     * for GCM : tag length \in <12,16>
+     * for CCM : tag length \in {0, 4, 6, 8, 10, 12, 14, 16} (0 valid for CCM*)
+     */
+    if (((kAlgorithm_SSS_AES_GCM == context->algorithm) && (16u < *tagLen || 12u > *tagLen)) ||
+        ((kAlgorithm_SSS_AES_CCM == context->algorithm) &&
+         (((0u < *tagLen) && (16u < *tagLen || 4u > *tagLen)) || (*tagLen % 2u != 0u))))
+    {
+        *tagLen = 0u;
+        return kStatus_SSS_InvalidArgument;
+    }
+
     /* set paramTypes for the tag[] buffer according to mode
      * for encrypt (and authenticate) mode, the tag[] is output, written by invoked function,
      * for decrypt (and verify) mode, the tag[] is input, to be verified by invoked function
@@ -1339,8 +1351,7 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
 
     (void)derivedKeyBitLength;
 #if defined(ELE_FEATURE_MAC_KDF)
-    if (kAlgorithm_SSS_CKDF == context->algorithm ||
-        kAlgorithm_SSS_HKDF_SHA1_EXTRACT == context->algorithm ||
+    if (kAlgorithm_SSS_CKDF == context->algorithm || kAlgorithm_SSS_HKDF_SHA1_EXTRACT == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA224_EXTRACT == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA256_EXTRACT == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA384_EXTRACT == context->algorithm ||
@@ -1353,8 +1364,8 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
     {
         /* For CKDF and HKDF use command format 2 */
         op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                                          kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
-                                          kSSCP_ParamType_None, kSSCP_ParamType_None);
+                                          kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
+                                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
 
         op.params[3].value.a = derivedKeyBitLength;
     }
