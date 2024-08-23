@@ -18,6 +18,7 @@ Change Log SSS APIs:
     - Add support for SPAKE2+
 
   - 2.1.2
-    - Add other version of sss_sscp_derive_key() API for devices with HKDF and CKDF
+    - Change sss_sscp_derive_key() API to support HKDF and CKDF
+    - Fix AEAD tag length validation for CCM and GCM
 
 */
