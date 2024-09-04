@@ -69,7 +69,7 @@ status_t SSS_aes_cmac_init(cmac_aes_context_t *ctx)
 
         ret = kStatus_Success;
 
-    } while (0);
+    } while (false);
 
     return (ret);
 }
@@ -91,7 +91,7 @@ status_t SSS_aes_cmac_update(cmac_aes_context_t *ctx, const unsigned char *input
 
         ret = kStatus_Success;
 
-    } while (0);
+    } while (false);
 
     return (ret);
 }
@@ -104,7 +104,7 @@ status_t SSS_aes_cmac_finish(cmac_aes_context_t *ctx, unsigned char *output)
     {
         if (ctx == NULL || output == NULL)
         {
-            RAISE_ERROR(ret, kStatus_SSS_InvalidArgument);
+            RAISE_ERROR(ret, kStatus_InvalidArgument);
         }
         if ((sss_sscp_mac_finish(&ctx->sscp_mac, output, &olen)) != kStatus_SSS_Success)
         {
