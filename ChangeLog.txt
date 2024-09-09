@@ -20,5 +20,6 @@ Change Log SSS APIs:
   - 2.1.2
     - Change sss_sscp_derive_key() API to support HKDF and CKDF
     - Fix AEAD tag length validation for CCM and GCM
+    - Align MAC length validation for CMAC between all SSSAPI devices
 
 */

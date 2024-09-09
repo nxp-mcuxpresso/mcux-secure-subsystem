@@ -807,7 +807,20 @@ sss_status_t sss_sscp_mac_one_go(
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
-    size_t macSize       = (macLen != NULL) ? *macLen : 0u;
+
+    if (NULL == macLen)
+    {
+        return kStatus_SSS_InvalidArgument;
+    }
+    size_t macSize = *macLen;
+
+    /* Clamp upper limit of CMAC MAC tag length to 16B to align S200 behavior
+     * between devices.
+     */
+    if ((kAlgorithm_SSS_CMAC_AES == context->algorithm) && (16u < macSize))
+    {
+        macSize = 16u;
+    }
 
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInOut,
