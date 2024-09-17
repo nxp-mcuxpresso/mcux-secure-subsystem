@@ -380,7 +380,9 @@ sss_status_t sss_sscp_key_store_generate_key(sss_sscp_key_store_t *keyStore,
                                              size_t keyBitLen,
                                              void *options);
 
-sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
+sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore,
+                                         sss_internal_keyID_t keyID,
+                                         sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_open_internal_key(sss_sscp_key_store_t *keyStore, sss_internal_keyID_t keyID);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);

@@ -1734,21 +1734,25 @@ sss_status_t sss_sscp_key_store_export_key(sss_sscp_key_store_t *keyStore,
     return (sss_status_t)ret;
 }
 
-sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject)
+sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore,
+                                         sss_internal_keyID_t keyID,
+                                         sss_sscp_object_t *keyObject)
 {
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    op.paramTypes =
-        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_None,
-                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
+                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
 
     op.params[0].context.ptr  = keyStore;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_KeyStore;
 
-    op.params[1].context.ptr  = keyObject;
-    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+    op.params[1].value.a = keyID;
+
+    op.params[2].context.ptr  = keyObject;
+    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;

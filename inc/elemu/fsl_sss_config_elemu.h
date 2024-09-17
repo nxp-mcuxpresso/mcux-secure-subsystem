@@ -274,6 +274,7 @@ typedef uint32_t sss_sscp_key_property_t;
 #define kSSS_KeyProp_NoPlainWrite              ((sss_sscp_key_property_t)0x00004000u)
 #define kSSS_KeyProp_NoVerify                  ((sss_sscp_key_property_t)0x00002000u)
 #define kSSS_KeyProp_NoSign                    ((sss_sscp_key_property_t)0x00001000u)
+#define kSSS_KeyProp_CryptoAlgo_PKB            ((sss_sscp_key_property_t)0x00000020u)
 #define kSSS_KeyProp_CryptoAlgo_KDF            ((sss_sscp_key_property_t)0x00000010u)
 #define kSSS_KeyProp_CryptoAlgo_AsymSignVerify ((sss_sscp_key_property_t)0x00000008u)
 #define kSSS_KeyProp_CryptoAlgo_AEAD           ((sss_sscp_key_property_t)0x00000004u)
@@ -291,8 +292,10 @@ typedef uint32_t sss_sscp_blob_type_t;
 #define kSSS_blobType_NBU_EIRK_blob ((sss_sscp_blob_type_t)0x4u)
 
 typedef uint32_t sss_internal_keyID_t;
-#define kSSS_internalKey_NPX          ((sss_internal_keyID_t)0x80000007u)
-#define kSSS_internalKey_NBU_DKEY_SK  ((sss_internal_keyID_t)0x80000009u)
-#define kSSS_internalKey_NBU_DKEY_IRK ((sss_internal_keyID_t)0x8000000Au)
+#define kSSS_internalKey_NPX           ((sss_internal_keyID_t)0x80000007u)
+#define kSSS_internalKey_NBU_DKEY_SK   ((sss_internal_keyID_t)0x80000009u)
+#define kSSS_internalKey_NBU_DKEY_IRK  ((sss_internal_keyID_t)0x8000000Au)
+#define kSSS_internalKey_NBU_BRIC_KEY0 ((sss_internal_keyID_t)0x8000000Bu)
+#define kSSS_internalKey_NBU_BRIC_KEY1 ((sss_internal_keyID_t)0x8000000Cu)
 
 #endif /* FSL_SSS_CONFIG_H */
