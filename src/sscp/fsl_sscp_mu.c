@@ -14,12 +14,12 @@
 #define ELE_SUCCESS ((uint8_t)0x3C)
 #define ELE_FAIL    ((uint8_t)0xC3)
 
-void MU_Init(void)
+void SSCP_MU_Init(void)
 {
     ELEMU_mu_init(ELEMUA);
 }
 
-sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum)
+sscp_status_t SSCP_MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
@@ -38,7 +38,7 @@ sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size
     return ret;
 }
 
-sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum)
+sscp_status_t SSCP_MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum)
 {
     sscp_status_t ret = kStatus_SSCP_Fail;
 #if (defined(FSL_FEATURE_ELEMU_HAS_SEMA4_STATUS_REGISTER) && FSL_FEATURE_ELEMU_HAS_SEMA4_STATUS_REGISTER)
@@ -64,7 +64,7 @@ sscp_status_t sscp_mu_init(sscp_context_t *context, ELEMU_Type *base)
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
 
     muContext->base = base;
-    MU_Init();
+    SSCP_MU_Init();
 
     /* assign MU implementation of ::sscp_invoke_command() */
     muContext->invoke = &sscp_mu_invoke_command;
@@ -226,14 +226,14 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
         /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
         msg[0] = (uint32_t)(*((uint32_t *)(uintptr_t)(&muMsgHeader)));
-        if (MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
+        if (SSCP_MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
         {
             ret2 = kStatus_SSCP_Fail;
             break;
         }
 
         /* poll for response */
-        if (MU_ReceiveMsg(muContext->base, msg, ELEMU_RR_COUNT) != kStatus_SSCP_Success)
+        if (SSCP_MU_ReceiveMsg(muContext->base, msg, ELEMU_RR_COUNT) != kStatus_SSCP_Success)
         {
             ret2 = kStatus_SSCP_Fail;
             break;

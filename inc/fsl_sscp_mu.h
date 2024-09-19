@@ -413,11 +413,11 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
                                      sscp_operation_t *op,
                                      uint32_t *ret);
 
-void MU_Init(void);
+void SSCP_MU_Init(void);
 
-sscp_status_t MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum);
+sscp_status_t SSCP_MU_ReceiveMsg(ELEMU_Type *base, uint32_t msg[ELEMU_RR_COUNT], size_t wordNum);
 
-sscp_status_t MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum);
+sscp_status_t SSCP_MU_SendMsg(ELEMU_Type *base, uint32_t msg[ELEMU_TR_COUNT], size_t wordNum);
 
 #if defined(__cplusplus)
 }
