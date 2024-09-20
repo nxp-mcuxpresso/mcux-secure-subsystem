@@ -10,7 +10,7 @@
 #include "fsl_sss_sscp.h"
 #include "fsl_sss_mgmt.h"
 
-#define MU_Deinit   (void)
+#define SSCP_MU_Deinit   (void)
 #define ELE_SUCCESS ((uint8_t)0x3C)
 #define ELE_FAIL    ((uint8_t)0xC3)
 
