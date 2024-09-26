@@ -10,6 +10,7 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem)
 		        inc/fsl_sscp_commands.h
 		        inc/fsl_sscp_config.h
 		        inc/fsl_sss_sscp_config.h
+                inc/fsl_sss_api.h
     )
     
     mcux_add_include(
