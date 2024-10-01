@@ -1,5 +1,5 @@
 /*! *********************************************************************************
- * Copyright 2023 NXP
+ * Copyright 2023-2024 NXP
  * All rights reserved.
  *
  * \file
@@ -46,6 +46,11 @@ status_t SSS_aes_cmac_starts(cmac_aes_context_t *ctx, const unsigned char *key, 
         ret = kStatus_Success;
 
     } while (false);
+
+    if (ret == kStatus_Success)
+    {
+        ctx->sscp_mac_was_set = true;
+    }
 
     return ret;
 }
@@ -156,7 +161,6 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
             break;
         }
 
-        pCtx->sscp_mac_was_set = true;
         /* RUN CMAC ONE GO */
         if ((sss_sscp_mac_one_go(&pCtx->sscp_mac, (const uint8_t *)input, ilen, (uint8_t *)output, &macSize)) !=
             kStatus_SSS_Success)
@@ -167,8 +171,6 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
         {
             ret = kStatus_Success;
         }
-        /* Free MAC context only if its init has been successful */
-        (void)sss_sscp_mac_context_free(&pCtx->sscp_mac);
     } while (false);
     /* CLEAN UP */
     /* KEYOBJECT FREE*/
