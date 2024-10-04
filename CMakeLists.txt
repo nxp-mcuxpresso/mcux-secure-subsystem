@@ -50,14 +50,9 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.elemu)
     )
 	
 	mcux_add_configuration(
-	 TOOLCHAINS armgcc
      CC  "-DSSS_CONFIG_FILE=\\\"fsl_sss_config_elemu.h\\\" -DSSCP_CONFIG_FILE=\\\"fsl_sscp_config_elemu.h\\\""
     )
 	
-	mcux_add_configuration(
-	 TOOLCHAINS iar
-     CC  "-DSSS_CONFIG_FILE=\\\"fsl_sss_config_elemu.h\\\" -DSSCP_CONFIG_FILE=\\\"fsl_sscp_config_elemu.h\\\""
-    )
 endif()
 
 if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.firmware)
