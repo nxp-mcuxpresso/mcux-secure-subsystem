@@ -1,0 +1,8 @@
+Release Name:              KW45_A1_A2_SDK_FW_1_1_0_0.sb3
+Version:                   1.1.0
+Outgoing License:          LA_OPT_NXP_Software_License v53 - No distribution permitted, license in Section 2.3 applies.
+License File:              LICENSE
+Type of content:           Binary
+Description and comments:  ELE loadable FW for KW45 A1/A2.
+Release Location:          SDK
+Origin:                    NXP

@@ -1,0 +1,27 @@
+
+menu "secure-subsystem"
+    
+    config MCUX_COMPONENT_middleware.secure-subsystem
+        bool "Component middleware.secure-subsystem"
+        select MCUX_COMPONENT_middleware.secure-subsystem.mu
+        select MCUX_COMPONENT_middleware.secure-subsystem.elemu
+    
+    config MCUX_COMPONENT_middleware.secure-subsystem.mu
+        bool "Component middleware.secure-subsystem.mu"
+        select MCUX_COMPONENT_middleware.secure-subsystem.elemu
+    
+    config MCUX_COMPONENT_middleware.secure-subsystem.elemu
+        bool "Component middleware.secure-subsystem.elemu"
+        select MCUX_COMPONENT_driver.elemu
+    
+    config MCUX_COMPONENT_middleware.secure-subsystem.firmware
+        bool "Component middleware.secure-subsystem.firmware"
+        select MCUX_COMPONENT_middleware.secure-subsystem
+        select MCUX_COMPONENT_driver.elemu
+    
+    config MCUX_COMPONENT_middleware.secure-subsystem.elemu.port_kw45_k4w1
+        bool "Component middleware.secure-subsystem.elemu.port_kw45_k4w1"
+        select MCUX_COMPONENT_middleware.secure-subsystem
+		
+
+endmenu
