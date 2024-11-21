@@ -52,6 +52,11 @@
 #define ELE_FEATURE_SPAKE2PLUS    (1)
 #define ELE_FEATURE_MAC_KDF       (1)
 
+/* Open Key features */
+#define ELE_FEATURE_OPEN_KEY_NPX  (1)
+#define ELE_FEATURE_OPEN_KEY_DKEY (1)
+#define ELE_FEATURE_OPEN_KEY_BRIC (1)
+
 #else
 #error "No valid SoC defined"
 #endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
