@@ -731,6 +731,35 @@ sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest,
     return (sss_status_t)ret;
 }
 
+#if defined(ELE_FEATURE_DIGEST_CLONE) && (ELE_FEATURE_DIGEST_CLONE == 1)
+sss_status_t sss_sscp_digest_clone(sss_sscp_digest_t *context_src, sss_sscp_digest_t *context_dst)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context_src;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+    op.params[1].context.ptr  = context_dst;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Digest;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = context_src->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestClone, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        ret = kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_DIGEST_CLONE */
+
 sss_status_t sss_sscp_digest_context_free(sss_sscp_digest_t *context)
 {
     sscp_operation_t op  = {0};

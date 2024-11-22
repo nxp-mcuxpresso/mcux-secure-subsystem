@@ -22,5 +22,6 @@ Change Log SSS APIs:
     - Fix AEAD tag length validation for CCM and GCM
     - Align MAC length validation for CMAC between all SSSAPI devices
     - Reimplement sss_sscp_key_store_open_key() to support format 2 of command KEY_STORE_OPEN_KEY
+    - Add support for digest cloning
 
 */

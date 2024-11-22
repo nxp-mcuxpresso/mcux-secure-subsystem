@@ -271,6 +271,10 @@ sss_status_t sss_sscp_digest_update(sss_sscp_digest_t *context, uint8_t *message
 
 sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest, size_t *digestLen);
 
+#if defined(ELE_FEATURE_DIGEST_CLONE) && (ELE_FEATURE_DIGEST_CLONE == 1)
+sss_status_t sss_sscp_digest_clone(sss_sscp_digest_t *context_src, sss_sscp_digest_t *context_dst);
+#endif /* ELE_FEATURE_DIGEST_CLONE */
+
 sss_status_t sss_sscp_digest_context_free(sss_sscp_digest_t *context);
 
 /*******************************ASYMETRIC**************************************/

@@ -30,6 +30,7 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_CMD_SSS_DigestInit                    ((sscp_command_t)0x2e)
 #define kSSCP_CMD_SSS_DigestUpdate                  ((sscp_command_t)0x30)
 #define kSSCP_CMD_SSS_DigestFinish                  ((sscp_command_t)0x2d)
+#define kSSCP_CMD_SSS_DigestClone                   ((sscp_command_t)0x81)
 #define kSSCP_CMD_SSS_MacContextInit                ((sscp_command_t)0x32)
 #define kSSCP_CMD_SSS_MacOneGo                      ((sscp_command_t)0x35)
 #define kSSCP_CMD_SSS_MacInit                       ((sscp_command_t)0x34)
