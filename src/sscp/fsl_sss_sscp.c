@@ -871,10 +871,7 @@ sss_status_t sss_sscp_mac_one_go(
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacOneGo, &op, &ret);
     if (status != kStatus_SSCP_Success)
     {
-        if (macLen != NULL)
-        {
-            *macLen = 0u;
-        }
+        *macLen = 0u; /* NULL check already done at start of the function */
         ret = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
