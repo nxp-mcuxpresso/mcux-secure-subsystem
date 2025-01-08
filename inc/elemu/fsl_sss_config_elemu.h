@@ -290,11 +290,21 @@ typedef uint32_t sss_sscp_keyObjFree_options_t;
 #define kSSS_keyObjFree_KeysStoreNoDefragment ((sss_sscp_keyObjFree_options_t)0x0u)
 #define kSSS_keyObjFree_KeysStoreDefragment   ((sss_sscp_keyObjFree_options_t)0x1u)
 
+typedef uint32_t sss_sscp_tunnel_type_t;
+#define kSSS_tunnel_type_MasterBootImgAuth   ((sss_sscp_tunnel_type_t)0x20u)
+#define kSSS_tunnel_type_SB3FileAuth         ((sss_sscp_tunnel_type_t)0x21u)
+#define kSSS_tunnel_type_EdgelockFW          ((sss_sscp_tunnel_type_t)0x22u)
+#define kSSS_tunnel_type_SB3FileVerification ((sss_sscp_tunnel_type_t)0x25u)
+/* El2Go FW need to be loaded to use this tunnel type */
+#define kSSS_tunnel_type_EL2GO_Data ((sss_sscp_tunnel_type_t)0x80000025u)
+
 typedef uint32_t sss_sscp_blob_type_t;
 #define kSSS_blobType_ELKE_blob     ((sss_sscp_blob_type_t)0x1u)
 #define kSSS_blobType_E2E_blob      ((sss_sscp_blob_type_t)0x2u)
 #define kSSS_blobType_NBU_ESK_blob  ((sss_sscp_blob_type_t)0x3u)
 #define kSSS_blobType_NBU_EIRK_blob ((sss_sscp_blob_type_t)0x4u)
+/* El2Go FW need to be loaded to use TLV blob */
+#define kSSS_blobType_EL2GO_TLV_blob ((sss_sscp_blob_type_t)0x5u)
 
 typedef uint32_t sss_internal_keyID_t;
 #define kSSS_internalKey_NPX           ((sss_internal_keyID_t)0x80000007u)
