@@ -275,6 +275,18 @@ sss_status_t sss_sscp_digest_finish(sss_sscp_digest_t *context, uint8_t *digest,
 sss_status_t sss_sscp_digest_clone(sss_sscp_digest_t *context_src, sss_sscp_digest_t *context_dst);
 #endif /* ELE_FEATURE_DIGEST_CLONE */
 
+#if defined(ELE_FEATURE_DIGEST_IMPORT) && (ELE_FEATURE_DIGEST_IMPORT == 1)
+sss_status_t sss_sscp_digest_import(sss_sscp_digest_t *context_dst,
+                                    uint8_t *digest_context_blob,
+                                    size_t digest_context_blob_size);
+#endif /* ELE_FEATURE_DIGEST_IMPORT */
+
+#if defined(ELE_FEATURE_DIGEST_EXPORT) && (ELE_FEATURE_DIGEST_EXPORT == 1)
+sss_status_t sss_sscp_digest_export(sss_sscp_digest_t *context_src,
+                                    uint8_t *digest_context_blob,
+                                    size_t *digest_context_blob_size);
+#endif /* ELE_FEATURE_DIGEST_EXPORT */
+
 sss_status_t sss_sscp_digest_context_free(sss_sscp_digest_t *context);
 
 /*******************************ASYMETRIC**************************************/
@@ -346,6 +358,14 @@ sss_status_t sss_sscp_mac_update(sss_sscp_mac_t *context, const uint8_t *message
 
 sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *macLen);
 #endif /* ELE_FEATURE_MAC_MULTIPART */
+
+#if defined(ELE_FEATURE_MAC_IMPORT) && (ELE_FEATURE_MAC_IMPORT == 1)
+sss_status_t sss_sscp_mac_import(sss_sscp_mac_t *context_dst, uint8_t *mac_context_blob, size_t mac_context_blob_size);
+#endif /* ELE_FEATURE_MAC_IMPORT */
+
+#if defined(ELE_FEATURE_MAC_EXPORT) && (ELE_FEATURE_MAC_EXPORT == 1)
+sss_status_t sss_sscp_mac_export(sss_sscp_mac_t *context_src, uint8_t *mac_context_blob, size_t *mac_context_blob_size);
+#endif /* ELE_FEATURE_MAC_EXPORT */
 
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context);
 

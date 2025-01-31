@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021, 2024 NXP
+ * Copyright 2018-2021, 2024-2025 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -37,25 +37,29 @@
     defined(MCXW72B1_cm33_core0_SERIES) || defined(MCXW72B1_cm33_core1_SERIES) ||                                   \
     defined(MCXW72BD_cm33_core0_SERIES) || defined(MCXW72BD_cm33_core1_SERIES)
 
-#define ELE200_EXTENDED_FEATURES  (1)
+#define ELE200_EXTENDED_FEATURES                      (1)
 
 /* DIGEST */
-#define ELE_HAVE_SHA3             (1)
-#define ELE_FEATURE_DIGEST_CLONE  (1)
-#define ELE_FEATURE_DIGEST_IMPORT (1)
-#define ELE_FEATURE_DIGEST_EXPORT (1)
+#define ELE_HAVE_SHA3                                 (1)
+#define ELE_FEATURE_DIGEST_CLONE                      (1)
+#define ELE_FEATURE_DIGEST_IMPORT                     (1)
+#define ELE_FEATURE_DIGEST_EXPORT                     (1)
+#define ELE_FEATURE_DIGEST_CONTEXT_BLOB_SIZE_IN_BYTES (412u)
 
 /* MAC */
-#define ELE_FEATURE_MAC_MULTIPART (1)
+#define ELE_FEATURE_MAC_MULTIPART                     (1)
+#define ELE_FEATURE_MAC_IMPORT                        (1)
+#define ELE_FEATURE_MAC_EXPORT                        (1)
+#define ELE_FEATURE_MAC_CONTEXT_BLOB_SIZE_IN_BYTES    (384u)
 
 /* Key Derivation */
-#define ELE_FEATURE_SPAKE2PLUS    (1)
-#define ELE_FEATURE_MAC_KDF       (1)
+#define ELE_FEATURE_SPAKE2PLUS                        (1)
+#define ELE_FEATURE_MAC_KDF                           (1)
 
 /* Open Key features */
-#define ELE_FEATURE_OPEN_KEY_NPX  (1)
-#define ELE_FEATURE_OPEN_KEY_DKEY (1)
-#define ELE_FEATURE_OPEN_KEY_BRIC (1)
+#define ELE_FEATURE_OPEN_KEY_NPX                      (1)
+#define ELE_FEATURE_OPEN_KEY_DKEY                     (1)
+#define ELE_FEATURE_OPEN_KEY_BRIC                     (1)
 
 #else
 #error "No valid SoC defined"

@@ -744,6 +744,7 @@ sss_status_t sss_sscp_digest_clone(sss_sscp_digest_t *context_src, sss_sscp_dige
 
     op.params[0].context.ptr  = context_src;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+
     op.params[1].context.ptr  = context_dst;
     op.params[1].context.type = kSSCP_ParamContextType_SSS_Digest;
 
@@ -759,6 +760,95 @@ sss_status_t sss_sscp_digest_clone(sss_sscp_digest_t *context_src, sss_sscp_dige
     return (sss_status_t)ret;
 }
 #endif /* ELE_FEATURE_DIGEST_CLONE */
+
+#if defined(ELE_FEATURE_DIGEST_IMPORT) && (ELE_FEATURE_DIGEST_IMPORT == 1)
+sss_status_t sss_sscp_digest_import(sss_sscp_digest_t *context_dst,
+                                    uint8_t *digest_context_blob,
+                                    size_t digest_context_blob_size)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context_dst;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+
+    op.params[1].memref.buffer = (uintptr_t)digest_context_blob;
+    op.params[1].memref.size   = digest_context_blob_size;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = context_dst->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestImport, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        ret = kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_DIGEST_IMPORT */
+
+#if defined(ELE_FEATURE_DIGEST_EXPORT) && (ELE_FEATURE_DIGEST_EXPORT == 1)
+sss_status_t sss_sscp_digest_export(sss_sscp_digest_t *context_src,
+                                    uint8_t *digest_context_blob,
+                                    size_t *digest_context_blob_size)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    /* if the caller gives NULL pointer to digest_context_blob_size, it is assumed that digest[] buffer is big enough to
+     * hold full digest */
+    size_t len =
+        (digest_context_blob_size != NULL) ? *digest_context_blob_size : ELE_FEATURE_DIGEST_CONTEXT_BLOB_SIZE_IN_BYTES;
+
+    /* if the *digest_context_blob_size cannot hold full digest (per algorithm spec) return error */
+    if (len < ELE_FEATURE_DIGEST_CONTEXT_BLOB_SIZE_IN_BYTES)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context_src;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Digest;
+
+    op.params[1].memref.buffer = (uintptr_t)digest_context_blob;
+    op.params[1].memref.size   = len;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = (uint32_t)digest_context_blob_size;
+
+    sscp_context_t *sscpCtx = context_src->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DigestExport, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        if (digest_context_blob_size != NULL)
+        {
+            *digest_context_blob_size = 0u;
+        }
+        return kStatus_SSS_Fail;
+    }
+
+    /* the size member of kSSCP_ParamType_MemrefOutput param is updated with the actual byte length written to output
+     * buffer
+     */
+    if (digest_context_blob_size != NULL)
+    {
+        *digest_context_blob_size = op.params[1].memref.size;
+    }
+
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_DIGEST_EXPORT */
 
 sss_status_t sss_sscp_digest_context_free(sss_sscp_digest_t *context)
 {
@@ -872,7 +962,7 @@ sss_status_t sss_sscp_mac_one_go(
     if (status != kStatus_SSCP_Success)
     {
         *macLen = 0u; /* NULL check already done at start of the function */
-        ret = kStatus_SSS_Fail;
+        ret     = kStatus_SSS_Fail;
     }
     return (sss_status_t)ret;
 }
@@ -961,6 +1051,90 @@ sss_status_t sss_sscp_mac_finish(sss_sscp_mac_t *context, uint8_t *mac, size_t *
     return (sss_status_t)ret;
 }
 #endif /* ELE_FEATURE_MAC_MULTIPART */
+
+#if defined(ELE_FEATURE_MAC_IMPORT) && (ELE_FEATURE_MAC_IMPORT == 1)
+sss_status_t sss_sscp_mac_import(sss_sscp_mac_t *context_dst, uint8_t *mac_context_blob, size_t mac_context_blob_size)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context_dst;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
+
+    op.params[1].memref.buffer = (uintptr_t)mac_context_blob;
+    op.params[1].memref.size   = mac_context_blob_size;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = context_dst->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacImport, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        ret = kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_MAC_IMPORT */
+
+#if defined(ELE_FEATURE_MAC_EXPORT) && (ELE_FEATURE_MAC_EXPORT == 1)
+sss_status_t sss_sscp_mac_export(sss_sscp_mac_t *context_src, uint8_t *mac_context_blob, size_t *mac_context_blob_size)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    /* if the caller gives NULL pointer to mac_context_blob_size, it is assumed that digest[] buffer is big enough to
+     * hold full digest */
+    size_t len = (mac_context_blob_size != NULL) ? *mac_context_blob_size : ELE_FEATURE_MAC_CONTEXT_BLOB_SIZE_IN_BYTES;
+
+    /* if the *mac_context_blob_size cannot hold full digest (per algorithm spec) return error */
+    if (len < ELE_FEATURE_MAC_CONTEXT_BLOB_SIZE_IN_BYTES)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
+                          kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context_src;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Mac;
+
+    op.params[1].memref.buffer = (uintptr_t)mac_context_blob;
+    op.params[1].memref.size   = len;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = (uint32_t)mac_context_blob_size;
+
+    sscp_context_t *sscpCtx = context_src->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MacExport, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        if (mac_context_blob_size != NULL)
+        {
+            *mac_context_blob_size = 0u;
+        }
+        return kStatus_SSS_Fail;
+    }
+
+    /* the size member of kSSCP_ParamType_MemrefOutput param is updated with the actual byte length written to output
+     * buffer
+     */
+    if (mac_context_blob_size != NULL)
+    {
+        *mac_context_blob_size = op.params[1].memref.size;
+    }
+
+    return (sss_status_t)ret;
+}
+#endif /* ELE_FEATURE_MAC_EXPORT */
 
 sss_status_t sss_sscp_mac_context_free(sss_sscp_mac_t *context)
 {
