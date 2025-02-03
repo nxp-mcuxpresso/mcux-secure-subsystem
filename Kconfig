@@ -23,9 +23,5 @@ menu "secure-subsystem"
         bool "Component middleware.secure-subsystem.elemu.port_kw45_k4w1"
         select MCUX_COMPONENT_middleware.secure-subsystem
 
-    config MCUX_COMPONENT_middleware.secure-subsystem.elemu.psa_crypto
-        bool "Component middleware.secure-subsystem.elemu.psa_crypto"
-        select MCUX_COMPONENT_middleware.secure-subsystem
 		
-
 endmenu
