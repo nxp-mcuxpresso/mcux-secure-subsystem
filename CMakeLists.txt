@@ -89,3 +89,15 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.elemu.port_kw45_k4w1)
                  port/kw45_k4w1
     )
 endif()
+
+if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.elemu.crypto_sss_interface)
+    mcux_add_source(
+        BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
+        SOURCES port/kw45_k4w1/sss_crypto.h
+    )
+    mcux_add_include(
+        BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
+        INCLUDES port
+                 port/kw45_k4w1
+    )
+endif()
