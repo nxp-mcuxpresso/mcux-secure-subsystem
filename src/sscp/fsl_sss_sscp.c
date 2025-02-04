@@ -802,6 +802,12 @@ sss_status_t sss_sscp_digest_export(sss_sscp_digest_t *context_src,
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
+    /* Check digest_context_blob validity */
+    if (digest_context_blob == NULL )
+    {
+        return kStatus_InvalidArgument;
+    }
+
     /* if the caller gives NULL pointer to digest_context_blob_size, it is assumed that digest[] buffer is big enough to
      * hold full digest */
     size_t len =
@@ -1088,6 +1094,12 @@ sss_status_t sss_sscp_mac_export(sss_sscp_mac_t *context_src, uint8_t *mac_conte
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
+
+    /* Check mac_context_blob validity */
+    if (mac_context_blob == NULL )
+    {
+        return kStatus_InvalidArgument;
+    }
 
     /* if the caller gives NULL pointer to mac_context_blob_size, it is assumed that digest[] buffer is big enough to
      * hold full digest */
