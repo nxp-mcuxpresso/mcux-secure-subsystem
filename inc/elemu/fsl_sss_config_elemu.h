@@ -65,6 +65,11 @@
 #error "No valid SoC defined"
 #endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
 
+/* We extend HMAC features for base KW47 and for KW45 EL2GO FW */
+#if !defined(ELE_FEATURE_HMAC_SHA256_ONLY) || defined(ELEMU_HAS_LOADABLE_FW)
+#define ELE_FEATURE_EXTENDED_HMAC (1)
+#endif
+
 #define SSS_SESSION_MAX_CONTEXT_SIZE      (16)
 #define SSS_KEY_STORE_MAX_CONTEXT_SIZE    (16 + 80)
 #define SSS_KEY_OBJECT_MAX_CONTEXT_SIZE   (16)
@@ -131,12 +136,12 @@ typedef uint32_t sss_algorithm_t;
 /* MAC */
 #define kAlgorithm_SSS_CMAC_AES    ((sss_algorithm_t)0x0du)
 #define kAlgorithm_SSS_HMAC_SHA256 ((sss_algorithm_t)0x0eu)
-#if !defined(ELE_FEATURE_HMAC_SHA256_ONLY) || defined(ELEMU_HAS_LOADABLE_FW)
+#if defined(ELE_FEATURE_EXTENDED_HMAC)
 #define kAlgorithm_SSS_HMAC_SHA1   ((sss_algorithm_t)0x60u)
 #define kAlgorithm_SSS_HMAC_SHA224 ((sss_algorithm_t)0x61u)
 #define kAlgorithm_SSS_HMAC_SHA384 ((sss_algorithm_t)0x63u)
 #define kAlgorithm_SSS_HMAC_SHA512 ((sss_algorithm_t)0x64u)
-#endif /* !ELE_FEATURE_HMAC_SHA256_ONLY || ELEMU_HAS_LOADABLE_FW */
+#endif /* ELE_FEATURE_EXTENDED_HMAC */
 /* Diffie-Helmann */
 #define kAlgorithm_SSS_DH   ((sss_algorithm_t)0x0fu)
 #define kAlgorithm_SSS_ECDH ((sss_algorithm_t)0x10u)
