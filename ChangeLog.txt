@@ -24,5 +24,6 @@ Change Log SSS APIs:
     - Reimplement sss_sscp_key_store_open_key() to support format 2 of command KEY_STORE_OPEN_KEY
     - Add support for digest cloning
     - Add support for digest and MAC context import/export
+    - Fix sss_sscp_tunnel() to correctly support kSSS_tunnel_type_EL2GO_Data
 
 */
