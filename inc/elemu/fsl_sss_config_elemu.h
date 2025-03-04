@@ -172,8 +172,9 @@ typedef uint32_t sss_algorithm_t;
 #if defined(ELE_FEATURE_SPAKE2PLUS)
 #define kAlgorithm_SSS_SPAKE2PLUS ((sss_algorithm_t)0x23u)
 #endif /* ELE_FEATURE_SPAKE2PLUS */
-#define kAlgorithm_SSS_E2E_BLOB ((sss_algorithm_t)0x40u)
-#define kAlgorithm_SSS_BLE_F5   ((sss_algorithm_t)0x50u)
+#define kAlgorithm_SSS_AES_ECB_KDF ((sss_algorithm_t)0x00u)
+#define kAlgorithm_SSS_E2E_BLOB    ((sss_algorithm_t)0x40u)
+#define kAlgorithm_SSS_BLE_F5      ((sss_algorithm_t)0x50u)
 #if defined(ELE_FEATURE_MAC_KDF)
 #define kAlgorithm_SSS_CKDF                ((sss_algorithm_t)0x51u)
 #define kAlgorithm_SSS_HKDF_SHA1_EXTRACT   ((sss_algorithm_t)0x52u)
