@@ -8,6 +8,12 @@
 #include "fsl_sscp_commands.h"
 #include "fsl_sss_sscp.h"
 
+#if (defined(IS_RADIO_CORE) && IS_RADIO_CORE)
+#define ADD_OFFSET(addr) ((((uintptr_t)(char *)(addr) & 0x0000FFFFu) + 0x489C0000u))
+#else
+#define ADD_OFFSET(addr) (addr)
+#endif /* IS_RADIO_CORE */
+
 sss_status_t sss_mgmt_context_init(sss_mgmt_t *context, sss_sscp_session_t *session)
 {
     sscp_operation_t op  = {0};
@@ -53,12 +59,12 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
 
     op.params[1].value.a       = propertyId;
     op.params[1].value.b       = 0u;
-    op.params[2].memref.buffer = (uintptr_t)destData;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)destData);
     op.params[2].memref.size   = len;
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
-    op.result[0].value.a = (uint32_t)dataLen;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)dataLen);
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_PropertyGet, &op, &ret);
@@ -83,7 +89,7 @@ sss_status_t sss_mgmt_set_property(sss_mgmt_t *context, uint32_t propertyId, con
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
     op.params[1].value.a       = propertyId;
-    op.params[2].memref.buffer = (uintptr_t)srcData;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[2].memref.size   = dataLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
@@ -112,7 +118,7 @@ sss_status_t sss_mgmt_fuse_shadow_register_read(sss_mgmt_t *context, uint32_t sh
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
     op.params[1].value.a       = shadowRegisterId;
-    op.params[2].memref.buffer = (uintptr_t)destData;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)destData);
     op.params[2].memref.size   = sizeof(uint32_t);
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -145,9 +151,9 @@ sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
 
     op.params[1].value.a = fuseId;
 
-    op.params[2].memref.buffer = (uintptr_t)destData;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)destData);
 
-    op.params[3].memref.buffer = (uintptr_t)destDataLen;
+    op.params[3].memref.buffer = ADD_OFFSET((uint32_t)destDataLen);
 
     op.params[4].memref.buffer = options;
     op.params[4].memref.size   = optLen;
@@ -182,7 +188,7 @@ sss_status_t sss_mgmt_fuse_program(
 
     op.params[1].value.a = fuseId;
 
-    op.params[2].memref.buffer = (uintptr_t)srcData;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[2].memref.size   = fuseLen;
 
     op.params[3].memref.buffer = options;
@@ -215,7 +221,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
-    op.result[0].value.a = (uint32_t)lifecycleData;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)lifecycleData);
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_LifeCycleGet, &op, &ret);
@@ -275,7 +281,7 @@ sss_status_t sss_mgmt_import_secret(sss_mgmt_t *context, const uint8_t *srcData,
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)srcData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[1].memref.size   = dataLen;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -302,7 +308,7 @@ sss_status_t sss_mgmt_export_secret(sss_mgmt_t *context, uint8_t *destData, size
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)destData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)destData);
     op.params[1].memref.size   = len;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -337,7 +343,7 @@ sss_status_t sss_mgmt_attest(sss_mgmt_t *context, uint8_t *destData, size_t *dat
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)destData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)destData);
     op.params[1].memref.size   = len;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -370,7 +376,7 @@ sss_status_t sss_mgmt_blob_load_secret(sss_mgmt_t *context, const uint8_t *srcDa
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)srcData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[1].memref.size   = dataLen;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -397,7 +403,7 @@ sss_status_t sss_mgmt_blob_export_secret(sss_mgmt_t *context, uint8_t *destData,
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)destData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)destData);
     op.params[1].memref.size   = len;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -430,7 +436,7 @@ sss_status_t sss_mgmt_blob_import_secret(sss_mgmt_t *context, const uint8_t *src
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)srcData;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[1].memref.size   = dataLen;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
@@ -458,7 +464,7 @@ sss_status_t sss_mgmt_get_software_version(sss_mgmt_t *context,
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)version;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)version);
     op.params[1].memref.size   = versionWordCount;
 
     op.params[2].value.a = options;
@@ -491,7 +497,7 @@ sss_status_t sss_mgmt_set_software_version(sss_mgmt_t *context,
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)version;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)version);
     op.params[1].memref.size   = versionWordCount * sizeof(uint32_t);
 
     op.params[2].value.a = options;
@@ -525,7 +531,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
     op.params[0].context.ptr  = context;
     op.params[0].context.type = kSSCP_ParamContextType_SSS_Mgmt;
 
-    op.params[1].memref.buffer = (uintptr_t)request;
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)request);
     op.params[1].memref.size   = requestSize;
 
     op.params[2].memref.buffer = options;
@@ -533,7 +539,7 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 0u;
-    op.result[0].value.a = (uint32_t)resultState;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)resultState);
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_ReturnFaSet, &op, &ret);

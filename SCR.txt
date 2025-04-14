@@ -1,7 +1,7 @@
 NXP Software Content Register
 
 Package: mcux-secure-subsystem
-Version: 2.1.2
+Version: 2.1.3
 Outgoing License: BSD-3-Clause
 License File: LICENSE
 Type of content: source code
