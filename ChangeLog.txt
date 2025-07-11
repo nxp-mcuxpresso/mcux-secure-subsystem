@@ -25,5 +25,6 @@ Change Log SSS APIs:
     - Add support for digest cloning
     - Add support for digest and MAC context import/export
     - Fix sss_sscp_tunnel() to correctly support kSSS_tunnel_type_EL2GO_Data
+    - Fix sss_mgmt_get_lifecycle() command having an erroneous extra parameter
 
 */
