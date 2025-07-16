@@ -289,6 +289,8 @@ typedef uint32_t sss_sscp_key_property_t;
 #define kSSS_KeyProp_NoPlainWrite              ((sss_sscp_key_property_t)0x00004000u)
 #define kSSS_KeyProp_NoVerify                  ((sss_sscp_key_property_t)0x00002000u)
 #define kSSS_KeyProp_NoSign                    ((sss_sscp_key_property_t)0x00001000u)
+#define kSSS_KeyProp_NoEncrypt                 ((sss_sscp_key_property_t)0x00000400u)
+#define kSSS_KeyProp_NoDecrypt                 ((sss_sscp_key_property_t)0x00000800u)
 #define kSSS_KeyProp_CryptoAlgo_PKB            ((sss_sscp_key_property_t)0x00000020u)
 #define kSSS_KeyProp_CryptoAlgo_KDF            ((sss_sscp_key_property_t)0x00000010u)
 #define kSSS_KeyProp_CryptoAlgo_AsymSignVerify ((sss_sscp_key_property_t)0x00000008u)
