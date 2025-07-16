@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021 NXP
+ * Copyright 2018-2021, 2025 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -199,22 +199,6 @@ sss_status_t sss_sscp_cipher_one_go(sss_sscp_symmetric_t *context,
                                     uint8_t *destData,
                                     size_t dataLen);
 
-sss_status_t sss_sscp_cipher_init(sss_sscp_symmetric_t *context, uint8_t *iv, size_t ivLen);
-
-sss_status_t sss_sscp_cipher_update(
-    sss_sscp_symmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen);
-
-sss_status_t sss_sscp_cipher_finish(
-    sss_sscp_symmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen);
-
-sss_status_t sss_sscp_cipher_crypt_ctr(sss_sscp_symmetric_t *context,
-                                       const uint8_t *srcData,
-                                       uint8_t *destData,
-                                       size_t size,
-                                       uint8_t *initialCounter,
-                                       uint8_t *lastEncryptedCounter,
-                                       size_t *szLeft);
-
 sss_status_t sss_sscp_symmetric_context_free(sss_sscp_symmetric_t *context);
 
 /**********************************AEAD****************************************/
@@ -233,22 +217,6 @@ sss_status_t sss_sscp_aead_one_go(sss_sscp_aead_t *context,
                                   size_t nonceLen,
                                   const uint8_t *aad,
                                   size_t aadLen,
-                                  uint8_t *tag,
-                                  size_t *tagLen);
-
-sss_status_t sss_sscp_aead_init(
-    sss_sscp_aead_t *context, uint8_t *nonce, size_t nonceLen, size_t tagLen, size_t aadLen, size_t payloadLen);
-
-sss_status_t sss_sscp_aead_update_aad(sss_sscp_aead_t *context, const uint8_t *aadData, size_t aadDataLen);
-
-sss_status_t sss_sscp_aead_update(
-    sss_sscp_aead_t *context, const uint8_t *srcData, size_t srcLen, uint8_t destData, size_t *destLen);
-
-sss_status_t sss_sscp_aead_finish(sss_sscp_aead_t *context,
-                                  const uint8_t *srcData,
-                                  size_t srcLen,
-                                  uint8_t destData,
-                                  size_t *destLen,
                                   uint8_t *tag,
                                   size_t *tagLen);
 
@@ -295,12 +263,6 @@ sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
                                               sss_sscp_object_t *keyObject,
                                               sss_algorithm_t algorithm,
                                               sss_mode_t mode);
-
-sss_status_t sss_sscp_asymmetric_encrypt(
-    sss_sscp_asymmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen);
-
-sss_status_t sss_sscp_asymmetric_decrypt(
-    sss_sscp_asymmetric_t *context, const uint8_t *srcData, size_t srcLen, uint8_t *destData, size_t *destLen);
 
 sss_status_t sss_sscp_asymmetric_sign_digest(
     sss_sscp_asymmetric_t *context, uint8_t *digest, size_t digestLen, uint8_t *signature, size_t *signatureLen);
@@ -409,7 +371,6 @@ sss_status_t sss_sscp_key_store_open_key(sss_sscp_key_store_t *keyStore,
                                          sss_sscp_object_t *keyObject);
 sss_status_t sss_sscp_key_store_open_internal_key(sss_sscp_key_store_t *keyStore, sss_internal_keyID_t keyID);
 sss_status_t sss_sscp_key_store_erase_key(sss_sscp_key_store_t *keyStore, sss_sscp_object_t *keyObject);
-sss_status_t sss_sscp_key_store_erase_all(sss_sscp_key_store_t *keyStore);
 sss_status_t sss_sscp_key_store_get_property(sss_sscp_key_store_t *keyStore,
                                              sss_sscp_key_store_property_t propertyId,
                                              uint32_t *property);
@@ -419,8 +380,6 @@ sss_status_t sss_sscp_key_store_free(sss_sscp_key_store_t *keyStore);
 sss_status_t sss_sscp_key_object_init_internal(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
 
 sss_status_t sss_sscp_key_object_init(sss_sscp_object_t *keyObject, sss_sscp_key_store_t *keyStore);
-
-sss_status_t sss_sscp_key_object_set_eccgfp_group(sss_sscp_object_t *keyObject, sss_eccgfp_group_t *group);
 
 sss_status_t sss_sscp_key_object_set_properties(sss_sscp_object_t *keyObject, uint32_t options);
 

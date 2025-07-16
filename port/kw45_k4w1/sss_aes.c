@@ -1,5 +1,5 @@
 /*! *********************************************************************************
- * Copyright 2022 NXP
+ * Copyright 2022, 2025 NXP
  * All rights reserved.
  *
  * \file
@@ -146,14 +146,8 @@ status_t SSS_aes128_CTR_operation(aes_context_t *ctx,
                 break;
             }
             symmetric_context_ptr = &ctx->cipher_ctx;
-#if 0
-            if ((sss_sscp_cipher_crypt_ctr(&ctx->cipher_ctx, input, output, inputLen,
-                                    initialCounter, stream_block,
-                                    offset_sz_left)) != kStatus_SSS_Success)
-#else
             if ((sss_sscp_cipher_one_go(&ctx->cipher_ctx, initialCounter, 16u, input, output, inputLen)) !=
                 kStatus_SSS_Success)
-#endif
             {
                 ret = kStatus_Fail;
                 break;
