@@ -1468,9 +1468,20 @@ sss_status_t sss_sscp_tunnel(sss_sscp_tunnel_t *context, uint8_t *data, size_t d
 
     if ((context->tunnelType & SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK) == SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK)
     {
-        op.paramTypes              = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
-                                                       kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None, kSSCP_ParamType_None,
-                                                       kSSCP_ParamType_None, kSSCP_ParamType_None);
+        if(context->tunnelType == kSSS_tunnel_type_EL2GO_Data)
+        {
+            op.paramTypes              = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
+                                                           kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput, kSSCP_ParamType_None,
+                                                           kSSCP_ParamType_None, kSSCP_ParamType_None);
+            op.params[3].memref.buffer = (uintptr_t)&context->bufferSize;
+            op.params[3].memref.size   = sizeof(context->bufferSize);
+        }
+        else
+        {
+            op.paramTypes              = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
+                                                           kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                                           kSSCP_ParamType_None, kSSCP_ParamType_None);
+        }
         op.params[2].memref.buffer = (uintptr_t)context->buffer;
         op.params[2].memref.size   = context->bufferSize;
     }
