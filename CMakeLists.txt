@@ -12,13 +12,13 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem)
 		        inc/fsl_sss_sscp_config.h
                 inc/fsl_sss_api.h
     )
-    
+
     mcux_add_include(
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         INCLUDES ./inc
                  ./src/sscp
     )
-	
+
 endif()
 
 if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.mu)
@@ -48,27 +48,29 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.elemu)
                  inc/elemu
                  src/sscp
     )
-	
+
 	mcux_add_configuration(
      CC  "-DSSS_CONFIG_FILE=\\\"fsl_sss_config_elemu.h\\\" -DSSCP_CONFIG_FILE=\\\"fsl_sscp_config_elemu.h\\\""
     )
-	
+
 endif()
 
 if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.firmware)
     mcux_add_source(
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         SOURCES firmware/ele_200_fw.h
+                firmware/KW45_K32W1xx_MCXW71_SDKFW2.1_RFP.h
+                firmware/KW47_A2_1_SDKFW1.0_EAR2.h
     )
     mcux_add_include(
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         INCLUDES firmware
     )
-	
+
 	mcux_add_configuration(
      CC  "-DELEMU_HAS_LOADABLE_FW"
     )
-	
+
 endif()
 
 if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.elemu.port_kw45_k4w1)
