@@ -8,6 +8,23 @@
 #include "fsl_sscp_commands.h"
 #include "fsl_sss_sscp.h"
 
+/**
+ * @def ADD_OFFSET(addr)
+ * Does shared memory address translation if running on NBU core.
+ *
+ * If the S200 is being used by the NBU core (cm33_core1) on the KW47 and MCXW72
+ * devices, any data that is to be directly accessed by the S200 MUST be present
+ * in S200-accessible memory. Such data would for example include input and
+ * output buffers for plaintext and ciphertext.
+ *
+ * From NBU-side, the only accessible memory section for S200 is the shared
+ * memory section, starting at address 0xB000_0000. Such addresses must be
+ * translated into their SoC-side alias, which start at 0x489C_0000.
+ *
+ * @note The SSS drivers do not automatically move data into such a section.
+ * Upon calling an SSS API, the data is expected to be at an S200-accessible
+ * location. The driver only translates such an address to its correct alias.
+ */
 #if (defined(IS_RADIO_CORE) && IS_RADIO_CORE)
 #define ADD_OFFSET(addr) ((((uintptr_t)(char *)(addr) & 0x0000FFFFu) + 0x489C0000u))
 #else
@@ -64,7 +81,7 @@ sss_status_t sss_mgmt_get_property(sss_mgmt_t *context, uint32_t propertyId, uin
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
-    op.result[0].value.a = ADD_OFFSET((uint32_t)dataLen);
+    op.result[0].value.a = (uint32_t)dataLen;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_PropertyGet, &op, &ret);
@@ -129,7 +146,7 @@ sss_status_t sss_mgmt_fuse_read(sss_mgmt_t *context,
 
     op.params[3].memref.buffer = ADD_OFFSET((uint32_t)destDataLen);
 
-    op.params[4].memref.buffer = options;
+    op.params[4].memref.buffer = ADD_OFFSET((uint32_t)options);
     op.params[4].memref.size   = optLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
@@ -165,7 +182,7 @@ sss_status_t sss_mgmt_fuse_program(
     op.params[2].memref.buffer = ADD_OFFSET((uint32_t)srcData);
     op.params[2].memref.size   = fuseLen;
 
-    op.params[3].memref.buffer = options;
+    op.params[3].memref.buffer = ADD_OFFSET((uint32_t)options);
     op.params[3].memref.size   = optLen;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
@@ -195,7 +212,7 @@ sss_status_t sss_mgmt_get_lifecycle(sss_mgmt_t *context, uint32_t *lifecycleData
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
-    op.result[0].value.a = ADD_OFFSET((uint32_t)lifecycleData);
+    op.result[0].value.a = (uint32_t)lifecycleData;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_LifeCycleGet, &op, &ret);
@@ -227,7 +244,7 @@ sss_status_t sss_mgmt_advance_lifecycle(sss_mgmt_t *context,
 
     op.params[1].value.a = data;
 
-    op.params[2].memref.buffer = options;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)options);
     op.params[2].memref.size   = len;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
@@ -265,12 +282,12 @@ sss_status_t sss_mgmt_set_return_fa(sss_mgmt_t *context,
     op.params[1].memref.buffer = ADD_OFFSET((uint32_t)request);
     op.params[1].memref.size   = requestSize;
 
-    op.params[2].memref.buffer = options;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)options);
     op.params[2].memref.size   = len;
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 0u;
-    op.result[0].value.a = ADD_OFFSET((uint32_t)resultState);
+    op.result[0].value.a = (uint32_t)resultState;
 
     sscp_context_t *sscpCtx = ((sss_sscp_session_t *)context->session)->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_MGMT_ReturnFaSet, &op, &ret);
