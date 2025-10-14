@@ -317,6 +317,7 @@ typedef uint32_t sss_sscp_blob_type_t;
 #define kSSS_blobType_NBU_EIRK_blob ((sss_sscp_blob_type_t)0x4u)
 /* El2Go FW need to be loaded to use TLV blob */
 #define kSSS_blobType_EL2GO_TLV_blob ((sss_sscp_blob_type_t)0x5u)
+#define kSSS_blobType_ELGAMAL_blob   ((sss_sscp_blob_type_t)0x6u)
 
 typedef uint32_t sss_internal_keyID_t;
 #define kSSS_internalKey_NPX           ((sss_internal_keyID_t)0x80000007u)
