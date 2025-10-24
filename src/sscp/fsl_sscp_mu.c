@@ -83,11 +83,12 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
 /* NBOOT HIS metric Ex. 1 - HIS_CCM - Cyclomatic complexity */
 sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT], uint32_t *wrId)
 {
-    bool done            = false;
-    uint32_t wrIdx       = MU_MSG_HEADER_SIZE;
-    sscp_status_t ret    = kStatus_SSCP_Fail;
-    sscp_status_t tmpRet = kStatus_SSCP_Success;
-    uint32_t i           = 0u;
+    bool done              = false;
+    uint32_t wrIdx         = MU_MSG_HEADER_SIZE;
+    sscp_status_t ret      = kStatus_SSCP_Fail;
+    sscp_status_t tmpRet   = kStatus_SSCP_Success;
+    uint32_t i             = 0u;
+    uint32_t aggregate_cnt = 0u;
     while ((!done) && (i < SSCP_OPERATION_PARAM_COUNT))
     {
         switch (SSCP_OP_GET_PARAM(i, op->paramTypes))
@@ -141,6 +142,7 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
             case kSSCP_ParamType_Aggregate:
                 op = op->params[i].aggregate.op;
                 i  = 0u;
+                aggregate_cnt++;
                 break;
             case kSSCP_ParamType_MemrefInput:
             case kSSCP_ParamType_MemrefInOut:
@@ -184,6 +186,12 @@ sscp_status_t prepareMessage(sscp_operation_t *op, uint32_t msg[ELEMU_TR_COUNT],
         }
         /* Buffer overoload, end with error. */
         if (wrIdx > ELEMU_TR_COUNT - 1u)
+        {
+            ret = kStatus_SSCP_Fail;
+            break;
+        }
+        /* Max aggregate count reached, so we end to prevent infinite loops. */
+        if (aggregate_cnt > SSCP_MAX_AGGREGATE_COUNT)
         {
             ret = kStatus_SSCP_Fail;
             break;
