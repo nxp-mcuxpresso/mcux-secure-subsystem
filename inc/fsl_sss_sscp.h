@@ -300,6 +300,52 @@ sss_status_t sss_sscp_asymmetric_spake2plus_derive_key(sss_sscp_derive_key_t *co
                                                        sss_sscp_object_t *cA,
                                                        sss_sscp_object_t *cB,
                                                        sss_sscp_object_t *Ke);
+
+/**
+ * @brief Derive keys using the CCC specification of SPAKE2+ protocol.
+ *
+ * This function implements the CCC SPAKE2+ key derivation process, generating
+ * multiple session keys based on provided parameters and context data.
+ *
+ * NOTE: On NBU core, please make sure that stack is placed in shared
+ *       memory, so that ELE can access it. In this API, the output key objects
+ *       are handled as a memory reference.
+ *
+ * @param[in] context            ELE context for the SPAKE2+ operation.
+ * @param[in] pA                 Public element A (also noted as X).
+ * @param[in] w0                 First password-based scalar.
+ * @param[in] L                  Precomputed element L.
+ * @param[in] contextData        Additional context data for key derivation.
+ * @param[in] contextDataLength  Length of the context data.
+ * @param[in] pB                 Public element B (also noted as Y).
+ * @param[in] cA                 Confirmation value for A (in CCC noted as M1).
+ * @param[in] cB                 Confirmation value for B (in CCC noted as M2).
+ * @param[out] Ke                Derived encryption key (in CCC noted as SK).
+ * @param[out] k1                Derived key 1 (in CCC noted as Kenc).
+ * @param[out] k2                Derived key 2 (in CCC noted as Kmac).
+ * @param[out] k3                Derived key 3 (in CCC noted as Krmac).
+ * @param[out] k4                Derived key 4 (in CCC noted as LONG_TERM_SHARED_SECRET).
+ * @param[out] k5                Derived key 5 (in CCC noted as Kble_intro).
+ * @param[out] k6                Derived key 6 (in CCC noted as Kble_oob_master).
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_asymmetric_spake2plus_derive_key_ccc(sss_sscp_derive_key_t *context,
+                                                           sss_sscp_object_t *pA,
+                                                           sss_sscp_object_t *w0,
+                                                           sss_sscp_object_t *L,
+                                                           uint8_t *contextData,
+                                                           size_t contextDataLength,
+                                                           sss_sscp_object_t *pB,
+                                                           sss_sscp_object_t *cA,
+                                                           sss_sscp_object_t *cB,
+                                                           sss_sscp_object_t *Ke,
+                                                           sss_sscp_object_t *k1,
+                                                           sss_sscp_object_t *k2,
+                                                           sss_sscp_object_t *k3,
+                                                           sss_sscp_object_t *k4,
+                                                           sss_sscp_object_t *k5,
+                                                           sss_sscp_object_t *k6);
 #endif /* ELE_FEATURE_SPAKE2PLUS */
 
 sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context);

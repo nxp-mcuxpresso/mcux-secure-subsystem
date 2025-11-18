@@ -170,7 +170,8 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_EdDSA_Ed25519 ((sss_algorithm_t)0x31u)
 /* KDF */
 #if defined(ELE_FEATURE_SPAKE2PLUS)
-#define kAlgorithm_SSS_SPAKE2PLUS ((sss_algorithm_t)0x23u)
+#define kAlgorithm_SSS_SPAKE2PLUS     ((sss_algorithm_t)0x23u) //!< Matter specification
+#define kAlgorithm_SSS_SPAKE2PLUS_CCC ((sss_algorithm_t)0x24u) //!< CCC specification
 #endif /* ELE_FEATURE_SPAKE2PLUS */
 #define kAlgorithm_SSS_AES_ECB_KDF ((sss_algorithm_t)0x00u)
 #define kAlgorithm_SSS_E2E_BLOB    ((sss_algorithm_t)0x40u)
