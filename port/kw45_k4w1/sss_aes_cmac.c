@@ -142,7 +142,9 @@ status_t SSS_aes_cmac(cmac_aes_context_t *pCtx,
                       size_t ilen,
                       unsigned char *output)
 {
-    size_t macSize     = 16u;
+    size_t macSize = 16u;
+
+    assert(SIZE_MAX - keylen >= 7u);
     size_t key_bytelen = (keylen + 7u) / 8u;
 
     status_t ret = kStatus_Fail;
@@ -225,6 +227,7 @@ status_t SSS_aes_cmac_prf_128(cmac_aes_context_t *pCtx,
 status_t SSS_set_aes_key_cmac(cmac_aes_context_t *pCtx, const unsigned char *key, size_t key_bytelen)
 {
     status_t ret;
+    assert(key_bytelen == 16u || key_bytelen == 24u || key_bytelen == 32u);
     do
     {
         size_t keylen = key_bytelen * 8u;

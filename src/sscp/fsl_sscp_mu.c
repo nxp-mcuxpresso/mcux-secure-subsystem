@@ -214,8 +214,9 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
     /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
     sscp_mu_context_t *muContext = (sscp_mu_context_t *)(uintptr_t)context;
     /* parse the operation to create message */
-    uint32_t msg[ELEMU_TR_COUNT] = {0};
-    uint32_t wrIdx               = 0;
+    uint32_t msg[ELEMU_TR_COUNT] = {0u};
+    uint32_t wrIdx               = 0u;
+    uint32_t muMsgHeaderSizeTmp  = 0u;
     sscp_status_t ret2           = kStatus_SSCP_Fail;
     sscp_status_t tmpRet         = kStatus_SSCP_Success;
     *ret                         = kStatus_SSS_Fail;
@@ -231,7 +232,16 @@ sscp_status_t sscp_mu_invoke_command(sscp_context_t *context,
         muMsgHeader.check_bits = STATIC_CHECK_BITS;
         muMsgHeader.tag_sts    = MESSAGING_TAG_COMMAND;
         muMsgHeader.command    = commandId;
-        muMsgHeader.size       = (uint8_t)(wrIdx - MU_MSG_HEADER_SIZE);
+
+        /* check if we can safely cast to narrower type */
+        muMsgHeaderSizeTmp = (wrIdx - MU_MSG_HEADER_SIZE);
+        if (muMsgHeaderSizeTmp > ((uint32_t)UINT8_MAX))
+        {
+            ret2 = kStatus_SSCP_Fail;
+            break;
+        }
+        muMsgHeader.size = (uint8_t)muMsgHeaderSizeTmp;
+
         /* NBOOT MISRA Ex. 1 - Rule 11.3 - Casting between pointers of different types is not allowed */
         msg[0] = (uint32_t)(*((uint32_t *)(uintptr_t)(&muMsgHeader)));
         if (SSCP_MU_SendMsg(muContext->base, msg, wrIdx) != kStatus_SSCP_Success)
