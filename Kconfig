@@ -22,6 +22,22 @@ menu "secure-subsystem"
         bool "ELE MU Crypto SSS Interface"
         select MCUX_COMPONENT_middleware.secure-subsystem
 
+    if MCUX_COMPONENT_middleware.secure-subsystem.elemu
+        config SSS_CONFIG_FILE
+            string "SSS Configuration File"
+            default "fsl_sss_config_elemu.h"
+            help
+                No prefix in generated macro
+                Macro value is in quotes
+
+        config SSCP_CONFIG_FILE
+            string "SSSCP Configuration File"
+            default "fsl_sscp_config_elemu.h"
+            help
+                No prefix in generated macro
+                Macro value is in quotes
+    endif
+
     #############################
     # Firmware dependency logic #
     #############################
@@ -50,6 +66,12 @@ menu "secure-subsystem"
         select MCUX_COMPONENT_middleware.secure-subsystem
         select MCUX_COMPONENT_driver.elemu
         if MCUX_COMPONENT_middleware.secure-subsystem.firmware
+            config ELEMU_HAS_LOADABLE_FW
+                bool
+                default y
+                help
+                    No prefix in generated macro
+
             config MCUX_COMPONENT_middleware.secure-subsystem.firmware.KW45
                 bool "KW45/MCXW71"
                 depends on is_device.KW45 || is_device.MCXW71
@@ -63,6 +85,7 @@ menu "secure-subsystem"
                         # Other Firmware to be added here
                     endchoice
                 endif
+
             config MCUX_COMPONENT_middleware.secure-subsystem.firmware.KW47
                 bool "KW47/MCXW72"
                 depends on is_device.KW47 || is_device.MCXW72
