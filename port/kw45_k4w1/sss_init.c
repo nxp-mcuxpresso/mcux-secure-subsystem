@@ -129,12 +129,40 @@ status_t CRYPTO_ReinitHardware(void)
     return kStatus_Success;
 }
 
+static status_t ele_close_handles(void)
+{
+    sss_status_t status = kStatus_SSS_Fail;
+ 
+    do
+    {
+        /****************** Close Key Store  ***********************************/
+        status = sss_sscp_key_store_free(&g_keyStore);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+ 
+        /****************** Close EdgeLock session ******************/
+        status = sss_sscp_close_session(&g_sssSession);
+        if (status != kStatus_SSS_Success)
+        {
+            break;
+        }
+ 
+        /****************** Close SSCP context ******************/
+        sscp_mu_deinit(&g_sscpContext);
+ 
+    } while (false);
+ 
+    return 0;
+}
 /*!
  * @brief This function will allow reinitizialize the cryptographic HW acceleration
  * next time we need it, typically after lowpower mode.
  */
 void CRYPTO_DeinitHardware(void)
 {
+    ele_close_handles();
     s_isCryptoHWInitialized = SSS_CRYPTOHW_NONINITIALIZED;
 }
 
