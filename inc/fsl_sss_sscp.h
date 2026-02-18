@@ -267,8 +267,67 @@ sss_status_t sss_sscp_asymmetric_context_init(sss_sscp_asymmetric_t *context,
 sss_status_t sss_sscp_asymmetric_sign_digest(
     sss_sscp_asymmetric_t *context, uint8_t *digest, size_t digestLen, uint8_t *signature, size_t *signatureLen);
 
+/*!
+ * @brief Asymmetric sign operation on digest or message using PQC algorithm
+ *
+ * @param[in] context          Asymmetric context.
+ * @param[in] input            Input digest (with ML-DSA Pre-Hash) or
+ *                             message (with ML-DSA Pure) buffer.
+ * @param[in] inputLen         Length of digest (with ML-DSA Pre-Hash) or
+ *                             message (with ML-DSA Pure).
+ * @param[out] signature       Output signature buffer.
+ * @param[in,out] signatureLen Size of the output signature buffer as input,
+ *                             length of the generated signature as output.
+ * @param[in] userCtx          User context buffer. May be NULL.
+ * @param[in] userCtxLen       Length of user context. May be 0.
+ * @param[in] preHashAlg       Pre-hashing algorithm. Supported values are
+ *                             all of SHA3 (kAlgorithm_SSS_SHA3_256, etc.),
+ *                             SHAKE256 (kAlgorithm_SSS_SHAKE256), and
+ *                             SHAKE128 (kAlgorithm_SSS_SHAKE128).
+ *                             For ML-DSA Pure, use kAlgorithm_SSS_NoPreHashing.
+ * @param[out] workArea        Work area buffer for intermediate computations.
+ *                             This MUST be provided for ML-DSA-87, its
+ *                             size MUST be at least
+ *                             ELE_MLDSA_WORK_AREA_BUFFER_SIZE Bytes, and the
+ *                             buffer MUST be word-aligned (4-byte alignment).
+ *                             For other ML-DSA variants, this may be NULL, but
+ *                             if provided, word-alignment is still required.
+ * @param[in] workAreaLen      Length of work area buffer.
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_asymmetric_sign_pqc(
+    sss_sscp_asymmetric_t *context, uint8_t *input, size_t inputLen,
+    uint8_t *signature, size_t *signatureLen, uint8_t *userCtx, size_t userCtxLen,
+    sss_algorithm_t preHashAlg, uint8_t *workArea, size_t workAreaLen);
+
 sss_status_t sss_sscp_asymmetric_verify_digest(
     sss_sscp_asymmetric_t *context, uint8_t *digest, size_t digestLen, uint8_t *signature, size_t signatureLen);
+
+/*!
+ * @brief Asymmetric verify operation on digest or message using PQC algorithm
+ *
+ * @param[in] context      Asymmetric context.
+ * @param[in] input        Input digest (with ML-DSA Pre-Hash) or
+ *                         message (with ML-DSA Pure) buffer.
+ * @param[in] inputLen     Length of digest (with ML-DSA Pre-Hash) or
+ *                         message (with ML-DSA Pure).
+ * @param[in] signature    The signature to verify.
+ * @param[in] signatureLen Length of the signature.
+ * @param[in] userCtx      User context buffer. May be NULL.
+ * @param[in] userCtxLen   Length of user context. May be 0.
+ * @param[in] preHashAlg   Pre-hashing algorithm. Supported values are
+ *                         all of SHA3 (kAlgorithm_SSS_SHA3_256, etc.),
+ *                         SHAKE256 (kAlgorithm_SSS_SHAKE256), and
+ *                         SHAKE128 (kAlgorithm_SSS_SHAKE128).
+ *                         For ML-DSA Pure, use kAlgorithm_SSS_NoPreHashing.
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_asymmetric_verify_pqc(
+    sss_sscp_asymmetric_t *context, uint8_t *input, size_t inputLen,
+    uint8_t *signature, size_t signatureLen, uint8_t *userCtx,
+    size_t userCtxLen, sss_algorithm_t preHashAlg);
 
 sss_status_t sss_sscp_asymmetric_context_free(sss_sscp_asymmetric_t *context);
 
@@ -284,6 +343,35 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
                                  size_t saltLen,
                                  sss_sscp_object_t *derivedKeyObject,
                                  size_t derivedKeyBitLength);
+
+/*!
+ * @brief Encapsulate or decapsulate a shared secret using the ML-KEM algorithm.
+ *
+ * @param[in] context           Derive key context.
+ * @param[in,out] cipherText    The meaning of this parameter changes depending
+ *                              on the ML-KEM mode.
+ *                              On Encapsulation: output cipher text buffer.
+ *                              On Decapsulation: input cipher text buffer.
+ * @param[in,out] cipherTextLen The meaning of this parameter changes depending
+ *                              on the ML-KEM mode.
+ *                              On Encapsulation: it is an [in/out] parameter
+ *                              with size of the output cipher text buffer
+ *                              as input, length of the generated cipher
+ *                              text as output.
+ *                              On Decapsulation: it is an [in] parameter with
+ *                              the length of the input cipher text.
+ * @param[out] sharedSecret     Derived shared secret key object.
+ * @param[in] mode              Operation mode. Accepted values are
+ *                              kMode_SSS_MlkemDecapsulate and
+ *                              kMode_SSS_MlkemEncapsulate.
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_asymmetric_mlkem_derive_key(sss_sscp_derive_key_t *context,
+                                                  uint8_t *cipherText,
+                                                  size_t *cipherTextLen,
+                                                  sss_sscp_object_t *sharedSecret,
+                                                  sss_mode_t mode);
 
 sss_status_t sss_sscp_asymmetric_dh_derive_key(sss_sscp_derive_key_t *context,
                                                sss_sscp_object_t *otherPartyKeyObject,
@@ -301,7 +389,7 @@ sss_status_t sss_sscp_asymmetric_spake2plus_derive_key(sss_sscp_derive_key_t *co
                                                        sss_sscp_object_t *cB,
                                                        sss_sscp_object_t *Ke);
 
-/**
+/*!
  * @brief Derive keys using the CCC specification of SPAKE2+ protocol.
  *
  * This function implements the CCC SPAKE2+ key derivation process, generating

@@ -51,6 +51,7 @@ typedef uint8_t sscp_command_t;
 #define kSSCP_CMD_SSS_DeriveKey                     ((sscp_command_t)0x3f)
 #define kSSCP_CMD_SSS_AsymmetricDhDeriveKey         ((sscp_command_t)0x3c)
 #define kSSCP_CMD_SSS_AsymmetricSpake2PlusDeriveKey ((sscp_command_t)0x86)
+#define kSSCP_CMD_SSS_AsymmetricMlkemDeriveKey      ((sscp_command_t)0x87)
 #define kSSCP_CMD_SSS_KeyObjectContextInit          ((sscp_command_t)0x41)
 #define kSSCP_CMD_SSS_KeyObjectAllocateHandle       ((sscp_command_t)0x42)
 #define kSSCP_CMD_SSS_KeyObjectGetHandle            ((sscp_command_t)0x43)

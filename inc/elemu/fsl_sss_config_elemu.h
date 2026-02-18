@@ -61,6 +61,9 @@
 #define ELE_FEATURE_OPEN_KEY_DKEY                     (1)
 #define ELE_FEATURE_OPEN_KEY_BRIC                     (1)
 
+/* PQC */
+#define ELE_MLDSA_WORK_AREA_BUFFER_SIZE               (9528u)
+
 #else
 #error "No valid SoC defined"
 #endif /* defined(K32W1480_SERIES) ..... defined(MCXW72BD_cm33_core1_SERIES) */
@@ -107,6 +110,8 @@ typedef uint32_t sss_mode_t;
 #else
 #define kMode_SSS_SymmetricKDF ((sss_mode_t)0x04u)
 #endif /* ELE200_EXTENDED_FEATURES */
+#define kMode_SSS_MlkemEncapsulate   ((sss_mode_t)0x08u)
+#define kMode_SSS_MlkemDecapsulate   ((sss_mode_t)0x09u)
 
 #define SSS_ALGORITHM_ENUM_ALT
 typedef uint32_t sss_algorithm_t;
@@ -121,7 +126,7 @@ typedef uint32_t sss_algorithm_t;
 /* DES3 */
 #define kAlgorithm_SSS_DES3_ECB ((sss_algorithm_t)0x06u)
 #define kAlgorithm_SSS_DES3_CBC ((sss_algorithm_t)0x07u)
-/* digest */
+/* Digest */
 #define kAlgorithm_SSS_SHA1   ((sss_algorithm_t)0x08u)
 #define kAlgorithm_SSS_SHA224 ((sss_algorithm_t)0x09u)
 #define kAlgorithm_SSS_SHA256 ((sss_algorithm_t)0x0au)
@@ -133,6 +138,12 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_SHA3_384 ((sss_algorithm_t)0x72u)
 #define kAlgorithm_SSS_SHA3_512 ((sss_algorithm_t)0x73u)
 #endif /* ELE_HAVE_SHA3 */
+#if defined(ELE200_EXTENDED_FEATURES)
+/* ML-DSA Pre-Hashing Algorithm Extentions */
+#define kAlgorithm_SSS_SHAKE128   ((sss_algorithm_t)0x74u) /*!< Only usable with ML-DSA Pre-Hash mode */
+#define kAlgorithm_SSS_SHAKE256   ((sss_algorithm_t)0x75u) /*!< Only usable with ML-DSA Pre-Hash mode */
+#define kAlgorithm_SSS_MLDSA_Pure ((sss_algorithm_t)0x00u) /*!< Only usable with ML-DSA Pure mode */
+#endif /* ELE200_EXTENDED_FEATURES */
 /* MAC */
 #define kAlgorithm_SSS_CMAC_AES    ((sss_algorithm_t)0x0du)
 #define kAlgorithm_SSS_HMAC_SHA256 ((sss_algorithm_t)0x0eu)
@@ -190,6 +201,10 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_HKDF_SHA512_EXPAND  ((sss_algorithm_t)0x5bu)
 #endif /* ELE_FEATURE_MAC_KDF */
 
+/* PQC */
+#define kAlgorithm_SSS_PQC_MLDSA  ((sss_algorithm_t)0x25u)
+#define kAlgorithm_SSS_PQC_MLKEM  ((sss_algorithm_t)0x26u)
+
 #define SAB_KEY_TYPE_SYMMETRIC  (0x00)
 #define SAB_KEY_TYPE_ASYMMETRIC (0x01)
 #define SSS_KEY_CIPHER_TYPE_ENUM_ALT
@@ -226,6 +241,14 @@ typedef uint32_t sss_cipher_type_t;
 #define kSSS_CipherType_DILITHIUM2 ((sss_cipher_type_t)0x80u)
 #define kSSS_CipherType_DILITHIUM3 ((sss_cipher_type_t)0x81u)
 #define kSSS_CipherType_DILITHIUM5 ((sss_cipher_type_t)0x82u)
+/*! ML-DSA */
+#define kSSS_CipherType_MLDSA44 ((sss_cipher_type_t)0x83u)
+#define kSSS_CipherType_MLDSA65 ((sss_cipher_type_t)0x84u)
+#define kSSS_CipherType_MLDSA87 ((sss_cipher_type_t)0x85u)
+/*! ML-KEM */
+#define kSSS_CipherType_MLKEM512  ((sss_cipher_type_t)0x86u)
+#define kSSS_CipherType_MLKEM768  ((sss_cipher_type_t)0x87u)
+#define kSSS_CipherType_MLKEM1024 ((sss_cipher_type_t)0x88u)
 #endif /* ELE200_EXTENDED_FEATURES */
 /*! Barreto Naehrig curve */
 #define kSSS_CipherType_EC_BARRETO_NAEHRIG ((sss_cipher_type_t)0x1u)

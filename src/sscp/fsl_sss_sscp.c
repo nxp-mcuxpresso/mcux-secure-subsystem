@@ -1068,17 +1068,6 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
 
-    /* if the caller gives NULL pointer to signatureLen, it is assumed that signature[] buffer is big enough to hold
-     * full
-     * signature */
-    /*size_t len = (signatureLen != NULL) ? *signatureLen : context->signatureFullLen;*/
-
-    /* if the *signatureLen cannot hold full signature (per algorithm spec) return error */
-    /*if (len < context->signatureFullLen)
-    {
-        return kStatus_SSS_Fail;
-    }*/
-
     op.paramTypes =
         SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
                           kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None, kSSCP_ParamType_None);
@@ -1093,7 +1082,61 @@ sss_status_t sss_sscp_asymmetric_sign_digest(
 
     op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
     op.resultCount       = 1u;
-    op.result[0].value.a = (uint32_t)signatureLen;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)signatureLen);
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        ret = kStatus_SSS_Fail;
+    }
+    return (sss_status_t)ret;
+}
+
+sss_status_t sss_sscp_asymmetric_sign_pqc(
+    sss_sscp_asymmetric_t *context, uint8_t *input, size_t inputLen,
+    uint8_t *signature, size_t *signatureLen, uint8_t *userCtx, size_t userCtxLen,
+    sss_algorithm_t preHashAlg, uint8_t *workArea, size_t workAreaLen)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_asymmetric_t) >= sizeof(sss_sscp_asymmetric_t), _sss_sscp_asymmetric_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    if (NULL != workArea)
+    {
+        if (((uint32_t)workArea % sizeof(uint32_t)) != 0u)
+        {
+            return kStatus_SSS_Fail;
+        }
+    }
+
+    if (NULL == signatureLen)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefOutput,
+
+                          kSSCP_ParamType_MemrefInput, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
+
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)input);
+    op.params[1].memref.size   = inputLen;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)signature);
+    op.params[2].memref.size   = *signatureLen;
+    op.params[3].memref.buffer = ADD_OFFSET((uint32_t)userCtx);
+    op.params[3].memref.size   = userCtxLen;
+    op.params[4].value.a       = (uint32_t)preHashAlg;
+    op.params[5].memref.buffer = ADD_OFFSET((uint32_t)workArea);
+    op.params[5].memref.size   = workAreaLen;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)signatureLen);
 
     sscp_context_t *sscpCtx = context->session->sscp;
     status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricSignDigest, &op, &ret);
@@ -1123,6 +1166,43 @@ sss_status_t sss_sscp_asymmetric_verify_digest(
     op.params[1].memref.size   = digestLen;
     op.params[2].memref.buffer = ADD_OFFSET((uint32_t)signature);
     op.params[2].memref.size   = signatureLen;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricVerifyDigest, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
+}
+
+ sss_status_t sss_sscp_asymmetric_verify_pqc(
+    sss_sscp_asymmetric_t *context, uint8_t *input, size_t inputLen,
+    uint8_t *signature, size_t signatureLen, uint8_t *userCtx,
+    size_t userCtxLen, sss_algorithm_t preHashAlg)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput, kSSCP_ParamType_MemrefInput,
+                          kSSCP_ParamType_MemrefInput, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Asymmetric;
+
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)input);
+    op.params[1].memref.size   = inputLen;
+    op.params[2].memref.buffer = ADD_OFFSET((uint32_t)signature);
+    op.params[2].memref.size   = signatureLen;
+    op.params[3].memref.buffer = ADD_OFFSET((uint32_t)userCtx);
+    op.params[3].memref.size   = userCtxLen;
+    op.params[4].value.a       = (uint32_t)preHashAlg;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 0u;
@@ -1381,6 +1461,51 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
         return kStatus_SSS_Fail;
     }
 
+    return (sss_status_t)ret;
+}
+
+sss_status_t sss_sscp_asymmetric_mlkem_derive_key(sss_sscp_derive_key_t *context,
+                                                  uint8_t *cipherText,
+                                                  size_t *cipherTextLen,
+                                                  sss_sscp_object_t *sharedSecret,
+                                                  sss_mode_t mode)
+{
+    SSCP_BUILD_ASSURE(sizeof(sss_derive_key_t) >= sizeof(sss_sscp_derive_key_t), _sss_sscp_derive_key_size);
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    if(NULL == cipherTextLen)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
+                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None,
+                                      kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_DeriveKey;
+
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)cipherText);
+    op.params[1].memref.size   = *cipherTextLen;
+
+    op.params[2].context.ptr  = sharedSecret;
+    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[3].value.a = mode;
+
+    op.resultTypes       = SSCP_OP_SET_RESULT(kSSCP_ParamType_ValueOutputSingle);
+    op.resultCount       = 1u;
+    op.result[0].value.a = ADD_OFFSET((uint32_t)cipherTextLen);
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricMlkemDeriveKey, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        *cipherTextLen = 0u; /* NULL check already done at start of the function */
+        ret     = kStatus_SSS_Fail;
+    }
     return (sss_status_t)ret;
 }
 
