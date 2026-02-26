@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021, 2024-2025 NXP
+ * Copyright 2018-2021, 2024-2026 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -21,6 +21,9 @@
 /* MAC */
 #define ELE_FEATURE_HMAC_SHA256_ONLY (1)
 
+/* KDF extensions via FW */
+#define ELE_FEATURE_MAC_KDF          (1)
+
 #elif defined(KW47B42Z83_cm33_core0_SERIES) || defined(KW47B42Z83_cm33_core1_SERIES) ||                             \
     defined(KW47B42Z96_cm33_core0_SERIES) || defined(KW47B42Z96_cm33_core1_SERIES) ||                               \
     defined(KW47B42Z97_cm33_core0_SERIES) || defined(KW47B42Z97_cm33_core1_SERIES) ||                               \
@@ -37,6 +40,7 @@
     defined(MCXW72B1_cm33_core0_SERIES) || defined(MCXW72B1_cm33_core1_SERIES) ||                                   \
     defined(MCXW72BD_cm33_core0_SERIES) || defined(MCXW72BD_cm33_core1_SERIES)
 
+/* Can be used to differentiate KW47 from KW45. Shall not be enabled on KW45 */
 #define ELE200_EXTENDED_FEATURES                      (1)
 
 /* DIGEST */
@@ -199,6 +203,8 @@ typedef uint32_t sss_algorithm_t;
 #define kAlgorithm_SSS_HKDF_SHA256_EXPAND  ((sss_algorithm_t)0x59u)
 #define kAlgorithm_SSS_HKDF_SHA384_EXPAND  ((sss_algorithm_t)0x5au)
 #define kAlgorithm_SSS_HKDF_SHA512_EXPAND  ((sss_algorithm_t)0x5bu)
+#define kAlgorithm_SSS_AES_MP_KDF          ((sss_algorithm_t)0x5cu) //!< Miyaguchi-Preneel KDF
+#define kAlgorithm_SSS_CKDF_SCP03          ((sss_algorithm_t)0x5du) //!< KDF in Counter Mode with CMAC as PRF (aligned with SCP03)
 #endif /* ELE_FEATURE_MAC_KDF */
 
 /* PQC */

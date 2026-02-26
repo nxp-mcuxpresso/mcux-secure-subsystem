@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021, 2025 NXP
+ * Copyright 2018-2021, 2025-2026 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -343,6 +343,48 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
                                  size_t saltLen,
                                  sss_sscp_object_t *derivedKeyObject,
                                  size_t derivedKeyBitLength);
+
+/*!
+ * @brief Derive multiple keys with HKDF Expand.
+ *
+ * This API provides functionality for the HKDF Expand operation to derive
+ * up to six keys in a single call, improving efficiency for multi-key
+ * derivation scenarios.
+ *
+ * The derivedKeyObject parameters can be NULL if the corresponding key is not
+ * needed. At least one key object must be provided. If multiple keys are
+ * derived, they will all have the same bit length and the key object must be
+ * provided in-order (e.g. if deriving two keys, derivedKeyObject1 and
+ * derivedKeyObject2 must be provided).
+ *
+ * @param[in] context               Derive key context.
+ * @param[in] saltData              Input salt data buffer.
+ * @param[in] saltLen               Length of the salt data.
+ * @param[in] derivedKeyObject1     Output key object 1.
+ * @param[in] derivedKeyObject2     Output key object 2.
+ * @param[in] derivedKeyObject3     Output key object 3.
+ * @param[in] derivedKeyObject4     Output key object 4.
+ * @param[in] derivedKeyObject5     Output key object 5.
+ * @param[in] derivedKeyObject6     Output key object 6.
+ * @param[in] derivedKeyBitLength   The bit length of the derived keys. All keys
+ *                                  will have the same length. Available options
+ *                                  are 128 or 256 bits.
+ * @param[in] keyCount              The number of keys to derive. Valid range is
+ *                                  1 to 6.
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_derive_key_multi(sss_sscp_derive_key_t *context,
+                                       const uint8_t *saltData,
+                                       size_t saltLen,
+                                       sss_sscp_object_t *derivedKeyObject1,
+                                       sss_sscp_object_t *derivedKeyObject2,
+                                       sss_sscp_object_t *derivedKeyObject3,
+                                       sss_sscp_object_t *derivedKeyObject4,
+                                       sss_sscp_object_t *derivedKeyObject5,
+                                       sss_sscp_object_t *derivedKeyObject6,
+                                       size_t derivedKeyBitLength,
+                                       uint32_t keyCount);
 
 /*!
  * @brief Encapsulate or decapsulate a shared secret using the ML-KEM algorithm.

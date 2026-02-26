@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2021, 2025 NXP
+ * Copyright 2018-2021, 2025-2026 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -14,6 +14,10 @@
 #define MAX_SUPPORTED_COORDINATE_LENGTH_IN_BITS (1024u)
 #define NUMBER_OF_COORDINATES_PER_EC_KEY_SLOT   (3u)
 #define SSS_SSCP_TUNNEL_HAVE_BUFFER_MASK        (0x80000000u)
+
+#define SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_MASK     (0xFFUL)
+#define SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_SHIFT    (24U)
+#define SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_SET(l,i) (l) = (((l) & ~(SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_MASK << SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_SHIFT)) | (((i) & SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_MASK) << SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_SHIFT))
 
 /**
  * @def ADD_OFFSET(addr)
@@ -1425,7 +1429,9 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
         kAlgorithm_SSS_HKDF_SHA224_EXPAND == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA256_EXPAND == context->algorithm ||
         kAlgorithm_SSS_HKDF_SHA384_EXPAND == context->algorithm ||
-        kAlgorithm_SSS_HKDF_SHA512_EXPAND == context->algorithm)
+        kAlgorithm_SSS_HKDF_SHA512_EXPAND == context->algorithm ||
+        kAlgorithm_SSS_AES_MP_KDF == context->algorithm ||
+        kAlgorithm_SSS_CKDF_SCP03 == context->algorithm)
     {
         /* For CKDF and HKDF use command format 2 */
         op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
@@ -1450,6 +1456,99 @@ sss_status_t sss_sscp_derive_key(sss_sscp_derive_key_t *context,
 
     op.params[2].context.ptr  = derivedKeyObject;
     op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 1u;
+
+    sscp_context_t *sscpCtx = context->session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_DeriveKey, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
+}
+
+sss_status_t sss_sscp_derive_key_multi(sss_sscp_derive_key_t *context,
+                                       const uint8_t *saltData,
+                                       size_t saltLen,
+                                       sss_sscp_object_t *derivedKeyObject1,
+                                       sss_sscp_object_t *derivedKeyObject2,
+                                       sss_sscp_object_t *derivedKeyObject3,
+                                       sss_sscp_object_t *derivedKeyObject4,
+                                       sss_sscp_object_t *derivedKeyObject5,
+                                       sss_sscp_object_t *derivedKeyObject6,
+                                       size_t derivedKeyBitLength,
+                                       uint32_t keyCount)
+{
+    sscp_operation_t op     = {0};
+    sscp_operation_t opAgg  = {0};
+    sscp_status_t status    = kStatus_SSCP_Fail;
+    uint32_t options        = 0u;
+    uint32_t ret            = 0u;
+
+    if ((kAlgorithm_SSS_HKDF_SHA1_EXPAND != context->algorithm) &&
+        (kAlgorithm_SSS_HKDF_SHA224_EXPAND != context->algorithm) &&
+        (kAlgorithm_SSS_HKDF_SHA256_EXPAND != context->algorithm) &&
+        (kAlgorithm_SSS_HKDF_SHA384_EXPAND != context->algorithm) &&
+        (kAlgorithm_SSS_HKDF_SHA512_EXPAND != context->algorithm))
+    {
+        /* Only HKDF EXPAND supported */
+        return kStatus_SSS_Fail;
+    }
+
+    /* Maximal keyBitlen is 0xFFFFFFu, expected values are 128bit and 256bit */
+    if (derivedKeyBitLength > 0xFFFFFFu)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    /* Key count can be between 1 and 6 */
+    if ((keyCount > 0x6u) || (keyCount < 0x1u))
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    options = derivedKeyBitLength;
+    SSS_SSCP_DERIVE_KEY_HKDF_KEY_COUNT_SET(options, keyCount);
+
+    /* HKDF multi command format */
+    op.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_MemrefInput,
+                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle,
+                                      kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_Aggregate);
+    opAgg.paramTypes = SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                                         kSSCP_ParamType_ContextReference, kSSCP_ParamType_None, kSSCP_ParamType_None,
+                                         kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = context;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_DeriveKey;
+
+    op.params[1].memref.buffer = ADD_OFFSET((uint32_t)saltData);
+    op.params[1].memref.size   = saltLen;
+
+    op.params[2].context.ptr  = derivedKeyObject1;
+    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[3].value.a = options;
+
+    op.params[4].context.ptr  = derivedKeyObject2;
+    op.params[4].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[5].context.ptr  = derivedKeyObject3;
+    op.params[5].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    op.params[6].aggregate.op = &opAgg;
+
+    /* Command doesn't fit, so use an aggregate */
+    opAgg.params[0].context.ptr  = derivedKeyObject4;
+    opAgg.params[0].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    opAgg.params[1].context.ptr  = derivedKeyObject5;
+    opAgg.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+
+    opAgg.params[2].context.ptr  = derivedKeyObject6;
+    opAgg.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
 
     op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
     op.resultCount = 1u;
