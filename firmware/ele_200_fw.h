@@ -22,7 +22,7 @@ extern const uint8_t fw[];
 
 /* We select the correct firmware based on build configuration */
 #if defined(CONFIG_FIRMWARE_S200_EL2GO_KW45) && CONFIG_FIRMWARE_S200_EL2GO_KW45
-#include "KW45_K32W1xx_MCXW71_SDKFW2.1_RFP.h"
+#include "KW45_K32W1xx_MCXW71_SDKFW3.0_RFP1.h"
 #elif defined(CONFIG_FIRMWARE_S200_EL2GO_KW47) && CONFIG_FIRMWARE_S200_EL2GO_KW47
 #include "KW47_A2_1_SDKFW3_0.h"
 #else
