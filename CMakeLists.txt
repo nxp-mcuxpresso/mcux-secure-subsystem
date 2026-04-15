@@ -54,7 +54,7 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.firmware)
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         SOURCES firmware/ele_200_fw.h
                 firmware/KW45_K32W1xx_MCXW71_SDKFW3.0_RFP1.h
-                firmware/KW47_A2_1_SDKFW3_0.h
+                firmware/KW47_A2_1_SDKFW4_0.h
     )
     mcux_add_include(
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
