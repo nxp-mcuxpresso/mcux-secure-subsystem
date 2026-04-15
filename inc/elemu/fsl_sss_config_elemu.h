@@ -356,4 +356,11 @@ typedef uint32_t sss_internal_keyID_t;
 #define kSSS_internalKey_NBU_BRIC_KEY0 ((sss_internal_keyID_t)0x8000000Bu)
 #define kSSS_internalKey_NBU_BRIC_KEY1 ((sss_internal_keyID_t)0x8000000Cu)
 
+/* Point arithmetic operations */
+typedef uint32_t sss_sscp_ecPointOp_t;
+#define kSSS_ecPointOp_MULT ((sss_sscp_ecPointOp_t)0x0Au)
+#define kSSS_ecPointOp_ADD  ((sss_sscp_ecPointOp_t)0x0Bu)
+#define kSSS_ecPointOp_SUB  ((sss_sscp_ecPointOp_t)0x0Cu)
+
+
 #endif /* FSL_SSS_CONFIG_H */

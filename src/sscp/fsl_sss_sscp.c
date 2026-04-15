@@ -1798,6 +1798,44 @@ sss_status_t sss_sscp_asymmetric_spake2plus_derive_key_ccc(sss_sscp_derive_key_t
 }
 #endif /* ELE_FEATURE_SPAKE2PLUS */
 
+
+sss_status_t sss_sscp_asymmetric_ec_point_operate(sss_sscp_session_t *session,
+                                                  sss_sscp_object_t *pIn1,
+                                                  sss_sscp_object_t *pIn2,
+                                                  sss_sscp_object_t *pOut,
+                                                  sss_sscp_ecPointOp_t operation)
+{
+    sscp_operation_t op  = {0};
+    sscp_status_t status = kStatus_SSCP_Fail;
+    uint32_t ret         = 0u;
+
+    op.paramTypes =
+        SSCP_OP_SET_PARAM(kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference, kSSCP_ParamType_ContextReference,
+                          kSSCP_ParamType_ContextReference, kSSCP_ParamType_ValueInputSingle, kSSCP_ParamType_None, kSSCP_ParamType_None);
+
+    op.params[0].context.ptr  = session;
+    op.params[0].context.type = kSSCP_ParamContextType_SSS_Session;
+    op.params[1].context.ptr  = pIn1;
+    op.params[1].context.type = kSSCP_ParamContextType_SSS_Object;
+    op.params[2].context.ptr  = pIn2;
+    op.params[2].context.type = kSSCP_ParamContextType_SSS_Object;
+    op.params[3].context.ptr  = pOut;
+    op.params[3].context.type = kSSCP_ParamContextType_SSS_Object;
+    op.params[4].value.a      = (uint32_t)operation;
+
+    op.resultTypes = SSCP_OP_SET_RESULT(kSSCP_ParamType_None);
+    op.resultCount = 0u;
+
+    sscp_context_t *sscpCtx = session->sscp;
+    status                  = sscpCtx->invoke(sscpCtx, kSSCP_CMD_SSS_AsymmetricEcPointOperation, &op, &ret);
+    if (status != kStatus_SSCP_Success)
+    {
+        return kStatus_SSS_Fail;
+    }
+
+    return (sss_status_t)ret;
+}
+
 sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context)
 {
     sscp_operation_t op  = {0};

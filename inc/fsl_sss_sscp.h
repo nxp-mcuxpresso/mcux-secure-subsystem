@@ -478,6 +478,45 @@ sss_status_t sss_sscp_asymmetric_spake2plus_derive_key_ccc(sss_sscp_derive_key_t
                                                            sss_sscp_object_t *k6);
 #endif /* ELE_FEATURE_SPAKE2PLUS */
 
+/*!
+ * @brief Apply an arithmetic operation to elliptic curve points.
+ *
+ * The function provides an API for applying the ADD, SUB, and MULT arithmetic
+ * operations to elliptic curve points (or scalar and point for MULT operation)
+ * represented as key objects; points are represented by EC public keys,
+ * while scalars are EC private keys.
+ *
+ * The order of operands matters for some operations:
+ *  - MULT key object order MUST be: pIn1 as the scalar, pIn2 as the point to
+ *    multiply,
+ *  - SUB key object order is (pIn1 - pIn2),
+ *  - ADD key object order does not matter.
+ *
+ * @note Curves supported by this API are limited to the Weierstrass curve
+ *       family, which includes NIST-P and Brainpool-P curves of all sizes
+ *       supported by ELE S200.
+ *
+ * @note The MULT operation may be used to check if a given point lies on
+ *       a given curve.
+ *
+ * @note Support for this functionality is enabled by ELE S200 loadable firmware
+ *       version KW47_A2_1_SDKFW4_0 and onwards, for the KW47 or MCXW72 devices.
+ *
+ * @param[in] session   An open session context.
+ * @param[in] pIn1      First input operand (this must be a scalar for MULT,
+ *                      and a point for ADD/SUB).
+ * @param[in] pIn2      Second input operand (point ADD/SUB/MULT).
+ * @param[out] pOut     Output operand (resulting point).
+ * @param[in] operation The arithmetic operation to perform.
+ *
+ * @return Status code of the operation.
+ */
+sss_status_t sss_sscp_asymmetric_ec_point_operate(sss_sscp_session_t *session,
+                                                  sss_sscp_object_t *pIn1,
+                                                  sss_sscp_object_t *pIn2,
+                                                  sss_sscp_object_t *pOut,
+                                                  sss_sscp_ecPointOp_t operation);
+
 sss_status_t sss_sscp_derive_key_context_free(sss_sscp_derive_key_t *context);
 /*********************************MAC******************************************/
 sss_status_t sss_sscp_mac_context_init(sss_sscp_mac_t *context,
