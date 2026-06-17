@@ -18,6 +18,18 @@
 
 #define ELE200_BASELINE (1)
 
+/**
+ * @def ELE_TRACK_SESSION_STATE
+ * Keeps track of the session state during runtime and emulates KW47/MCXW72 behavior.
+ *
+ * On KW45/MCXW71 devices, we want to be able to repeatedly open the same
+ * sessions, just like on KW47/MCXW72.
+ * So we emulate the same behavior as if we were repeatedly calling
+ * OPEN SESSION with a non-zero ID on KW47/MCXW72, which just returns the
+ * already-open session context.
+ */
+#define ELE_TRACK_SESSION_STATE (1)
+
 /* MAC */
 #define ELE_FEATURE_HMAC_SHA256_ONLY (1)
 

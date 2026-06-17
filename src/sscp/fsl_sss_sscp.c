@@ -42,6 +42,16 @@
 #define ADD_OFFSET(addr) (addr)
 #endif /* IS_RADIO_CORE */
 
+#if defined(ELE_TRACK_SESSION_STATE)
+typedef enum {
+    sessionClosed,
+    sessionOpen
+} session_state_t;
+
+static session_state_t session_state       = sessionClosed;
+static sss_sscp_session_t session_internal = {0};
+#endif
+
 sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
                                    uint32_t sessionId,
                                    sss_type_t subsystem,
@@ -52,6 +62,16 @@ sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
     sscp_operation_t op  = {0};
     sscp_status_t status = kStatus_SSCP_Fail;
     uint32_t ret         = 0u;
+
+#if defined(ELE_TRACK_SESSION_STATE)
+    if (sessionOpen == session_state)
+    {
+        session_internal.subsystem = subsystem;
+        session_internal.sscp      = sscpctx;
+        (void)memcpy(session, &session_internal, sizeof(sss_sscp_session_t));
+        return kStatus_SSS_Success;
+    }
+#endif
 
     session->subsystem = subsystem;
     session->sscp      = sscpctx;
@@ -73,6 +93,10 @@ sss_status_t sss_sscp_open_session(sss_sscp_session_t *session,
         return kStatus_SSS_Fail;
     }
 
+#if defined(ELE_TRACK_SESSION_STATE)
+    (void)memcpy(&session_internal, session, sizeof(sss_sscp_session_t));
+    session_state = sessionOpen;
+#endif
     return (sss_status_t)ret;
 }
 
@@ -98,6 +122,9 @@ sss_status_t sss_sscp_close_session(sss_sscp_session_t *session)
     {
         return kStatus_SSS_Fail;
     }
+#if defined(ELE_TRACK_SESSION_STATE)
+    session_state = sessionClosed;
+#endif
     return (sss_status_t)ret;
 }
 
