@@ -3,13 +3,13 @@ if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem)
     mcux_add_source(
         BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         SOURCES src/sscp/fsl_sss_sscp.c
-		        inc/fsl_sss_config.h
-		        inc/fsl_sss_config.h
-		        inc/fsl_sss_sscp.h
-		        inc/fsl_sscp.h
-		        inc/fsl_sscp_commands.h
-		        inc/fsl_sscp_config.h
-		        inc/fsl_sss_sscp_config.h
+                inc/fsl_sss_config.h
+                inc/fsl_sss_config.h
+                inc/fsl_sss_sscp.h
+                inc/fsl_sscp.h
+                inc/fsl_sscp_commands.h
+                inc/fsl_sscp_config.h
+                inc/fsl_sss_sscp_config.h
                 inc/fsl_sss_api.h
     )
 
@@ -22,7 +22,7 @@ endif()
 
 if (CONFIG_MCUX_COMPONENT_middleware.secure-subsystem.mu)
     mcux_add_source(
-	    BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
+        BASE_PATH ${SdkRootDirPath}/middleware/secure-subsystem
         SOURCES inc/fsl_sscp_mu.h
                 src/sscp/fsl_sscp_mu.c
     )
