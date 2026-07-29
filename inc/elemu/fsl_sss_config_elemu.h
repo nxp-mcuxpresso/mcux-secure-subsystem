@@ -18,6 +18,7 @@
 
 #define ELE200_BASELINE (1)
 
+#if defined(CONFIG_ELE_TRACK_SESSION_STATE) /* toggled via Kconfig */
 /**
  * @def ELE_TRACK_SESSION_STATE
  * Keeps track of the session state during runtime and emulates KW47/MCXW72 behavior.
@@ -29,6 +30,7 @@
  * already-open session context.
  */
 #define ELE_TRACK_SESSION_STATE (1)
+#endif /* CONFIG_ELE_TRACK_SESSION_STATE */
 
 /* MAC */
 #define ELE_FEATURE_HMAC_SHA256_ONLY (1)

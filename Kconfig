@@ -38,6 +38,18 @@ menu "secure-subsystem"
                 Macro value is in quotes
     endif
 
+    config ELE_TRACK_SESSION_STATE
+        bool "Track Session State in Software"
+        default y if is_device.KW45 || is_device.MCXW71
+        default n
+        help
+            For KW45/MCXW71 devices, provides a way to retrieve
+            an already-opened session by repeatedly calling
+            the OPEN SESSION API. This is handled by keeping track
+            of the session state in-software.
+            On other devices has no effect.
+
+
     #############################
     # Firmware dependency logic #
     #############################

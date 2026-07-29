@@ -35,6 +35,18 @@ config MCUX_SECURE_SUBSYSTEM_FIRMWARE_EL2GO
 	  The firmware is provided in the form of a global C array
 	  and it is to be loaded during runtime.
 
+config ELE_TRACK_SESSION_STATE
+	bool "Track Session State in Software"
+	depends on MCUX_SECURE_SUBSYSTEM
+	default y if SOC_MCXW716C
+	default n
+	help
+	  For KW45/MCXW71 devices, provides a way to retrieve
+	  an already-opened session by repeatedly calling
+	  the OPEN SESSION API. This is handled by keeping track
+	  of the session state in-software.
+	  On other devices has no effect.
+
 config MCUX_SECURE_SUBSYSTEM_SESSION_ID
 	int
 	depends on MCUX_SECURE_SUBSYSTEM
