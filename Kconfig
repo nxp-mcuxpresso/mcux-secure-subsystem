@@ -49,6 +49,14 @@ menu "secure-subsystem"
             of the session state in-software.
             On other devices has no effect.
 
+    config MCUX_SECURE_SUBSYSTEM_SESSION_ID
+        int
+        default 1
+        help
+            A helper symbol for drivers and components that
+            wish to use the same session ID.
+            Defined to a session ID that is reusable on KW47/W72.
+            On KW45/W71 we don't care, but we use the same ID.
 
     #############################
     # Firmware dependency logic #

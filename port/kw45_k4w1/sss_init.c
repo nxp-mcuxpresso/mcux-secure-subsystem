@@ -83,7 +83,7 @@ status_t CRYPTO_InitHardware(void)
         {
             break;
         }
-        if (sss_sscp_open_session(&g_sssSession, 0u, SSS_SUBSYSTEM, &g_sscpContext) != kStatus_SSS_Success)
+        if (sss_sscp_open_session(&g_sssSession, CONFIG_MCUX_SECURE_SUBSYSTEM_SESSION_ID, SSS_SUBSYSTEM, &g_sscpContext) != kStatus_SSS_Success)
         {
             break;
         }
