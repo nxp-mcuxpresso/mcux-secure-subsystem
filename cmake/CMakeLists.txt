@@ -28,6 +28,30 @@ if(CONFIG_MCUX_SECURE_SUBSYSTEM)
 		zephyr_include_directories(
 			${MCUX_SECURE_SUBSYSTEM_PATH}/firmware
 		)
+
+		# Select the correct FW binary and build a normalized absolute path to it
+		if(CONFIG_FIRMWARE_S200_EL2GO_KW45)
+			set(MCUX_S200_FW_BIN_DIR  ${ZEPHYR_HAL_NXP_MODULE_DIR}/zephyr/blobs/mcxw71/)
+			set(MCUX_S200_FW_BIN_NAME KW45_K32W1xx_MCXW71_SDKFW3.0_RFP1.sb3)
+		elseif(CONFIG_FIRMWARE_S200_EL2GO_KW47)
+			set(MCUX_S200_FW_BIN_DIR  ${ZEPHYR_HAL_NXP_MODULE_DIR}/zephyr/blobs/mcxw72/)
+			set(MCUX_S200_FW_BIN_NAME KW47_A2_1_SDKFW4_0.sb3)
+		else()
+			message(FATAL_ERROR "No valid configuration could be selected for the S200 firmware.")
+		endif()
+
+		cmake_path(SET MCUX_S200_FW_BIN_PATH NORMALIZE ${MCUX_S200_FW_BIN_DIR}/${MCUX_S200_FW_BIN_NAME})
+
+		# Make sure we have access to the binary blob
+		if (NOT EXISTS ${MCUX_S200_FW_BIN_PATH})
+			message(FATAL_ERROR "Cannot find S200 firmware file at ${MCUX_S200_FW_BIN_PATH}. Make sure to fetch the firmware blob via \"west blobs\".")
+		endif()
+
+		generate_inc_file_for_target(
+			${ZEPHYR_CURRENT_LIBRARY}
+			${MCUX_S200_FW_BIN_PATH}
+			${ZEPHYR_BINARY_DIR}/include/generated/edgelock_firmware.inc
+		)
 	endif()
 endif()
 

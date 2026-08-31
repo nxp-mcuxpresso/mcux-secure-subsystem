@@ -8,10 +8,12 @@
 /*******************************************************************************
  * EdgeLock Enclave Firmware - this file selects the correct FW for runtime apps
  ******************************************************************************/
-#ifndef __ELE_FW_H__
-#define __ELE_FW_H__
+#ifndef __ELE_200_FW_H__
+#define __ELE_200_FW_H__
 
 #if defined(ELEMU_HAS_LOADABLE_FW) && ELEMU_HAS_LOADABLE_FW
+
+#if !defined(__ZEPHYR__)
 
 extern const uint8_t fw[];
 
@@ -24,6 +26,15 @@ extern const uint8_t fw[];
 #error "Compile-time S200 firmware enabled, but no valid configuration selected"
 #endif
 
+#else /* !__ZEPHYR__ */
+
+const uint8_t fw[] = {
+/* This file is generated during build from the appropriate SB3 binary. */
+#include "edgelock_firmware.inc"
+};
+
+#endif /* !__ZEPHYR__ */
+
 #endif /* ELEMU_HAS_LOADABLE_FW */
 
-#endif /* __ELE_FW_H__ */
+#endif /* __ELE_200_FW_H__ */
